@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">KaliopeClientesPedidos</string>
+    <string name="ONE_COLUMN">ONE_COLUMN</string>
+    <string name="TWO_COLUMN">TWO_COLUMN</string>
+    <string name="THREE_COLUMN">THREE_COLUMN</string>
+    <string name="FOUR_COLUMN">FOUR_COLUMN</string>
+    <string name="Ingresa">Ingresa</string>
+    <string name="Registrate">Registrate</string>
+    <string name="Invitado">Ingresa como Invitado</string>
+    <string name="Instrucciones_como_invitado">Si no eres Socio(a) Kaliope podras entrar como invitado y ver todos los productos manejados por Kaliope. Pero no podras realizar pedidos o apartar productos.</string>
+    <string name="No_Mostrar_otra_vez">No mostrar otra vez</string>
+    <string name="Continuar">Continuar</string>
+    <string name="Volver">Volver</string>
+    <string name="Usuario">Usuario:</string>
+    <string name="Contraseña">Contraseña:</string>
+    <string name="Instrucciones_ingresa_socio">Si ya estas registrado en Kaliope como Socio, ingresa tus datos para iniciar sesion:</string>
+    <string name="Instrucciones_como_invitado2">si no tienes cuenta puedes ingresar como invitado:</string>
+    <string name="MantenerSesion">Mantener sesion iniciada</string>
+</resources>

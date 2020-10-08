@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">KaliopeClientesPedidos</string>
+    <string name="Ingresa">Log in</string>
+    <string name="Registrate">Sing in</string>
+    <string name="No_Mostrar_otra_vez">Don´t show again</string>
+    <string name="Continuar">Continue</string>
+    <string name="Volver">Go Back</string>
+    <string name="Usuario">User:</string>
+    <string name="Contraseña">Password:</string>
+</resources>

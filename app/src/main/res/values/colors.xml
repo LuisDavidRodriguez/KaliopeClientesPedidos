@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3f51b5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="colorLio">#B01200</color>
+    <color name="colorActivo">#008000</color>
+    <color name="colorReactivar">#BAAE00</color>
+    <color name="colorProspecto">#3355CC</color>
+
+    <color name="colorFondoClientes">#E0FFFF</color>
+
+    <color name="colorVisitado">#CCFFEE</color>
+    <color name="colorVisitar">#CCEEFF</color>
+    <color name="colorRepaso">#FFEEFF</color>
+    <color name="colorTodos">#EEEEEE</color>
+    <color name="colorNoVisitar">#CCCCCC</color>
+
+    <color name="colorEtiquetaVisitado">#336600</color>
+    <color name="colorEtiquetaVisitar">#0000FF</color>
+    <color name="colorEtiquetaRepaso">#FF00DD</color>
+    <color name="colorEtiquetaNoVisitar">#777777</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorGris">#B3B7BA</color>
+
+    <color name="colorGreen">#00AA17</color>
+    <color name="colorGreenLight">#D0F2D3</color>
+    <color name="colorBlueLight">#C9CCF5</color>
+    <color name="colorPinkLight">#E8D1E0</color>
+    <color name="colorOrange">#FF3600</color>
+    <color name="colorOrangeLight">#FEDACC</color>
+</resources>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="10sp"
+    android:gravity="center"
+    android:elevation="10dp"
+    android:background="@drawable/grid_view_back_ground"
+    >
+
+    <ImageView
+        android:id="@+id/itemGridIV"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/ic_launcher_background"
+        />
+
+    <TextView
+        android:id="@+id/itemGrid_Tv_nombre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sudadera mujer"
+        android:textColor="@color/colorBlack"
+        android:layout_gravity="left"
+        android:textSize="15sp"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="left"
+        >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$"
+                android:textColor="@color/colorBlack"
+                android:textStyle="italic"
+                android:textSize="20sp"
+                android:layout_gravity="left"
+                />
+
+        <TextView
+            android:id="@+id/itemGrid_TV_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="599"
+            android:textColor="@color/colorBlack"
+            android:textStyle="italic"
+            android:textSize="20sp"
+            android:layout_gravity="left"
+            />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="left"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Existencias: "
+            android:textColor="@color/colorBlack"
+            android:textSize="14sp"
+            android:layout_gravity="left"
+            />
+
+        <TextView
+            android:id="@+id/itemGrid_TV_existencias"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="20"
+            android:textColor="@color/colorBlack"
+            android:textSize="15sp"
+            android:layout_gravity="left"
+            />
+
+
+    </LinearLayout>
+
+
+    <ProgressBar
+        android:id="@+id/itemGridProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:progress="0"
+        android:visibility="gone"
+        />
+
+
+
+</LinearLayout>

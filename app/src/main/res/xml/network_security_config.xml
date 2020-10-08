@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config><base-config cleartextTrafficPermitted="true" />
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">Your URL(ex: 127.0.0.1)</domain>
+    </domain-config>
+</network-security-config>
+
+
+<!--Creamos este archivo para evitar el error clearText http de glide cuando intentaba descargar una imagen
+del servidor kaliope que no es https sino solo http
+
+hay que apuntar a este archivo tambien en el manifiesto-->

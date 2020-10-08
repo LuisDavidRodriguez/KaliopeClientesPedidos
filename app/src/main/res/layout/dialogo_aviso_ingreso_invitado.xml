@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:background="@drawable/cuadro_redondeado"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text= "Ingreso como Invitado"
+        android:layout_gravity="center"
+        android:textSize="30sp"
+        android:textColor="@color/colorAccent"
+        android:textStyle="bold"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Instrucciones_como_invitado"
+        android:textSize="25sp"
+        android:gravity="center"
+        android:textColor="@color/colorBlack"
+        android:padding="10dp"
+        />
+
+    <CheckBox
+        android:id="@+id/dialogoAvisoIngresoInvitado_CheckBoxNoMostrarOtraVez"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/No_Mostrar_otra_vez"
+        android:textSize="25sp"
+        android:layout_marginTop="30dp"
+        android:layout_marginStart="20dp"
+        style="@style/AppTheme"
+
+        />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        >
+
+
+        <Button
+            android:id="@+id/dialogoAvisoIngresoInvitado_ButtonVolver"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/Volver"
+            android:textSize="20sp"
+            android:layout_margin="15dp"
+            />
+
+        <Button
+            android:id="@+id/dialogoAvisoIngresoInvitado_ButtonContinuar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/Continuar"
+            android:textSize="20sp"
+            android:layout_margin="15dp"
+            />
+
+
+    </LinearLayout>
+
+</LinearLayout>
