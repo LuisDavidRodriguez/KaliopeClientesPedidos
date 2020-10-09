@@ -147,7 +147,7 @@ public class Ingreso extends AppCompatActivity {
         getWindow().setExitTransition(transition);
         getWindow().setReenterTransition(transition);
 
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, MainActivityRecycler.class);
         startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle());
     }
 
