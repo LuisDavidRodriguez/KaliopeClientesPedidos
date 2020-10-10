@@ -14,13 +14,14 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 class AdapterRopa extends RecyclerView.Adapter<AdapterRopa.ViewHolderRopa> {
 
-    ArrayList<Producto> listaProductos;
+    ArrayList<HashMap> listaProductos;
     Context context;
 
-    public AdapterRopa(ArrayList<Producto> listaProductos, Context context) {
+    public AdapterRopa(ArrayList<HashMap> listaProductos, Context context) {
         this.listaProductos = listaProductos;
         this.context = context;
     }
@@ -36,9 +37,17 @@ class AdapterRopa extends RecyclerView.Adapter<AdapterRopa.ViewHolderRopa> {
     public void onBindViewHolder(@NonNull ViewHolderRopa holder, int position) {
         //aqui actualizaremos los datos en nuestros textView,
         //a diferencia del ejemplo con AdapterDatos donde pusimos un metodo
-            holder.nombre.setText(listaProductos.get(position).getNombre());
-            holder.price.setText(listaProductos.get(position).getDescripcion());
-            String URL = listaProductos.get(position).getURL_imagen();
+
+
+
+        //Sacamos los datos del array list
+
+
+
+            holder.nombre.setText(listaProductos.get(position).get(MainActivityRecycler.ADAPTER_COLUMN_NOMBRE).toString());
+            holder.price.setText(listaProductos.get(position).get(MainActivityRecycler.ADAPTER_COLUMN_PRICE).toString());
+            holder.existencias.setText(listaProductos.get(position).get(MainActivityRecycler.ADAPTER_COLUMN_EXISTENCIAS).toString());
+            String URL = listaProductos.get(position).get(MainActivityRecycler.ADAPTER_COLUMN_IMAGE_PREVIEW).toString();
 
         Glide.with(context)
                 .load(URL)
@@ -61,7 +70,7 @@ class AdapterRopa extends RecyclerView.Adapter<AdapterRopa.ViewHolderRopa> {
             super(itemView);
             nombre = itemView.findViewById(R.id.itemList_Tv_nombre);
             price = itemView.findViewById(R.id.itemList_TV_price);
-            existencias = itemView.findViewById(R.id.itemGrid_TV_existencias);
+            existencias = itemView.findViewById(R.id.itemList_TV_existencias);
             imagen = itemView.findViewById(R.id.itemListIV);
         }
     }

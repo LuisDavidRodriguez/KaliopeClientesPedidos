@@ -6,7 +6,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.transition.Slide;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.AdapterViewFlipper;
+import android.widget.GridView;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -15,44 +22,93 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import cz.msebera.android.httpclient.Header;
 
 public class MainActivityRecycler extends AppCompatActivity {
 
-    ArrayList<String> listaDatos;
     RecyclerView recyclerView;
+    ArrayList<HashMap> listaProductos;
+    HashMap map;
 
-    ArrayList<Producto> listaProductos;
+    JSONArray categorias;
+    JSONArray imagenDeInicio;
 
 
+    private AdapterViewFlipper adapterViewFlipperPublicidad;
+    private AdapterPublicidad adapterPublicidad;
 
     private final String URL_CATEGORIAS ="app_movil/consultar_categorias.php";
+    private final String URL_IMAGEN_PRINCIPAL = "app_movil/consultarImagenPrincipal.php";
+
+    public static final String ADAPTER_COLUMN_PRICE = "PRICE";
+    public static final String ADAPTER_COLUMN_EXISTENCIAS = "EXISTENCIAS";
+    public static final String ADAPTER_COLUMN_DISPONIBILIDAD = "DISP";
+    public static final String ADAPTER_COLUMN_DESCRIPCION = "DESCRIPTION";
+    public static final String ADAPTER_COLUMN_NOMBRE = "NAME";
+    public static final String ADAPTER_COLUMN_IMAGE_PREVIEW = "PREVIEW";
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_recycler);
+        Slide slide = new Slide(Gravity.RIGHT);
+        slide.setDuration(1000);
+        slide.setInterpolator(new DecelerateInterpolator());
+        getWindow().setEnterTransition(slide);
+        getWindow().setAllowEnterTransitionOverlap(true);
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerId);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
-        //recyclerView.setLayoutManager(new GridLayoutManager(this,2));
-
-
-        listaDatos = new ArrayList<>();
-
+        //recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        recyclerView.setLayoutManager(new GridLayoutManager(this,1));
         llenarProductos();
 
 
+        adapterViewFlipperPublicidad = (AdapterViewFlipper) findViewById(R.id.main_AVF_publicidad);
+        int[]imagenes = {R.drawable.cortador1, R.drawable.cortador2};
 
-        //AdapterDatos adapterDatos = new AdapterDatos(listaDatos);
+        adapterPublicidad = new AdapterPublicidad(this,imagenes);
+        adapterViewFlipperPublicidad.setAdapter(adapterPublicidad);
+        adapterViewFlipperPublicidad.setFlipInterval(4000);
+        adapterViewFlipperPublicidad.setAutoStart(true);
 
-        //AdapterRopa adapterRopa = new AdapterRopa(listaProductos,this);
-        //recyclerView.setAdapter(adapterRopa);
+
+
     }
 
 
     private void enaviarArecycler(){
+
+        listaProductos = new ArrayList<>();
+
+        for (int i=0; i<imagenDeInicio.length() ; i++){
+
+
+            try {
+
+                map = new HashMap();
+                map.put(ADAPTER_COLUMN_PRICE,imagenDeInicio.getJSONObject(i).getString("precio_etiqueta"));
+                map.put(ADAPTER_COLUMN_NOMBRE,imagenDeInicio.getJSONObject(i).getString("descripcion"));
+                map.put(ADAPTER_COLUMN_EXISTENCIAS,imagenDeInicio.getJSONObject(i).getString("existencia"));
+                map.put(ADAPTER_COLUMN_DISPONIBILIDAD, "DISPONIBLE");
+                map.put(ADAPTER_COLUMN_DESCRIPCION, "");
+
+
+                String URL_Imagen = KaliopeServerClient.BASE_URL + imagenDeInicio.getJSONObject(i).getString("imagen1");
+                map.put(ADAPTER_COLUMN_IMAGE_PREVIEW,URL_Imagen);
+                Log.d("UrlImagenes",String.valueOf(URL_Imagen));
+                listaProductos.add(map);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+
         AdapterRopa adapterRopa = new AdapterRopa(listaProductos,this);
         recyclerView.setAdapter(adapterRopa);
 
@@ -61,7 +117,6 @@ public class MainActivityRecycler extends AppCompatActivity {
 
     private void llenarProductos(){
 
-        listaProductos = new ArrayList<>();
 
         KaliopeServerClient.get(URL_CATEGORIAS,null,new JsonHttpResponseHandler(){
             @Override
@@ -71,8 +126,8 @@ public class MainActivityRecycler extends AppCompatActivity {
                 Log.d ("datosRecibidos",String.valueOf(response));
 
                 try {
-                    JSONArray categorias = response.getJSONArray("categorias");
-                    JSONArray imagenDeInicio = response.getJSONArray("imagenInicio");
+                    categorias = response.getJSONArray("categorias");
+                    imagenDeInicio = response.getJSONArray("imagenInicio");
                     Log.d("datosProces",String.valueOf(categorias.toString()));
                     Log.d("datosProcesImagenInicio",String.valueOf(imagenDeInicio.toString()));
 
@@ -86,12 +141,6 @@ public class MainActivityRecycler extends AppCompatActivity {
                     for (int i=0; i<imagenDeInicio.length() ; i++){
 
                         Log.d("datosProcesImagen",String.valueOf(imagenDeInicio.getJSONObject(i).getString("imagen1")));
-
-                        String nombre = imagenDeInicio.getJSONObject(i).getString("descripcion");
-                        String precio = imagenDeInicio.getJSONObject(i).getString("precio_etiqueta");
-                        String imagenUrl = KaliopeServerClient.BASE_URL + imagenDeInicio.getJSONObject(i).getString("imagen1");
-
-                        listaProductos.add(new Producto(nombre,precio,imagenUrl));
                     }
 
 
@@ -184,4 +233,59 @@ public class MainActivityRecycler extends AppCompatActivity {
 
 
     }
+
+
+    @Override
+    public void onBackPressed() {
+        if(ConfiguracionesApp.getEntradaComoInvitado(this)){
+            super.onBackPressed();
+        }else{
+            moveTaskToBack(true);
+        }
+
+    }
+
+
+
+
+
+
+/*
+    //https://es.switch-case.com/53695591
+    private static void setListViewHeightBasedOnChildren(GridView gridView) {
+        AdapterGrid gridAdapter =(AdapterGrid) gridView.getAdapter();
+        if (gridAdapter == null) {
+            // pre-condition
+            return;
+        }
+
+        int totalHeight = 0;
+
+        //obtenemos cada item ya inflado con los datos requeridos
+        //medimos cada altura de item
+        //y en base al numero de elementos, sumamos todas sus alturas
+        //asi sabremos la medida total de todos los elementos
+        for (int i = 0; i < gridAdapter.getCount(); i++) {
+            View listItem = gridAdapter.getView(i, null, gridView);
+            listItem.measure(0,0);
+            totalHeight += listItem.getMeasuredHeight()+20;//sumo a la medida de cada item no entiendo en que parte se esta comiendo medida, al final sale mas corto
+        }
+
+
+        ViewGroup.LayoutParams params = gridView.getLayoutParams();
+
+        //sabemos la medida total de todos los items pero! no esta incluida en esa medida
+        //el espacio del separador entre las filas entonces hay que sacar la medida del separador
+        //y multiplicarla por el numero de items para obtener una altura total con items y separadores
+        //ahora todas esas medidas tomadas totales las dividimos entre el numero de columnas que se estan
+        //desplegando al mismo tiempo en el grid view, porque la medida obtenida es total pero como si los
+        //items estuvieran en una lista, como mostramos 2 columnas entonces dividimos entre dos la medida total
+        int verticalSpacing = (gridView.getVerticalSpacing() * (gridAdapter.getCount()));
+        int finalHeight = totalHeight + verticalSpacing;
+        params.height = finalHeight/2;
+        gridView.setLayoutParams(params);
+        gridView.requestLayout();
+    }
+
+ */
 }
