@@ -28,14 +28,9 @@ import cz.msebera.android.httpclient.Header;
 public class MainActivityRecycler extends AppCompatActivity {
 
     RecyclerView recyclerView;
-    RecyclerView recyclerViewPublicidad1;       //una instancia para el recicler view que contendra las imagenes
 
     ArrayList<HashMap> listaProductos;
     HashMap map;
-
-    ArrayList<HashMap> listaPublicidad;
-    HashMap mapPublicidad;
-
 
 
     JSONArray categorias;
@@ -72,10 +67,8 @@ public class MainActivityRecycler extends AppCompatActivity {
 
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerId);
-        //recyclerViewPublicidad1 = (RecyclerView) findViewById(R.id.recycler_publicidadMain);   //tuvimos que crear un layout que contenga solo otro recicler para meter ese recycler dentro del recycler primario, no lo se parese que si es asi, tengo que tener un archivo layout con el recycler o crearlo programaticamente, y ademas un item que sera el que se infle en cada item del recycler
-        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
-        //recyclerView.setLayoutManager(new GridLayoutManager(this,2));
-        //recyclerViewPublicidad1.setLayoutManager(new GridLayoutManager(this, 2));
+        //recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
 
         consultarImagenPrincipal();
 
@@ -125,29 +118,19 @@ public class MainActivityRecycler extends AppCompatActivity {
         }
 
 
-        listaPublicidad = new ArrayList<>();
-        mapPublicidad = new HashMap();
-        mapPublicidad.put(AdapterPublicidadRecycler.ADAPTER_IMAGE_ID,R.drawable.cortador1);
-        listaPublicidad.add(mapPublicidad);
-        mapPublicidad = new HashMap();
-        mapPublicidad.put(AdapterPublicidadRecycler.ADAPTER_IMAGE_ID,R.drawable.cortador2);
-        listaPublicidad.add(mapPublicidad);
+
 
 
 
         AdapterRopa adapterRopa = new AdapterRopa(listaProductos,this);
-        AdapterPublicidadRecycler adapterPublicidadRecycler = new AdapterPublicidadRecycler(listaPublicidad,this);
 
 
 
-
-        //recyclerViewPublicidad1.setAdapter(adapterPublicidadRecycler);
-        //recyclerView.setAdapter(adapterRopa);
 
         //prueba con merge adapter
 
-        ConcatAdapter concatAdapter = new ConcatAdapter(adapterPublicidadRecycler,adapterRopa);
-        recyclerView.setAdapter(concatAdapter);
+        //ConcatAdapter concatAdapter = new ConcatAdapter(adapterPublicidadRecycler,adapterRopa);
+        recyclerView.setAdapter(adapterRopa);
 
 
     }
