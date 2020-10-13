@@ -1,13 +1,11 @@
 package com.example.kaliopeclientespedidos.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,7 +62,7 @@ class MenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         switch (viewType){
             case 0:
                 //si la vista se trata de un item tipo producto entonces mostraremos esa vista
-                return new ProductoViewHolder(
+                return new ProductooViewHolder(
                         LayoutInflater.from(parent.getContext()).inflate(
                                 R.layout.item_container_producto,
                                 parent,
@@ -107,7 +105,7 @@ class MenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
             default:
                 //si se trata de una vista de tipo categorias todas
-                return new TodasCategoriasViewHolder(
+                return new TodasssCategoriasViewHolder(
                         LayoutInflater.from(parent.getContext()).inflate(
                                 R.layout.item_container_todascategorias,
                                 parent,
@@ -137,7 +135,7 @@ class MenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
         if(getItemViewType(position) == 0){
             //creamos un contenedor del objeto al que equivale la vista
             Producto producto = (Producto) items.get(position).getObject();
-            ((ProductoViewHolder) holder).setData(producto);
+            ((ProductooViewHolder) holder).setData(producto);
         }else if(getItemViewType(position) ==1){
             Categorias categorias = (Categorias) items.get(position).getObject();
             ((CategoriasViewHolde) holder).categoriasSetData(categorias);
@@ -146,7 +144,7 @@ class MenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             ((AdsViewHolder) holder).adsSetData(anuncio);
         }else{
             TodasCategorias todasCategorias = (TodasCategorias) items.get(position).getObject();
-            ((TodasCategoriasViewHolder) holder).todasCategoriasSetData(todasCategorias);
+            ((TodasssCategoriasViewHolder) holder).todasCategoriasSetData(todasCategorias);
         }
 
 
@@ -171,12 +169,12 @@ class MenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     //TODO ESTO LO HICIMOS PRIMERO HACIA ABAJO
 
 
-    static class ProductoViewHolder extends RecyclerView.ViewHolder{
+    static class ProductooViewHolder extends RecyclerView.ViewHolder{
 
         private ImageView imageProducto;
         private TextView  nombre, precio, existencias;
 
-        public ProductoViewHolder(@NonNull View itemView) {
+        public ProductooViewHolder(@NonNull View itemView) {
             super(itemView);
             imageProducto =(ImageView) itemView.findViewById(R.id.item_container_producto_image);
             nombre = (TextView) itemView.findViewById(R.id.item_container_producto_textNombre);
@@ -301,14 +299,14 @@ class MenuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     }
 
 
-    static class TodasCategoriasViewHolder extends  RecyclerView.ViewHolder{
+    static class TodasssCategoriasViewHolder extends  RecyclerView.ViewHolder{
 
         TextView title;
         ListView listView;
         ArrayList<HashMap> arrayListCategorias;
 
 
-        public TodasCategoriasViewHolder(@NonNull View itemView) {
+        public TodasssCategoriasViewHolder(@NonNull View itemView) {
             super(itemView);
 
             title = (TextView) itemView.findViewById(R.id.item_container_todascategorias_textTitle);

@@ -67,10 +67,12 @@ public class MainActivityRecycler extends AppCompatActivity {
 
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerId);
-        //recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
-        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        //recyclerView.setLayoutManager(new GridLayoutManager(this,2));
 
         consultarImagenPrincipal();
+
+
 
 
 
