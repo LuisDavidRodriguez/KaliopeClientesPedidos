@@ -1,6 +1,7 @@
 package com.example.kaliopeclientespedidos;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,11 +10,9 @@ import android.os.Bundle;
 import android.transition.Slide;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterViewFlipper;
-import android.widget.GridView;
+import android.widget.LinearLayout;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -29,8 +28,15 @@ import cz.msebera.android.httpclient.Header;
 public class MainActivityRecycler extends AppCompatActivity {
 
     RecyclerView recyclerView;
+    RecyclerView recyclerViewPublicidad1;       //una instancia para el recicler view que contendra las imagenes
+
     ArrayList<HashMap> listaProductos;
     HashMap map;
+
+    ArrayList<HashMap> listaPublicidad;
+    HashMap mapPublicidad;
+
+
 
     JSONArray categorias;
     JSONArray imagenDeInicio;
@@ -62,12 +68,22 @@ public class MainActivityRecycler extends AppCompatActivity {
         getWindow().setEnterTransition(slide);
         getWindow().setAllowEnterTransitionOverlap(true);
 
+
+
+
         recyclerView = (RecyclerView) findViewById(R.id.recyclerId);
-        //recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
-        recyclerView.setLayoutManager(new GridLayoutManager(this,1));
-        llenarProductos();
+        //recyclerViewPublicidad1 = (RecyclerView) findViewById(R.id.recycler_publicidadMain);   //tuvimos que crear un layout que contenga solo otro recicler para meter ese recycler dentro del recycler primario, no lo se parese que si es asi, tengo que tener un archivo layout con el recycler o crearlo programaticamente, y ademas un item que sera el que se infle en cada item del recycler
+        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        //recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+        //recyclerViewPublicidad1.setLayoutManager(new GridLayoutManager(this, 2));
+
+        consultarImagenPrincipal();
 
 
+
+
+
+/**
         adapterViewFlipperPublicidad = (AdapterViewFlipper) findViewById(R.id.main_AVF_publicidad);
         int[]imagenes = {R.drawable.cortador1, R.drawable.cortador2};
 
@@ -76,6 +92,7 @@ public class MainActivityRecycler extends AppCompatActivity {
         adapterViewFlipperPublicidad.setFlipInterval(4000);
         adapterViewFlipperPublicidad.setAutoStart(true);
 
+**/
 
 
     }
@@ -108,14 +125,35 @@ public class MainActivityRecycler extends AppCompatActivity {
         }
 
 
+        listaPublicidad = new ArrayList<>();
+        mapPublicidad = new HashMap();
+        mapPublicidad.put(AdapterPublicidadRecycler.ADAPTER_IMAGE_ID,R.drawable.cortador1);
+        listaPublicidad.add(mapPublicidad);
+        mapPublicidad = new HashMap();
+        mapPublicidad.put(AdapterPublicidadRecycler.ADAPTER_IMAGE_ID,R.drawable.cortador2);
+        listaPublicidad.add(mapPublicidad);
+
+
 
         AdapterRopa adapterRopa = new AdapterRopa(listaProductos,this);
-        recyclerView.setAdapter(adapterRopa);
+        AdapterPublicidadRecycler adapterPublicidadRecycler = new AdapterPublicidadRecycler(listaPublicidad,this);
+
+
+
+
+        //recyclerViewPublicidad1.setAdapter(adapterPublicidadRecycler);
+        //recyclerView.setAdapter(adapterRopa);
+
+        //prueba con merge adapter
+
+        ConcatAdapter concatAdapter = new ConcatAdapter(adapterPublicidadRecycler,adapterRopa);
+        recyclerView.setAdapter(concatAdapter);
+
 
     }
 
 
-    private void llenarProductos(){
+    private void consultarImagenPrincipal(){
 
 
         KaliopeServerClient.get(URL_CATEGORIAS,null,new JsonHttpResponseHandler(){

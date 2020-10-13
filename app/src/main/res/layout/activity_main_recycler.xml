@@ -13,7 +13,7 @@
 
 
 
-
+<!--
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -27,9 +27,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 >
-                <!-- add views here-->
 
             </AdapterViewFlipper>
+
+            -->
+
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerId"
@@ -37,7 +39,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:foregroundGravity="center"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 />
+
 
 
 
