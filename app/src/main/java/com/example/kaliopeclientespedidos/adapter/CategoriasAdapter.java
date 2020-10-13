@@ -17,7 +17,7 @@ import com.example.kaliopeclientespedidos.models.Categorias;
 
 import java.util.List;
 
-class CategoriasAdapter extends RecyclerView.Adapter<CategoriasAdapter.ViewHolderCategorias> {
+public class CategoriasAdapter extends RecyclerView.Adapter<CategoriasAdapter.ViewHolderCategorias> {
 
     private List<Categorias> list;
 
@@ -116,7 +116,7 @@ class CategoriasAdapter extends RecyclerView.Adapter<CategoriasAdapter.ViewHolde
                         .into(imagen3);
 
                 Glide.with(itemView)
-                        .load(categorias.getUrl_image3())
+                        .load(categorias.getUrl_image4())
                         .into(imagen4);
 
 

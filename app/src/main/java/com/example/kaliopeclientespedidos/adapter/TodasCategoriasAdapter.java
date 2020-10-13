@@ -3,6 +3,7 @@ package com.example.kaliopeclientespedidos.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -16,12 +17,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-class TodasCategoriasAdapter extends RecyclerView.Adapter<TodasCategoriasAdapter.ViewHolderTodas> {
+public class TodasCategoriasAdapter extends RecyclerView.Adapter<TodasCategoriasAdapter.ViewHolderTodas> {
 
-    List<TodasCategorias> list;
+    ArrayList<String> arrayListCategorias;
 
-    public TodasCategoriasAdapter(List<TodasCategorias> list) {
-        this.list = list;
+    public TodasCategoriasAdapter(ArrayList<String> arrayListCategorias) {
+        this.arrayListCategorias = arrayListCategorias;
     }
 
     @NonNull
@@ -38,18 +39,17 @@ class TodasCategoriasAdapter extends RecyclerView.Adapter<TodasCategoriasAdapter
 
     @Override
     public void onBindViewHolder(@NonNull TodasCategoriasAdapter.ViewHolderTodas holder, int position) {
-
+        holder.setData();
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return arrayListCategorias.size();
     }
 
     public class ViewHolderTodas extends RecyclerView.ViewHolder {
         TextView title;
         ListView listView;
-        ArrayList<HashMap> arrayListCategorias;
 
 
         public ViewHolderTodas(@NonNull View itemView) {
@@ -57,6 +57,17 @@ class TodasCategoriasAdapter extends RecyclerView.Adapter<TodasCategoriasAdapter
 
             title = (TextView) itemView.findViewById(R.id.item_container_todascategorias_textTitle);
             listView = (ListView) itemView.findViewById(R.id.item_container_todascategorias_list);
+
+
+        }
+
+        void setData(){
+
+            title.setText("Todas las categorias");
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(itemView.getContext(),android.R.layout.simple_list_item_1,arrayListCategorias);
+            listView.setAdapter(adapter);
+
         }
     }
 }

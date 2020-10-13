@@ -7,7 +7,7 @@ public class Producto {
     private String existencias;
     private String url_image;
 
-    public Producto(String nombre, String producto, String url_image, String precio, String existencias) {
+    public Producto(String nombre, String url_image, String precio, String existencias) {
         this.nombre = nombre;
         this.producto = producto;
         this.precio = precio;
@@ -20,14 +20,11 @@ public class Producto {
         return nombre;
     }
 
-    public String getProducto() {
-        return producto;
-    }
     public String getPrecio() {
-        return url_image;
+        return precio;
     }
     public String getExistencias() {
-        return url_image;
+        return existencias;
     }
 
     public String getUrl_image() {

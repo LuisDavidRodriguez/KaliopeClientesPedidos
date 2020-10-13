@@ -7,9 +7,9 @@ import java.util.HashMap;
 
 public class TodasCategorias {
     private String title;
-    private ArrayList <HashMap> arrayListCategorias;
+    private ArrayList <String> arrayListCategorias;
 
-    public TodasCategorias(String title, ArrayList<HashMap> arrayListCategorias) {
+    public TodasCategorias(String title, ArrayList<String> arrayListCategorias) {
         this.title = title;
         this.arrayListCategorias = arrayListCategorias;
     }
@@ -18,7 +18,7 @@ public class TodasCategorias {
         return title;
     }
 
-    public ArrayList<HashMap> getArrayListCategorias() {
+    public ArrayList<String> getArrayListCategorias() {
         return arrayListCategorias;
     }
 }
