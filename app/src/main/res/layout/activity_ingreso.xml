@@ -9,6 +9,10 @@
     android:padding="5dp"
     >
 
+
+
+
+
     <TextView
         android:layout_width="100dp"
         android:layout_height="wrap_content"
@@ -18,7 +22,7 @@
         android:textColor="@color/colorBlack"
         android:textSize="14sp"
         />
-    
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="120dp"
@@ -139,7 +143,7 @@
         android:layout_marginTop="60sp"
         android:textSize="14sp"
         />
-    
+
     <Button
         android:id="@+id/ingreso_boton_invitado"
         android:text="Continuar como invitado"
@@ -165,11 +169,6 @@
         />
 
         <!--app:lottie_rawRes="@raw/animacion1"-->
-
-
-
-
-
 
 
 

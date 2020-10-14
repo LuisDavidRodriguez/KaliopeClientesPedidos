@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="5dp"
-    android:layout_margin="8dp"
+    android:layout_margin="15dp"
     app:cardElevation="4dp"
     >
 
@@ -19,9 +19,10 @@
 
         <ImageView
             android:id="@+id/item_container_producto_image"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="wrap_content"
+            android:layout_height="225dp"
             android:src="@drawable/ic_launcher_background"
+            android:scaleType="centerInside"
             />
 
         <TextView

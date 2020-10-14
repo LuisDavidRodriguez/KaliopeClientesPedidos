@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+<integer name="number_of_columns">3</integer>   <!--Cuando el dispositivo se coloque en Land-->
+
+</resources>
