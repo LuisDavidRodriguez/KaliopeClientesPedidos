@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <integer name="number_of_columns">5</integer>  <!--Para dispositivos con ancho minimo de pantalla de 720 o tablets de 10 pulgadas-->
+    <integer name="number_of_columns">4</integer>  <!--Para dispositivos con ancho minimo de pantalla de 720 o tablets de 10 pulgadas-->
 
 
 </resources>

@@ -131,17 +131,36 @@ public class MainActivityRecycler extends AppCompatActivity implements ProductoA
 
                 Producto aux = listProducto.get(position);
 
-                      return (position % 7 == 0 ? 2 : 1);
-/*
+                /*
+                Aqui
+                el primer numero reprecenta cada cuantos items quieres que se el siguiente item ocupe 2 espacios
+                es facil si pones siete buscara divisores de 7 y se mostrara cada 7, hasta que Mob sea 0 pondra 2 en los demas
+                usara 1
+
+                pero ahora queremos que dependiendo de los multiplos que puede mostrar la pantalla
+
+                por ejemplo cuando peude mostrar 2 columnas esta bien porque un item ocupara las 2 columnas,
+                pero cuando pueda mostrar 3 llega un punto
+
+                espera dejare esto pendiente despues le damos solucion
+
+                 */
+
+
+
+
                 if(aux.getType()==0){
                     //Si es 0 es que es un producto
-                    return 1;
+                    return (position % 7 == 0 ? 2 : 1);
                 }else{
-                    //si es uno es que es un cortador
-                    return 2;
+                    //si es uno es que es un cortador le retornamos el numerod e columnas que puede mostrar un dispositivo
+                    //asi si por ejemplo el dispositivo solo peude mostrar 2 columnas el cortador o la imagen usara toda la pantalla o 2 columnas
+                    //pero si volteas el dispositivo horizontalmente y ahi puede mostrar 3 columnas entonces queremos que el cortados o publicidad use
+                    //3 columnas o toda la pantalla
+                    return spans;
                 }
 
- */
+
 
             }
         });

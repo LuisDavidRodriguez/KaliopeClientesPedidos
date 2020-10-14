@@ -1,67 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Ingreso"
-    android:orientation="vertical"
     android:padding="5dp"
-    >
-
-
-
+    tools:context=".Ingreso">
 
 
     <TextView
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
         android:id="@+id/ingreso_TextViewEstadoConexion"
-        android:textAlignment="center"
-        android:text="intentando"
-        android:textColor="@color/colorBlack"
-        android:textSize="14sp"
-        />
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:src="@drawable/logo_kaliope"
-        android:layout_gravity="center"
-        />
-
-    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/Instrucciones_ingresa_socio"
-        android:textSize="18sp"
+        android:text="intentando"
+        android:textAlignment="center"
         android:textColor="@color/colorBlack"
-        android:gravity="center"
-        android:layout_marginTop="40dp"
-        />
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_conversion_absoluteHeight="19dp"
+        tools:layout_conversion_absoluteWidth="100dp" />
+
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="Logo"
+        android:src="@drawable/logo_kaliope"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ingreso_TextViewEstadoConexion"
+        app:layout_constraintVertical_bias="0.47000003"
+        tools:layout_conversion_absoluteHeight="120dp"
+        tools:layout_conversion_absoluteWidth="350dp" />
 
     <LinearLayout
-        android:layout_width="350dp"
+        android:id="@+id/linearLayout3"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:background="@drawable/cuadro_redondeado"
+        android:gravity="center"
         android:orientation="vertical"
-        android:padding="20dp"
-        android:layout_gravity="center"
-        >
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.52"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.499">
+
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_margin="10dp"
+            android:text="@string/Instrucciones_ingresa_socio"
+            android:textColor="@color/colorBlack"
+            android:textSize="18sp" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            >
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:text="@string/Usuario"
-                android:textSize="20sp"
                 android:textColor="@color/colorBlack"
-                />
+                android:textSize="20sp"
 
+                />
 
             <EditText
                 android:id="@+id/ingreso_editText_usuario"
@@ -69,28 +90,29 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textCapCharacters"
+                android:autofillHints="username"
+                android:hint="@string/Usuario"
                 />
-
-
-
 
 
         </LinearLayout>
 
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            >
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
+
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:text="@string/Contraseña"
-                android:textSize="20sp"
                 android:textColor="@color/colorBlack"
-
-                />
+                android:textSize="20sp" />
 
             <EditText
                 android:id="@+id/ingreso_editText_password"
@@ -98,82 +120,97 @@
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPassword"
+                android:autofillHints="password"
+                android:hint="@string/Contraseña"
                 />
 
 
         </LinearLayout>
 
 
-
-        <CheckBox
-            android:id="@+id/ingreso_checkBox_mantenerSesion"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/MantenerSesion"
-            android:layout_marginTop="10dp" />
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/ingreso_boton_ingreso"
-            android:text="@string/Ingresa"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/boton_redondo"
-            android:padding="5dp"
-            android:textSize="14sp"
-            />
+            <CheckBox
+                android:id="@+id/ingreso_checkBox_mantenerSesion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/MantenerSesion" />
+
+            <Button
+                android:id="@+id/ingreso_boton_ingreso"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/boton_redondo"
+                android:padding="5dp"
+                android:text="@string/Ingresa"
+                android:textSize="14sp" />
 
 
+        </LinearLayout>
 
 
     </LinearLayout>
 
 
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="15dp"
-        android:gravity="center"
-        android:text="@string/Instrucciones_como_invitado2"
-        android:layout_gravity="center"
-        android:textColor="@color/colorBlack"
-        android:layout_marginTop="60sp"
-        android:textSize="14sp"
-        />
-
     <Button
         android:id="@+id/ingreso_boton_invitado"
-        android:text="Continuar como invitado"
-        android:textSize="14sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_marginTop="8dp"
         android:background="@drawable/boton_redondo"
         android:padding="5dp"
-        />
+        android:text="Continuar como invitado"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView7"
+        tools:layout_conversion_absoluteHeight="48dp"
+        tools:layout_conversion_absoluteWidth="199dp" />
 
-
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:padding="15dp"
+        android:text="@string/Instrucciones_como_invitado2"
+        android:textColor="@color/colorBlack"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/ingreso_boton_invitado"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
+        tools:layout_conversion_absoluteHeight="49dp"
+        tools:layout_conversion_absoluteWidth="350dp" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/animation_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:lottie_imageAssetsFolder="assets"
-        app:lottie_fileName="animacion1.json"
-        app:lottie_loop="true"
+        android:layout_width="26dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="104dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ingreso_boton_invitado"
         app:lottie_autoPlay="true"
+        app:lottie_fileName="animacion1.json"
+        app:lottie_imageAssetsFolder="assets"
+        app:lottie_loop="true"
         app:lottie_scale="4"
-        />
-
-        <!--app:lottie_rawRes="@raw/animacion1"-->
-
+        tools:layout_conversion_absoluteHeight="0dp"
+        tools:layout_conversion_absoluteWidth="0dp" />
 
 
+    <!--app:lottie_rawRes="@raw/animacion1"-->
 
 
-
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

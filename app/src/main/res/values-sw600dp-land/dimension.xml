@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <integer name="number_of_columns">4</integer>  <!--Para dispositivos con ancho minimo de pantalla de 600dp o de tablet de 7 pulgadas en posicion LAND-->
+
+</resources>

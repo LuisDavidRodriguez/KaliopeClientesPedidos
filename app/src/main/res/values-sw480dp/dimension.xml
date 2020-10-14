@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="number_of_columns">3</integer>  <!--Para dispositivos con ancho minimo de pantalla de 480dp o de 5 pulgadas-->
+
+    <!--La etiqueta en el nombre de archivo sw significa el lado de menor tamaño debe tener al menos tantos dp para mostrar esta vista-->
+    <integer name="number_of_columns">2</integer>  <!--Para dispositivos con ancho minimo de pantalla de 480dp o de 5 pulgadas-->
     
 </resources>
