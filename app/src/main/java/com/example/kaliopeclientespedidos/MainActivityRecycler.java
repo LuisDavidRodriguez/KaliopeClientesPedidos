@@ -4,12 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.transition.Slide;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.AdapterView;
 import android.widget.AdapterViewFlipper;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.kaliopeclientespedidos.adapter.ProductoAdapter;
@@ -81,16 +87,50 @@ public class MainActivityRecycler extends AppCompatActivity implements ProductoA
 
 
 
-/**
+
         adapterViewFlipperPublicidad = (AdapterViewFlipper) findViewById(R.id.main_AVF_publicidad);
         int[]imagenes = {R.drawable.cortador1, R.drawable.cortador2};
 
-        adapterPublicidad = new AdapterPublicidad(this,imagenes);
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                adapterViewFlipperPublicidad.showNext();
+
+            }
+        };
+
+        View.OnTouchListener onTouchListener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+
+
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    adapterViewFlipperPublicidad.stopFlipping();    //si se toca la imagen dejamos de mover la imagen para que la puedan leer
+                    return true;
+                }else if (event.getAction()==MotionEvent.ACTION_UP){
+                    adapterViewFlipperPublicidad.startFlipping();
+                    adapterViewFlipperPublicidad.showNext();            //al implementar esto el onClick normal dejo de funcionar entonces cuando se levante el dedo de la imagen cambia a la siguiete
+
+                    return false;
+                }else if (event.getAction() == MotionEvent.ACTION_CANCEL){      //si se mueve el dedo fuera de la imagen volvemos a iniciar el recorrido
+                    adapterViewFlipperPublicidad.startFlipping();
+                    return false;
+                }
+
+                return false;
+            }
+        };
+
+        adapterPublicidad = new AdapterPublicidad(this, imagenes, onClickListener, onTouchListener);
         adapterViewFlipperPublicidad.setAdapter(adapterPublicidad);
-        adapterViewFlipperPublicidad.setFlipInterval(4000);
+        adapterViewFlipperPublicidad.setFlipInterval(5000);
         adapterViewFlipperPublicidad.setAutoStart(true);
 
-**/
+
+
+
+
 
 
     }
@@ -111,8 +151,7 @@ public class MainActivityRecycler extends AppCompatActivity implements ProductoA
                         imagenDeInicio.getJSONObject(i).getString("descripcion"),
                         URL_Imagen,
                         imagenDeInicio.getJSONObject(i).getString("precio_etiqueta"),
-                        imagenDeInicio.getJSONObject(i).getString("existencia"),
-                        1,
+                        0,
                         imagenDeInicio.getJSONObject(i).getString("id_producto"));
 
                 listProducto.add(producto);
@@ -123,6 +162,10 @@ public class MainActivityRecycler extends AppCompatActivity implements ProductoA
             }
         }
 
+
+
+
+        //configuramos nuestro layoutmanager la manera en que queremos que se vea el recycler view
         final int spans = getResources().getInteger(R.integer.number_of_columns);       //dependiendo de la pantalla del dispositivo mostraremos mas o menos columnas
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this,spans,GridLayoutManager.VERTICAL,false);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -146,9 +189,6 @@ public class MainActivityRecycler extends AppCompatActivity implements ProductoA
 
                  */
 
-
-
-
                 if(aux.getType()==0){
                     //Si es 0 es que es un producto
                     return (position % 7 == 0 ? 2 : 1);
@@ -160,20 +200,18 @@ public class MainActivityRecycler extends AppCompatActivity implements ProductoA
                     return spans;
                 }
 
-
-
             }
         });
 
+
+
+
+
+
+
+
         recyclerView.setLayoutManager(gridLayoutManager);
-
-
-
-
         ProductoAdapter productoAdapter = new ProductoAdapter(listProducto,this);
-
-
-
         recyclerView.setAdapter(productoAdapter);
 
 
@@ -315,7 +353,17 @@ public class MainActivityRecycler extends AppCompatActivity implements ProductoA
     @Override
     public void onProductClick(int position) {
         Producto producto = listProducto.get(position);
-        Toast.makeText(this,"Hola click en: " + position +" "+ producto.getNombre(),Toast.LENGTH_SHORT).show();
+
+        //vamos a animar el item cuando se haga clic en el
+        RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position);
+        LinearLayout linearLayout = viewHolder.itemView.findViewById(R.id.item_container_producto_LinearLayout);
+        linearLayout.animate().scaleY(1.2f).scaleX(1.2f).setDuration(100).setInterpolator(new AccelerateInterpolator()).start();
+        linearLayout.animate().scaleY(1).scaleX(1).setDuration(100).setInterpolator(new AccelerateInterpolator()).start();
+
+
+        Intent intent = new Intent(this, DetallesActivity.class);
+        intent.putExtra("ID_PRODUCTO", producto.getId());
+        startActivity(intent);
     }
 
 

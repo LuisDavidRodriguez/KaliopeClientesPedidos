@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:id="@+id/item_imagen_ropa_detalles_LinearLayoutParent"
+    android:scaleX="0.75"
+    android:scaleY="0.75"
+    >
+    <!--Ponemos una scala inicial de .75 porque la agrandaremos cuando se muestre el item con la animacion en java-->
+
+
+    <ImageView
+        android:id="@+id/item_imagen_ropa_detalles_IV_imagen"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:srcCompat="@tools:sample/avatars"
+        />
+
+</LinearLayout>

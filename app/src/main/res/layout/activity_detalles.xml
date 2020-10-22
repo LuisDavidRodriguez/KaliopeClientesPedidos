@@ -1,9 +1,223 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DetallesActivity">
+    tools:context=".DetallesActivity"
+    >
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+
+        <TextView
+            android:id="@+id/detalles_nombreProducto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Sudadera de Hombre"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:textSize="20sp"
+            android:textColor="@color/colorBlack"
+            />
+
+
+
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/detalles_nombreProducto"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="2dp"
+            >
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/detalles_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                />
+            <!--ClipToPadding Permitimos que se dibujen los hijos lo items del recicler en el costado cuando especificamos un padding en el java o aqui en el xml, es decir como sabe3mos el padding sirve para mostrar una linea de separacion donde al entrer el item desaparece, asi es como ocurre en este cas, pero al desabilitar y poner clipTopadding false, le estamos permitiendo que en el padding se puedan dibujar los otros clips o item, por lo tanto se ve el efecto de mostrar en lugar de un solo item y los demas fuera de la pantalla, se ven los demas items a un ladito y cuando cambias o haces scroll igual se ve el clip o objeto saliendo por el padding y entrando el otro, en este ejemplo el padding lo pusimos en el java pero podriamos ponerlo aqui tambien-->
+            <!--COverScroollMode desabilitamos la animacion cuando continuas haciendo scroll aunque ya se aya acabado la lista-->
+
+            <TextView
+                android:id="@+id/detalles_textViewNumero"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:background="@drawable/background_redondo_gris"
+                android:paddingStart="8dp"
+                android:paddingTop="2dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="2dp"
+                android:text="1 / 3"
+                android:textSize="16sp" />
+
+
+        </FrameLayout>
+
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:layout_below="@id/frameLayout"
+            android:layout_centerHorizontal="true"
+            >
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="25sp"
+                    android:textStyle="italic" />
+
+                <TextView
+                    android:id="@+id/detalles_TV_precio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="139"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="25sp"
+                    android:textStyle="italic" />
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/detalles_TV_instruccionesFechaEntrega"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Si ordenas ates del 30-Oct tu pedido llegara el: 4-Nov"
+                android:textColor="@color/colorBlack"
+                android:textSize="18sp"
+                android:textStyle="italic"
+                />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorAccent"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/color"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="20sp" />
+
+                <Spinner
+                    android:id="@+id/detalles_spinner_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/talla"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="20sp" />
+
+                <Spinner
+                    android:id="@+id/detalles_spinner_talla"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cantidad"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="20sp" />
+
+                <Spinner
+                    android:id="@+id/detalles_spinner_cantidad"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+
+
+
+        </LinearLayout>
+
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorAccent"
+            android:layout_below="@+id/linearLayout2"
+            />
+
+
+        <TextView
+            android:id="@+id/detalles_tv_descripcion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="500dp"
+            android:text="descripcion:"
+            android:layout_below="@+id/linearLayout2"
+            android:textColor="@color/colorBlack"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:padding="5dp"
+
+            />
+
+
+    </RelativeLayout>
+
+
+
+
+
+
+
+</androidx.core.widget.NestedScrollView>

@@ -16,4 +16,7 @@
     <string name="Instrucciones_ingresa_socio">Si ya estas registrado en Kaliope como Socio, ingresa tus datos para iniciar sesion:</string>
     <string name="Instrucciones_como_invitado2">si no tienes cuenta puedes ingresar como invitado:</string>
     <string name="MantenerSesion">Mantener sesion iniciada</string>
+    <string name="color">Color:</string>
+    <string name="talla">Talla:</string>
+    <string name="cantidad">Cantidad:</string>
 </resources>

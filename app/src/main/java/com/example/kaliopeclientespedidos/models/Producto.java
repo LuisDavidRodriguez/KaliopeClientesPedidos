@@ -8,11 +8,10 @@ public class Producto {
     private String url_image;
     private int type;
 
-    public Producto(String nombre, String url_image, String precio, String existencias, int type, String id) {
+    public Producto(String nombre, String url_image, String precio, int type, String id) {
         this.nombre = nombre;
         this.id = id;
         this.precio = precio;
-        this.existencias = existencias;
         this.url_image = url_image;
         this.type=type;
     }

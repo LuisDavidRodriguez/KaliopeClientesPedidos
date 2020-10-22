@@ -54,7 +54,6 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
 
         holder.nombre.setText(producto.getNombre());
         holder.precio.setText(producto.getPrecio());
-        holder.existencias.setText(producto.getExistencias());
 
         Glide.with(holder.itemView)
                 .load(url_image_producto)
@@ -72,7 +71,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
 
     public class ViewHolderProducto extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView imageProducto;
-        private TextView nombre, precio, existencias;
+        private TextView nombre, precio;
 
         //====5=====
         OnProductListener onProductListener;
@@ -85,7 +84,10 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
             imageProducto =(ImageView) itemView.findViewById(R.id.item_container_producto_image);
             nombre = (TextView) itemView.findViewById(R.id.item_container_producto_textNombre);
             precio = (TextView) itemView.findViewById(R.id.item_container_producto_price);
-            existencias = (TextView) itemView.findViewById(R.id.item_container_producto_existencias);
+
+
+
+
 
             //=====7====
             this.onProductListener = onProductListener;

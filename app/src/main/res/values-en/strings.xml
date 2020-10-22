@@ -8,4 +8,7 @@
     <string name="Volver">Go Back</string>
     <string name="Usuario">User:</string>
     <string name="Contraseña">Password:</string>
+    <string name="color">Color:</string>
+    <string name="talla">Size:</string>
+    <string name="cantidad">Quantity:</string>
 </resources>
