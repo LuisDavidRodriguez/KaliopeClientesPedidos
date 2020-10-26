@@ -195,21 +195,12 @@
             android:background="@color/colorAccent"
             android:layout_below="@+id/linearLayout2"
             />
+        
+        
 
 
-        <TextView
-            android:id="@+id/detalles_tv_descripcion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="500dp"
-            android:text="descripcion:"
-            android:layout_below="@+id/linearLayout2"
-            android:textColor="@color/colorBlack"
-            android:textSize="18sp"
-            android:gravity="center"
-            android:padding="5dp"
 
-            />
+
 
 
     </RelativeLayout>

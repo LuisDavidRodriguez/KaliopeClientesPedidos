@@ -145,14 +145,13 @@ public class DetallesActivity extends AppCompatActivity {
 
         String nombrePro = null;
         String precio = null;
+
         try {
             nombrePro = productoInicial.getString("descripcion");
             precio = productoInicial.getString("precio_etiqueta");
 
             nombreProductoTV.setText(nombrePro);
             precioTV.setText(precio);
-
-
 
         } catch (JSONException e) {
             e.printStackTrace();

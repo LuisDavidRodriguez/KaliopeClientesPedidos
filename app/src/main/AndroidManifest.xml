@@ -11,18 +11,27 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivityRecycler"></activity>
-        <activity android:name=".Presentacion">
+        <activity
+            android:name=".MainFragmentActivity"
+            android:label="@string/title_activity_main_fragment"
+            android:theme="@style/AppTheme.NoActionBar"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+
+        </activity>
+        <activity android:name=".MainActivityRecycler" />
+        <activity android:name=".Presentacion">
+
         </activity>
         <activity
             android:name=".Ingreso"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity android:name=".DetallesActivity" />
 
         <service android:name=".ConexionService" />
