@@ -6,15 +6,54 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:dropDownListViewStyle">@style/spinnerStyle</item>
     </style>
+
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <!--Al colocar este atributo de windowTranslucentStatus hacemos que el navigationdrawer se vuelva translusido y quede por debajo de la barra de informacion de android
+        no olvidarse de poner el atributo fits-->
     </style>
+
+
+
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+
+    <!--Añadimos un estilo de fuente para usarlo en nuestra toolbar como personalizado-->
+    <style name="Toolbar.TitleText" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textSize">25sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="fontFamily">@font/atma</item>
+        <!--Para añadir un font puedes ir a cualquier edit text de un layou y en la parte de diseño en los atributos ay uno que dice font famyli
+        y seabre un auxiliar donde te muestra muchas fuentes de google, es en el area de diseño eee no en el xml
+        sino en el auxiliar de diseño que tiene android studio donde se agregan los atributos haciendo clics en los varias opciones-->
+
+
+    </style>
+
+
+
+
+    <!--Le creo unas diviciones a los spiner y se asigna en el appTheme-->
+    <style name="spinnerStyle" parent="Widget.AppCompat.ListView.DropDown">
+        <item name="android:divider">@color/colorAccent</item>
+        <item name="android:dividerHeight">0.5dp</item>
+    </style>
+
+
+
+
+
+
+
+
 
 </resources>

@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
     <item android:title="Principal">
 
     <menu>
+
+        <group android:checkableBehavior="single">
         <item
             android:id="@+id/home"
             android:icon="@drawable/ic_home"
             android:title="home"
             >
+            <!--Cheked Inicia seleccionado el item de home-->
         </item>
 
 
@@ -19,6 +24,8 @@
 
         </item>
 
+        </group>
+
     </menu>
 
 </item>
@@ -28,6 +35,8 @@
     <item android:title="Secundario">
 
         <menu>
+
+            <group android:checkableBehavior="single">
             <item
                 android:id="@+id/home2"
                 android:icon="@drawable/ic_home"
@@ -42,6 +51,7 @@
                 android:title="personas">
 
             </item>
+            </group>
 
         </menu>
 

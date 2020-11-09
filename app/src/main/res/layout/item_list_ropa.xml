@@ -32,16 +32,14 @@
             />
 
 
-
-            <TextView
-                android:id="@+id/itemList_Tv_nombre"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sudadera mujer"
-                android:textColor="@color/colorBlack"
-                android:layout_gravity="left"
-                android:textSize="15sp"
-                />
+        <TextView
+            android:id="@+id/itemList_Tv_nombre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:text="Sudadera mujer"
+            android:textColor="@color/colorBlack"
+            android:textSize="15sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"

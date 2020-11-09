@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:theme="@style/AppTheme.AppBarOverlay"
+    >
+
+
+
+
+
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolBarLuisda"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:menu="@menu/action_bar_menu"
+            android:elevation="12dp"
+            >
+                <!--Hasta arriba es lo basico aqui abajo quiero probar el seguir personalizando mi barra
+                el video que lo saque https://www.youtube.com/watch?v=fp1ds4-Qn2E
+                -->
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/logo_kaliope_burbuja"
+                    android:layout_marginRight="10dp"
+                    />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/toolbarLuisda_tituloPersonalizado"
+                            style="@style/Toolbar.TitleText"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/toolbarLuisda_SubtituloPersonalizado"
+                            />
+
+
+                <!--Wuajjajajajaja puedo poner mas cosas en este linear layout xD
+                si no pones el linear layout el toolbar los pone como si fuera horizontal layout
+                al poner los hitems verticales obiamente debes aumentar la altura-->
+                </LinearLayout>
+
+
+
+
+
+        </androidx.appcompat.widget.Toolbar>
+
+
+
+</com.google.android.material.appbar.AppBarLayout>

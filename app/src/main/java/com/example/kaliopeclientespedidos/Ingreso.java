@@ -66,6 +66,7 @@ public class Ingreso extends AppCompatActivity {
     ProgressDialog progressDialog;
 
 
+
     boolean continuarHiloHacerPing = true;
 
     //public static final String URL_PING = "PhpProject_clientes_pedidos/ping_servidor.php";
@@ -103,7 +104,7 @@ public class Ingreso extends AppCompatActivity {
                     dialogoAvisoInvitado();
                 }else{
                     Log.i("Ingreso.Dialogo","Entramos sin mostrar dialogo de informacion invitado");
-                    ConfiguracionesApp.setEntradaComoInvitado(activity,true);
+                    //ConfiguracionesApp.setEntradaComoInvitado(activity,true);
                     nextActivity();
                 }
             }
@@ -147,7 +148,7 @@ public class Ingreso extends AppCompatActivity {
         getWindow().setExitTransition(transition);
         getWindow().setReenterTransition(transition);
 
-        Intent intent = new Intent(this, MainActivityRecycler.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle());
     }
 
@@ -207,7 +208,7 @@ public class Ingreso extends AppCompatActivity {
         buttonContinuar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ConfiguracionesApp.setEntradaComoInvitado(activity,true);
+                //ConfiguracionesApp.setEntradaComoInvitado(activity,true);
 
                 if(checkBoxNoMostrarOtraVez.isChecked()){
                     //si el usuario marco el mensaje como no volver a mostrar
@@ -324,21 +325,29 @@ public class Ingreso extends AppCompatActivity {
 
                 try {
                     JSONObject informacion = response.getJSONObject("informacion");
+                    JSONObject datosPersonales = response.getJSONObject("datosPersonales");
 
                     Log.d("Informacion",String.valueOf(informacion.getString("id")));
 
+                    String usuario = informacion.getString("usuario");
+                    String nombreCompleto = datosPersonales.getString("nombre");
+                    String numeroCuenta = datosPersonales.getString("no_cuenta");
+
+                    Log.d("DatosInicioSesion", usuario + " " + nombreCompleto + " " + numeroCuenta);
 
 
+                    ConfiguracionesApp.iniciarSesion(activity, nombreCompleto, usuario, numeroCuenta);
 
-                    //llenamos los datos de uso de sesion
-                    //ConfiguracionesApp.setDatosInicioSesion(activity,infoUsuario, clientes);
+                    nextActivity();
+
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
 
-                nextActivity();
+
 
             }
 

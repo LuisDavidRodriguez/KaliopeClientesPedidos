@@ -11,4 +11,6 @@
     <string name="color">Color:</string>
     <string name="talla">Size:</string>
     <string name="cantidad">Quantity:</string>
+    <string name="TituloHome">All products</string>
+    <string name="Cuenta">Account:</string>
 </resources>

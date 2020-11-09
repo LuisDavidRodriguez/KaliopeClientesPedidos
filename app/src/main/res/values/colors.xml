@@ -19,7 +19,7 @@
 
     <color name="colorEtiquetaVisitado">#336600</color>
     <color name="colorEtiquetaVisitar">#0000FF</color>
-    <color name="colorEtiquetaRepaso">#FF00DD</color>
+    <color name="colorEtiquetaRepaso">#F04A00</color>
     <color name="colorEtiquetaNoVisitar">#777777</color>
     <color name="colorBlack">#000000</color>
     <color name="colorGris">#B3B7BA</color>
@@ -30,4 +30,7 @@
     <color name="colorPinkLight">#E8D1E0</color>
     <color name="colorOrange">#FF3600</color>
     <color name="colorOrangeLight">#FEDACC</color>
+    <color name="transparente">#00000000</color>
+    <color name="white">#ffffff</color>
+    <color name="pink_ultra_light">#F4E6EF</color>
 </resources>

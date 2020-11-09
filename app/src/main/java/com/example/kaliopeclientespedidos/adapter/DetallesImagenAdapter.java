@@ -55,6 +55,8 @@ public class DetallesImagenAdapter extends RecyclerView.Adapter<DetallesImagenAd
         return listaUrlImagenes.size();
     }
 
+ 
+
     public class ViewHolderImagen extends RecyclerView.ViewHolder {
 
         ImageView imageView;
