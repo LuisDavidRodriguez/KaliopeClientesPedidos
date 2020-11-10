@@ -69,14 +69,23 @@ public class SpinnerTallasAdapter extends BaseAdapter {
 
         if(activo){
             if(existenciasTemp>0){
-                mensaje = existenciasTemp + "pz disponibles";
+                mensaje = existenciasTemp + " disponibles";
+                tvTalla.setTextColor(tvTalla.getResources().getColor(R.color.colorBlack));
+                tvTalla.setBackgroundResource(R.drawable.cuadro_redondeado);
+                tvExistencias.setTextColor(tvTalla.getResources().getColor(R.color.colorBlack));
             }else{
-                mensaje = existenciasTemp + "Producto Agotado";
+                mensaje = existenciasTemp + "Talla agotada en este color";
+                tvTalla.setTextColor(tvTalla.getResources().getColor(R.color.colorGris));
+                tvTalla.setBackgroundResource(R.drawable.cuadro_redondeado_gris);
+                tvExistencias.setTextColor(tvTalla.getResources().getColor(R.color.colorGris));
             }
 
         }else{
-            mensaje = "no disponible en este color";
-            relativeLayout.setBackgroundResource(R.drawable.cuadro_redondeado_spinner_agotado);
+            mensaje = "Talla agotada en este color";
+            //relativeLayout.setBackgroundResource(R.drawable.cuadro_redondeado_spinner_agotado);
+            tvTalla.setTextColor(tvTalla.getResources().getColor(R.color.colorGris));
+            tvTalla.setBackgroundResource(R.drawable.cuadro_redondeado_gris);
+            tvExistencias.setTextColor(tvTalla.getResources().getColor(R.color.colorGris));
         }
 
         tvTalla.setText(tallaTemp);

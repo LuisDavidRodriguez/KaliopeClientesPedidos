@@ -12,6 +12,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 import com.example.kaliopeclientespedidos.adapter.DetallesImagenAdapter;
 import com.example.kaliopeclientespedidos.adapter.SpinnerColoresAdapter;
 import com.example.kaliopeclientespedidos.adapter.SpinnerTallasAdapter;
+import com.google.android.material.snackbar.Snackbar;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -47,16 +50,12 @@ public class DetallesActivity extends AppCompatActivity {
 
     Spinner spinerColores, spinnerTallas, spinnerCantidad;
     String colorSeleccionado = "";
+    String tallaSeleccionada = "";
 
 
     String id_producto;
 
     JSONObject informacionProductoInicial;
-
-
-
-    JSONArray coloresTotales;
-    JSONArray tallasTotales;
 
 
 
@@ -69,6 +68,8 @@ public class DetallesActivity extends AppCompatActivity {
 
     public final String URL_DETALLES_PRODUCTO = "app_movil/consultar_detalles_producto.php";
     public final String URL_DETALLES_POR_COLOR = "app_movil/consultar_detalles_por_color.php";
+
+    Animation animationSacudida;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +81,9 @@ public class DetallesActivity extends AppCompatActivity {
         recyclerViewDetalles.setLayoutManager(layoutManager);
         snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(recyclerViewDetalles);
+
+        animationSacudida = AnimationUtils.loadAnimation(this,R.anim.sacudida_2); //cargamos la animacion pruebas de animacion de elementos en la pantalla
+
 
 
         Bundle bundle = getIntent().getExtras();
@@ -183,12 +187,58 @@ public class DetallesActivity extends AppCompatActivity {
     private void llenarSpinnerColor() {
         spinerColores = (Spinner) findViewById(R.id.detalles_spinner_color);
 
+        List<HashMap<String, String>> listaColores = new ArrayList<>();
+        JSONArray coloresTotales = new JSONArray();
+        try {
+            coloresTotales = informacionProductoInicial.getJSONArray("colores");                          //aqui contendremos los colores que hay de este modelo con sus tallas existentes
+            Log.d("coloresTotales", String.valueOf(coloresTotales.toString()));
+             /*
+            COLORES TOTALES con informacion de cuantas tallas tiene disponible cada color
+             [{"color":"Gris","noColor":"rgb(142, 142, 142)","imagen1":"fotos\/SM5898-VERDE-1.jpg","existencias":45,"tallas":[{"talla":"UNT","existencias":5},{"talla":"G","existencias":40}]}
+             ,{"color":"Rosa","noColor":"rgb(240, 74, 141)","imagen1":"fotos\/SM5898-ROSA-1.jpg","existencias":55,"tallas":[{"talla":"UNT","existencias":40},{"talla":"M","existencias":15}]}
+            ,{"color":"Negro","noColor":"rgb(13, 13, 13)","imagen1":"fotos\/SM5898-NEGRO-1.jpg","existencias":10,"tallas":[{"talla":"UNT","existencias":10}]}
+            ,{"color":"Azul","noColor":"rgb(135, 182, 205)","imagen1":"fotos\/SM5898-AZUL-1.jpg","existencias":10,"tallas":[{"talla":"G","existencias":10}]}]
+
+            importante las existencias que se muestran aqui son existentes para esa talla y ese color en especifico
+        */
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        for (int i = 0; i < coloresTotales.length(); i++) {
+            HashMap<String, String> map = new HashMap<>();
+
+            try {
+                String colorTemp = coloresTotales.getJSONObject(i).getString("color");
+                String noColorTemp = coloresTotales.getJSONObject(i).getString("noColor");
+                String urlColorTemp = KaliopeServerClient.BASE_URL + "/" + coloresTotales.getJSONObject(i).getString("imagen1");
+
+
+                map.put(SpinnerColoresAdapter.NOMBRE_COLOR, colorTemp);
+                map.put(SpinnerColoresAdapter.URL_IMAGEN, urlColorTemp);
+                map.put(SpinnerColoresAdapter.RGB_COLOR_STRING, noColorTemp);
+                listaColores.add(map);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
+
+
+
+
+        SpinnerColoresAdapter spinnerColoresAdapter = new SpinnerColoresAdapter(this, listaColores);
+        spinerColores.setAdapter(spinnerColoresAdapter);
+
+        final JSONArray finalColoresTotales = coloresTotales;
         spinerColores.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                colorSeleccionado = String.valueOf(spinerColores.getSelectedItem());
-                 HashMap map = (HashMap) spinerColores.getSelectedItem();
-                 String colorSeleccionado = map.get(SpinnerColoresAdapter.RGB_COLOR_STRING).toString();
+                HashMap map = (HashMap) spinerColores.getSelectedItem();
+                colorSeleccionado = map.get(SpinnerColoresAdapter.RGB_COLOR_STRING).toString();
 
 
                  /*
@@ -196,18 +246,19 @@ public class DetallesActivity extends AppCompatActivity {
                  existen en el color seleccionado
                  si estamos online consultamos los datos al servidor
                   */
-                 if(offline){
-                    //le enviamos el array de las tallas del color seleccionado
-                     try {
-                         JSONArray tallasPorColor = coloresTotales.getJSONObject(position).getJSONArray("tallas");
-                         llenarSpinnerTallas(tallasPorColor);
-                     } catch (JSONException e) {
-                         e.printStackTrace();
-                     }
-                 }else{
+                if(offline){
+                    //le enviamos las tallas del color seleccionado
 
-                     consultarDetallePorColor(id_producto,colorSeleccionado);
-                 }
+                    try {
+                        JSONArray tallasPorColor = finalColoresTotales.getJSONObject(position).getJSONArray("tallas");
+                        llenarSpinnerTallas(tallasPorColor);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }else{
+                    consultarDetallePorColor(id_producto,colorSeleccionado);
+                }
 
             }
 
@@ -216,70 +267,54 @@ public class DetallesActivity extends AppCompatActivity {
 
             }
         });
-
-
-
-
-
-        List <HashMap<String,String>> listaColores = new ArrayList<>();
-        /*
-            COLORES TOTALES con informacion de cuantas tallas tiene disponible cada color
-             [{"color":"Gris","noColor":"rgb(142, 142, 142)","imagen1":"fotos\/SM5898-VERDE-1.jpg","existencias":45,"tallas":[{"talla":"UNT","existencias":5},{"talla":"G","existencias":40}]}
-             ,{"color":"Rosa","noColor":"rgb(240, 74, 141)","imagen1":"fotos\/SM5898-ROSA-1.jpg","existencias":55,"tallas":[{"talla":"UNT","existencias":40},{"talla":"M","existencias":15}]}
-            ,{"color":"Negro","noColor":"rgb(13, 13, 13)","imagen1":"fotos\/SM5898-NEGRO-1.jpg","existencias":10,"tallas":[{"talla":"UNT","existencias":10}]}
-            ,{"color":"Azul","noColor":"rgb(135, 182, 205)","imagen1":"fotos\/SM5898-AZUL-1.jpg","existencias":10,"tallas":[{"talla":"G","existencias":10}]}]
-
-            No importa si estamos en modo offline o online se mostraran todos los colores en el
-            spinner colores,
-        */
-
-        for (int i=0; i<coloresTotales.length(); i++){
-            HashMap<String, String> map = new HashMap<>();
-            try {
-                String colorTemp = coloresTotales.getJSONObject(i).getString("color");
-                String noColorTemp = coloresTotales.getJSONObject(i).getString("noColor");
-                String urlColorTemp = KaliopeServerClient.BASE_URL + "/" + coloresTotales.getJSONObject(i).getString("imagen1");
-
-
-                map.put(SpinnerColoresAdapter.NOMBRE_COLOR,colorTemp);
-                map.put(SpinnerColoresAdapter.URL_IMAGEN,urlColorTemp);
-                map.put(SpinnerColoresAdapter.RGB_COLOR_STRING,noColorTemp);
-                listaColores.add(map);
-
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-
-        SpinnerColoresAdapter spinnerColoresAdapter = new SpinnerColoresAdapter(this, listaColores);
-        spinerColores.setAdapter(spinnerColoresAdapter);
 
     }
 
     private void llenarSpinnerTallas(JSONArray tallasPorColor){
+        /*
+        En este metodo usaremos las 2 listas de informacion de tallas que queremos
+        las tallasTotales de ese producto son las tallas que ese producto tiene disponibles sin improtar su color
+        y las tallas por color son las tallas existentes de este producto en un color espesifico seleccionado
+        queremos ambas listas porque quiero mostrar en el espiner tallas absolutamente todas las talals
+        que el producto tiene disponible y luego cuando el cliente seleccione un color especifico
+        tomar las tallas que tiene disponibles ese color y poner esas tallas como disponibles y las demas
+        marcarlas como agotadas en color gris, asi el cliente se dara una idea
+        a bueno para este producto hay talla chica mediana grande y extra, pero cuando selecciono
+        un color espesifico de ese la chica esta agotada, la mediana hay 10 pz la grande agotada y la extra 10pz
+
+        lo mas facil seria llenar el sponner tallas solo con las tallas existentes del color seleciconado
+        pero pienso personalmente que podria ser confuso para el cliente saber que tallas realmente existen
+        porque veria que al cambiar el color a rojo por ejemplo solo hay talla chica pero no puede saber
+        si ese producto tambien se maneja en extragrande, tendria que cambiar entre todos los colores para
+        darse una idea de las tallas, y quizas podria ser confuso para el que cuando selecciona rojo
+        en la lista si aparese la talla mediana, pero cuando selecciona el color azul solo aparece grande y chica
+        diria: en donde quedo la talla mediana no la veo!!
+
+        asi en cambio el sistema le dice a bueno aqui esta la talla mediana pero en este color no esta disponible
+
+        ademas el mostrar todas las tallas disponibles me ayudara para el modo offline porque asi el clietne
+        entrara al producto aunque no este en red y podria saber que tallas tiene ese producto y tomar el pedido
+        a lapicero en una libreta, y de la otra manera no se puede porque se necesita la red para actualizar por el color
+
+        o bueno se podria hacer de ambos modos, que cuando este en offline carge las tallas totales existentes y sea inmutable
+        y que cuando sea por red carge solo las tallas de ese color
+
+        pero en mi caso yo crei mejor opcion ir por la mas compleja y mostrar todas las tallas y poner en gris
+        las tallas que no estan en ese color de esta manera no me importa si esta online o offline el sistema
+        le muestra todas las tallas que puede solicitar
+         */
 
         spinnerTallas = (Spinner) findViewById(R.id.detalles_spinner_talla);
-        spinnerTallas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
 
         List<HashMap<String,String>> listaTallas = new ArrayList<>();
         HashMap<String, String> map;
+        JSONArray tallasTotales = new JSONArray();
+        try {
+            tallasTotales = informacionProductoInicial.getJSONArray("tallas");
+            Log.d("tallasTotales",String.valueOf(tallasTotales.toString()));
         /*
             TALLAS TOTALES sin importar color, con existencias
+            estas son todas las tallas que existen de ese modelo en espesifico sin importar color
             [{"talla":"UNT","existencias":55}
              ,{"talla":"G","existencias":50}
              ,{"talla":"M","existencias":15}]
@@ -289,81 +324,124 @@ public class DetallesActivity extends AppCompatActivity {
             sera con las tallas totales existentes de ese modelo
 
 
-             en modo ofline vamos a llenar el spinner con estas tallas,
-             y seran inmutable, es decir una ves cargado no cambiaran
-             dependiendo del color que se escoja simplemente se mostraran
-             todas las tallas que existen para este producto no importa
-             los colores diferentes que existan esto le permitira al usuario
-             decirle a su cliente de modo offline que tiene de ese producto
-             5 tallas diferentes que ofrecer
-
-
-             Si esta en modo Online igualmente se mostraran todas las tallas
-             que exsiten pero dependiendo del color que se escoja en el spinner
-             color entonces se pondran de color gris las tallas que ya no estan
-             disponibles en ese color y en color negro las que si estan disponibles
+             lo que queremos mostrarle al cliente es que el spinner
+             se llene con todas las tallas que hay disponibles del producto
+             y que una vez que seleccione un color las tallas que ya no esten disponibles
+             en ese color se pongan de un color diferente y ya no se puedan seleccionar
+             y las tallas que estan disponibles muestren las existencias disponibles
          */
-        Log.d("tallasTotales", tallasTotales.toString());                   //[{"talla":"UNT","existencias":55},{"talla":"G","existencias":50},{"talla":"M","existencias":15}]
-        Log.d("tallasColorSeleccionado", tallasPorColor.toString());        //[{"talla":"UNT","existencias":5},{"talla":"G","existencias":40}]
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        Log.d("tallasColorSeleccionado", tallasPorColor.toString());
+        /*Estas son las tallas que existen solo en el color que el cliente selecciono
+            [{"talla":"UNT","existencias":5}
+            ,{"talla":"G","existencias":40}]
+        */
+
 
         try {
+
+            //metemos el array de tallas pequeño a una lista para despues preguntar si la talla
+            //existe dentro de esa lista
+            ArrayList<String> tallasPequenas = new ArrayList<>();
+            for(int z=0; z<tallasPorColor.length(); z++ ){
+                tallasPequenas.add(tallasPorColor.getJSONObject(z).getString("talla"));
+            }
 
 
             for (int i = 0; i < tallasTotales.length(); i++) {
                 map = new HashMap<>();
-            /*
-                necesitamos comparar los 2 arrays para saber que talla existe en el color y ponerle sus existencias,
-                y las que no existan colocarlas como no Activas para que aparescan en gris y no se puedan seleccioanr
-                Para lograr esto vamos a recorrer el array mas grande lo cual ya se esta haciendo en el bucle exterior y comparando los nombres de las tallas
-                del array mas pequeño
-                */
-                String tallaMayor = tallasTotales.getJSONObject(i).getString("talla");                          //tomamos la talla en curso del array total de tallas sin importar color
-                //recorremos el array pequeño de tallas
-                for (int z = 0; z < tallasPorColor.length(); z++) {
-                    String tallaMenor = tallasPorColor.getJSONObject(z).getString("talla");                     //tomamos la talla en curso del array de tallas filtrado por color
+                String tallaEnCurso = tallasTotales.getJSONObject(i).getString("talla");                          //tomamos la talla en curso del array total de tallas sin importar color
+                //ahora recorremos el array de todas las tallas y comparamos la talla en curso
+                //a ver si existe en la lista donde estan las tallas por color si existe
+                //la talla grande la marcamos como activa y tomamos las existencias de las tallas por color
+                //si no existe lo ponemos como inactivo
+                if(tallasPequenas.contains(tallaEnCurso)){
 
-                    Log.d("comparamosMayorMenor","talla mayor en curso: " + tallaMayor + " talla menor en curso: " + tallaMenor);
-                    if (tallaMayor.equals(tallaMenor)) {
-                        /*
-                        si la talla menor es igual a la talla mayor significa que la talla menor si
-                        existe en el array todas las tallas
-                        entonces tomamos esa talla la ponemos como activa
-                         */
-                        String existencia = tallasPorColor.getJSONObject(z).getString("existencias");           //sacamos las existencias pero solo de esa talla en ese color
-                        map.put(SpinnerTallasAdapter.COLUMNA_TALLA, tallaMenor);
-                        map.put(SpinnerTallasAdapter.COLUMNA_EXISTENCIAS, existencia);
-                        map.put(SpinnerTallasAdapter.COLUMNA_ACTIVO, "true");
-                        listaTallas.add(map);
-                        Log.d("comparamosMayorMenor","La talla menor concuerda con una talla en todas las tallas, marcando como activo");
-                    }else{
-                        /*
-                        Si la talla menor no es igual a la talla mayor en curso entonces
-                        el for salta a la siguiente talla menor para comprararla porque podrian venir desacomodadas
-                         */
-                        Log.d("comparamosMayorMenor","La talla menor no concuerda con la talla en todas las talals analizada, saltando a la siguiente talla menor");
-                    }
+                    int posicion = tallasPequenas.indexOf(tallaEnCurso);                                                                           //obtenemos el indice de la lista donde esta la talla que consultamos para saber despues consultar esa posicion en el josonArray que contiene la informacion de las existencias
+                    map.put(SpinnerTallasAdapter.COLUMNA_TALLA, tallaEnCurso);
+                    map.put(SpinnerTallasAdapter.COLUMNA_EXISTENCIAS,tallasPorColor.getJSONObject(posicion).getString("existencias"));      //colocamos las existencias de la talla por color
+                    map.put(SpinnerTallasAdapter.COLUMNA_ACTIVO, "true");
+                    listaTallas.add(map);
+                }else{
+                    map.put(SpinnerTallasAdapter.COLUMNA_TALLA, tallaEnCurso);
+                    map.put(SpinnerTallasAdapter.COLUMNA_EXISTENCIAS,"0");
+                    map.put(SpinnerTallasAdapter.COLUMNA_ACTIVO, "false");
+                    listaTallas.add(map);
 
                 }
-                /*
-                  Si ya se compararon todas las tallas menores y no se encontro fueran iguales con la talla mayor
-                  entonces la talla mayor se pone como inactiva y se muestra en el spinner
-                  el bucle for cambia a la siguiente talla mayor y vuelve a compararla con todas las tallas menores
-                         */
-                map.put(SpinnerTallasAdapter.COLUMNA_TALLA, tallaMayor);
-                map.put(SpinnerTallasAdapter.COLUMNA_EXISTENCIAS, "0");
-                map.put(SpinnerTallasAdapter.COLUMNA_ACTIVO, "false");
-                listaTallas.add(map);
+
             }
             /*
             Ya que se termino de recorrer todas las tallas mayores se finaliza el bucle for y asignamos
             la lista al spiner aqui ya vendran las tallas inactivas o activas
              */
-            SpinnerTallasAdapter spinnerTallasAdapter = new SpinnerTallasAdapter(listaTallas);
-            spinnerTallas.setAdapter(spinnerTallasAdapter);
+
         }catch (JSONException e){
             e.printStackTrace();
         }
 
+
+
+        final SpinnerTallasAdapter spinnerTallasAdapter = new SpinnerTallasAdapter(listaTallas);
+        spinnerTallas.setAdapter(spinnerTallasAdapter);
+
+
+
+
+
+
+
+        spinnerTallas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                HashMap mapSelected =(HashMap) spinnerTallas.getSelectedItem();         //obtenemos el hasmap que tiene el item seleccionado
+                boolean tallaActiva = Boolean.parseBoolean(mapSelected.get(SpinnerTallasAdapter.COLUMNA_ACTIVO).toString());
+
+
+                if(tallaActiva){
+                    tallaSeleccionada = mapSelected.get(SpinnerTallasAdapter.COLUMNA_TALLA).toString();
+                    Toast.makeText(getApplicationContext(),tallaSeleccionada, Toast.LENGTH_SHORT).show();
+
+                }else{
+                    Snackbar.make(view, "Por favor seleccione una talla con existencias", Snackbar.LENGTH_SHORT).setAction("accion",null).show();
+
+                    animationSacudida.setFillAfter(false);//para que se quede donde termina la anim
+                    animationSacudida.setRepeatMode(Animation.REVERSE); //modo de repeticion, en el reverse se ejecuta la animacion y cuando termine de ejecutarse va  adar reversa
+                    animationSacudida.setRepeatCount(10); //cuantas veces queremos que se repita la animacion, podria ser un numero entero 20 para 20 veces por ejemplo
+                    spinnerTallas.startAnimation(animationSacudida);
+
+
+
+
+                    /*
+                    //recorremos todos los items del spinner buscando alguno que este como activo, y seleccionamos el primero que este activo
+                    for(int i =0; i<spinnerTallasAdapter.getCount(); i++){
+                        HashMap buscandoItemActivo =(HashMap) spinnerTallas.getItemAtPosition(i);
+                        tallaActiva = Boolean.parseBoolean(buscandoItemActivo.get(SpinnerTallasAdapter.COLUMNA_ACTIVO).toString());
+                        if(tallaActiva){
+                            spinnerTallas.setSelection(i,true);
+
+                            break;
+                        }
+                    }
+
+                     */
+
+
+                }
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
 
 
@@ -400,17 +478,8 @@ public class DetallesActivity extends AppCompatActivity {
 
                 try {
 
-                    coloresTotales = response.getJSONArray("colores");
-                    tallasTotales = response.getJSONArray("tallas");
-                    Log.d("coloresTotales",String.valueOf(coloresTotales.toString()));
-                    //[{"color":"Gris","noColor":"rgb(142, 142, 142)","imagen1":"fotos\/SM5898-VERDE-1.jpg","existencias":45,"tallas":[{"talla":"UNT","existencias":5},{"talla":"G","existencias":40}]}
-                    // ,{"color":"Rosa","noColor":"rgb(240, 74, 141)","imagen1":"fotos\/SM5898-ROSA-1.jpg","existencias":55,"tallas":[{"talla":"UNT","existencias":40},{"talla":"M","existencias":15}]}
-                    // ,{"color":"Negro","noColor":"rgb(13, 13, 13)","imagen1":"fotos\/SM5898-NEGRO-1.jpg","existencias":10,"tallas":[{"talla":"UNT","existencias":10}]}
-                    // ,{"color":"Azul","noColor":"rgb(135, 182, 205)","imagen1":"fotos\/SM5898-AZUL-1.jpg","existencias":10,"tallas":[{"talla":"G","existencias":10}]}]
-                    Log.d("tallasTotales",String.valueOf(tallasTotales.toString()));
-                    //[{"talla":"UNT","existencias":55}
-                    // ,{"talla":"G","existencias":50}
-                    // ,{"talla":"M","existencias":15}]
+
+
 
                     informacionProductoInicial = response;
 
