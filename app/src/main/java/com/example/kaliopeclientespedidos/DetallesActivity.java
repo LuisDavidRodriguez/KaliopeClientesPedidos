@@ -51,16 +51,17 @@ public class DetallesActivity extends AppCompatActivity {
 
     String id_producto;
 
-    JSONObject productoInicial;
-    JSONArray coloresIniciales;
+    JSONObject informacionProductoInicial;
+
+
+
+    JSONArray coloresTotales;
     JSONArray tallasTotales;
 
 
-    JSONArray tallasPorColor;
-
 
     ArrayList<HashMap> listaImagenesPrincipal;
-   DetallesImagenAdapter detallesImagenAdapter;
+    DetallesImagenAdapter detallesImagenAdapter;
     RecyclerView recyclerViewDetalles;
     RecyclerView.LayoutManager layoutManager;
     SnapHelper snapHelper;
@@ -166,8 +167,8 @@ public class DetallesActivity extends AppCompatActivity {
         String precio = null;
 
         try {
-            nombrePro = productoInicial.getString("descripcion");
-            precio = productoInicial.getString("precio_etiqueta");
+            nombrePro = informacionProductoInicial.getString("descripcion");
+            precio = informacionProductoInicial.getString("precio_etiqueta");
 
             nombreProductoTV.setText(nombrePro);
             precioTV.setText(precio);
@@ -188,7 +189,26 @@ public class DetallesActivity extends AppCompatActivity {
                 colorSeleccionado = String.valueOf(spinerColores.getSelectedItem());
                  HashMap map = (HashMap) spinerColores.getSelectedItem();
                  String colorSeleccionado = map.get(SpinnerColoresAdapter.RGB_COLOR_STRING).toString();
-                 consultarDetallePorColor(id_producto,colorSeleccionado);
+
+
+                 /*
+                 Si estamos en modo ofline le enviamos como parametro las tallas que
+                 existen en el color seleccionado
+                 si estamos online consultamos los datos al servidor
+                  */
+                 if(offline){
+                    //le enviamos el array de las tallas del color seleccionado
+                     try {
+                         JSONArray tallasPorColor = coloresTotales.getJSONObject(position).getJSONArray("tallas");
+                         llenarSpinnerTallas(tallasPorColor);
+                     } catch (JSONException e) {
+                         e.printStackTrace();
+                     }
+                 }else{
+
+                     consultarDetallePorColor(id_producto,colorSeleccionado);
+                 }
+
             }
 
             @Override
@@ -198,13 +218,27 @@ public class DetallesActivity extends AppCompatActivity {
         });
 
 
+
+
+
         List <HashMap<String,String>> listaColores = new ArrayList<>();
-        for (int i=0; i<coloresIniciales.length(); i++){
+        /*
+            COLORES TOTALES con informacion de cuantas tallas tiene disponible cada color
+             [{"color":"Gris","noColor":"rgb(142, 142, 142)","imagen1":"fotos\/SM5898-VERDE-1.jpg","existencias":45,"tallas":[{"talla":"UNT","existencias":5},{"talla":"G","existencias":40}]}
+             ,{"color":"Rosa","noColor":"rgb(240, 74, 141)","imagen1":"fotos\/SM5898-ROSA-1.jpg","existencias":55,"tallas":[{"talla":"UNT","existencias":40},{"talla":"M","existencias":15}]}
+            ,{"color":"Negro","noColor":"rgb(13, 13, 13)","imagen1":"fotos\/SM5898-NEGRO-1.jpg","existencias":10,"tallas":[{"talla":"UNT","existencias":10}]}
+            ,{"color":"Azul","noColor":"rgb(135, 182, 205)","imagen1":"fotos\/SM5898-AZUL-1.jpg","existencias":10,"tallas":[{"talla":"G","existencias":10}]}]
+
+            No importa si estamos en modo offline o online se mostraran todos los colores en el
+            spinner colores,
+        */
+
+        for (int i=0; i<coloresTotales.length(); i++){
             HashMap<String, String> map = new HashMap<>();
             try {
-                String colorTemp = coloresIniciales.getJSONObject(i).getString("color");
-                String noColorTemp = coloresIniciales.getJSONObject(i).getString("noColor");
-                String urlColorTemp = KaliopeServerClient.BASE_URL + "/" + coloresIniciales.getJSONObject(i).getString("imagen1");
+                String colorTemp = coloresTotales.getJSONObject(i).getString("color");
+                String noColorTemp = coloresTotales.getJSONObject(i).getString("noColor");
+                String urlColorTemp = KaliopeServerClient.BASE_URL + "/" + coloresTotales.getJSONObject(i).getString("imagen1");
 
 
                 map.put(SpinnerColoresAdapter.NOMBRE_COLOR,colorTemp);
@@ -224,10 +258,9 @@ public class DetallesActivity extends AppCompatActivity {
 
     }
 
-    private void llenarSpinnerTallas(){
-        //[{"talla":"UNT","0":"UNT"},{"talla":"G","0":"G"},{"talla":"M","0":"M"}]
-        spinnerTallas = (Spinner) findViewById(R.id.detalles_spinner_talla);
+    private void llenarSpinnerTallas(JSONArray tallasPorColor){
 
+        spinnerTallas = (Spinner) findViewById(R.id.detalles_spinner_talla);
         spinnerTallas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -245,44 +278,99 @@ public class DetallesActivity extends AppCompatActivity {
 
         List<HashMap<String,String>> listaTallas = new ArrayList<>();
         HashMap<String, String> map;
+        /*
+            TALLAS TOTALES sin importar color, con existencias
+            [{"talla":"UNT","existencias":55}
+             ,{"talla":"G","existencias":50}
+             ,{"talla":"M","existencias":15}]
 
 
-        if(offline){
+             Llenamos la lista de tallas que se mostrara en el spinner
+            sera con las tallas totales existentes de ese modelo
 
-            for (int i=0; i<tallasTotales.length(); i++){
+
+             en modo ofline vamos a llenar el spinner con estas tallas,
+             y seran inmutable, es decir una ves cargado no cambiaran
+             dependiendo del color que se escoja simplemente se mostraran
+             todas las tallas que existen para este producto no importa
+             los colores diferentes que existan esto le permitira al usuario
+             decirle a su cliente de modo offline que tiene de ese producto
+             5 tallas diferentes que ofrecer
+
+
+             Si esta en modo Online igualmente se mostraran todas las tallas
+             que exsiten pero dependiendo del color que se escoja en el spinner
+             color entonces se pondran de color gris las tallas que ya no estan
+             disponibles en ese color y en color negro las que si estan disponibles
+         */
+        Log.d("tallasTotales", tallasTotales.toString());                   //[{"talla":"UNT","existencias":55},{"talla":"G","existencias":50},{"talla":"M","existencias":15}]
+        Log.d("tallasColorSeleccionado", tallasPorColor.toString());        //[{"talla":"UNT","existencias":5},{"talla":"G","existencias":40}]
+
+        try {
+
+
+            for (int i = 0; i < tallasTotales.length(); i++) {
                 map = new HashMap<>();
+            /*
+                necesitamos comparar los 2 arrays para saber que talla existe en el color y ponerle sus existencias,
+                y las que no existan colocarlas como no Activas para que aparescan en gris y no se puedan seleccioanr
+                Para lograr esto vamos a recorrer el array mas grande lo cual ya se esta haciendo en el bucle exterior y comparando los nombres de las tallas
+                del array mas pequeño
+                */
+                String tallaMayor = tallasTotales.getJSONObject(i).getString("talla");                          //tomamos la talla en curso del array total de tallas sin importar color
+                //recorremos el array pequeño de tallas
+                for (int z = 0; z < tallasPorColor.length(); z++) {
+                    String tallaMenor = tallasPorColor.getJSONObject(z).getString("talla");                     //tomamos la talla en curso del array de tallas filtrado por color
 
-                try {
-                    String tallaTemp = tallasPorColor.getJSONObject(i).getString("talla");
-                    map.put(SpinnerTallasAdapter.COLUMNA_TALLA,tallaTemp);
-                    map.put(SpinnerTallasAdapter.COLUMNA_EXISTENCIAS,"0");
-                    listaTallas.add(map);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    Log.d("comparamosMayorMenor","talla mayor en curso: " + tallaMayor + " talla menor en curso: " + tallaMenor);
+                    if (tallaMayor.equals(tallaMenor)) {
+                        /*
+                        si la talla menor es igual a la talla mayor significa que la talla menor si
+                        existe en el array todas las tallas
+                        entonces tomamos esa talla la ponemos como activa
+                         */
+                        String existencia = tallasPorColor.getJSONObject(z).getString("existencias");           //sacamos las existencias pero solo de esa talla en ese color
+                        map.put(SpinnerTallasAdapter.COLUMNA_TALLA, tallaMenor);
+                        map.put(SpinnerTallasAdapter.COLUMNA_EXISTENCIAS, existencia);
+                        map.put(SpinnerTallasAdapter.COLUMNA_ACTIVO, "true");
+                        listaTallas.add(map);
+                        Log.d("comparamosMayorMenor","La talla menor concuerda con una talla en todas las tallas, marcando como activo");
+                    }else{
+                        /*
+                        Si la talla menor no es igual a la talla mayor en curso entonces
+                        el for salta a la siguiente talla menor para comprararla porque podrian venir desacomodadas
+                         */
+                        Log.d("comparamosMayorMenor","La talla menor no concuerda con la talla en todas las talals analizada, saltando a la siguiente talla menor");
+                    }
+
                 }
-
+                /*
+                  Si ya se compararon todas las tallas menores y no se encontro fueran iguales con la talla mayor
+                  entonces la talla mayor se pone como inactiva y se muestra en el spinner
+                  el bucle for cambia a la siguiente talla mayor y vuelve a compararla con todas las tallas menores
+                         */
+                map.put(SpinnerTallasAdapter.COLUMNA_TALLA, tallaMayor);
+                map.put(SpinnerTallasAdapter.COLUMNA_EXISTENCIAS, "0");
+                map.put(SpinnerTallasAdapter.COLUMNA_ACTIVO, "false");
+                listaTallas.add(map);
             }
-
-        }else{
-            for (int i=0; i<tallasPorColor.length(); i++){
-                map = new HashMap<>();
-
-                try {
-                    String tallaTemp = tallasPorColor.getJSONObject(i).getString("talla");
-                    map.put(SpinnerTallasAdapter.COLUMNA_TALLA,tallaTemp);
-                    map.put(SpinnerTallasAdapter.COLUMNA_EXISTENCIAS,"0");
-                    listaTallas.add(map);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
+            /*
+            Ya que se termino de recorrer todas las tallas mayores se finaliza el bucle for y asignamos
+            la lista al spiner aqui ya vendran las tallas inactivas o activas
+             */
+            SpinnerTallasAdapter spinnerTallasAdapter = new SpinnerTallasAdapter(listaTallas);
+            spinnerTallas.setAdapter(spinnerTallasAdapter);
+        }catch (JSONException e){
+            e.printStackTrace();
         }
 
 
 
-        SpinnerTallasAdapter spinnerTallasAdapter = new SpinnerTallasAdapter(listaTallas);
-        spinnerTallas.setAdapter(spinnerTallasAdapter);
+
+
+
+
+
 
 
 
@@ -303,27 +391,29 @@ public class DetallesActivity extends AppCompatActivity {
                 //progressDialog.dismiss();
 
                 Log.d ("detalles1",String.valueOf(response));
-                //D/detalles1: {"detalle_principal":{"id":"1","0":"1","id_producto":"SM5898","1":"SM5898","descripcion":"Sudadera dama","2":"Sudadera dama","detalles":"Luce sensacional con esta increible sudadera","3":"Luce sensacional con esta increible sudadera","estado":"ACTIVO","4":"ACTIVO","existencia":"5","5":"5","color":"Gris","6":"Gris","noColor":"rgb(142, 142, 142)","7":"rgb(142, 142, 142)","talla":"UNT","8":"UNT","precio_etiqueta":"339","9":"339","precio_vendedora":"298","10":"298","precio_socia":"295","11":"295","precio_empresaria":"291","12":"291","imagen1":"fotos\/SM5898-VERDE-1.jpg","13":"fotos\/SM5898-VERDE-1.jpg","imagen2":"fotos\/SM5898-VERDE-2.jpg","14":"fotos\/SM5898-VERDE-2.jpg","imagen3":"fotos\/SM5898-VERDE-3.jpg","15":"fotos\/SM5898-VERDE-3.jpg","categoria":"sudadera","16":"sudadera"},
-                //"colores":[{"color":"Gris","2":"Gris","noColor":"rgb(142, 142, 142)","3":"rgb(142, 142, 142)","imagen1":"fotos\/SM5898-VERDE-1.jpg","4":"fotos\/SM5898-VERDE-1.jpg"},
-                // {"color":"Rosa","0":"Rosa","noColor":"rgb(240, 74, 141)","1":"rgb(240, 74, 141)","imagen1":"fotos\/SM5898-ROSA-1.jpg","2":"fotos\/SM5898-ROSA-1.jpg"},
-                // {"color":"Negro","0":"Negro","noColor":"rgb(13, 13, 13)","1":"rgb(13, 13, 13)","imagen1":"fotos\/SM5898-NEGRO-1.jpg","2":"fotos\/SM5898-NEGRO-1.jpg"},
-                // {"color":"Azul","0":"Azul","noColor":"rgb(135, 182, 205)","1":"rgb(135, 182, 205)","imagen1":"fotos\/SM5898-AZUL-1.jpg","2":"fotos\/SM5898-AZUL-1.jpg"}]
-                // ,"tallas":[{"talla":"UNT","0":"UNT"},{"talla":"G","0":"G"},{"talla":"M","0":"M"}]}
+                //{"id_producto":"SM5898","descripcion":"Sudadera dama","estado":"ACTIVO","precio_etiqueta":"339","precio_vendedora":"298","precio_empresaria":"291","imagen1":"fotos\/SM5898-VERDE-1.jpg","imagen2":"fotos\/SM5898-VERDE-2.jpg","imagen3":"fotos\/SM5898-VERDE-3.jpg","categoria":"sudadera","existencias":120,
+                // "tallas":[{"talla":"UNT","existencias":55},{"talla":"G","existencias":50},{"talla":"M","existencias":15}],
+                // "colores":[{"color":"Gris","noColor":"rgb(142, 142, 142)","imagen1":"fotos\/SM5898-VERDE-1.jpg","existencias":45,"tallas":[{"talla":"UNT","existencias":5},{"talla":"G","existencias":40}]}
+                // ,{"color":"Rosa","noColor":"rgb(240, 74, 141)","imagen1":"fotos\/SM5898-ROSA-1.jpg","existencias":55,"tallas":[{"talla":"UNT","existencias":40},{"talla":"M","existencias":15}]}
+                // ,{"color":"Negro","noColor":"rgb(13, 13, 13)","imagen1":"fotos\/SM5898-NEGRO-1.jpg","existencias":10,"tallas":[{"talla":"UNT","existencias":10}]}
+                // ,{"color":"Azul","noColor":"rgb(135, 182, 205)","imagen1":"fotos\/SM5898-AZUL-1.jpg","existencias":10,"tallas":[{"talla":"G","existencias":10}]}]}
 
                 try {
-                    productoInicial = response.getJSONObject("detalle_principal");
-                    coloresIniciales = response.getJSONArray("colores");
+
+                    coloresTotales = response.getJSONArray("colores");
                     tallasTotales = response.getJSONArray("tallas");
-                    Log.d("detalles2",String.valueOf(productoInicial.toString()));
-                    //D/detalles2: {"id":"1","0":"1","id_producto":"SM5898","1":"SM5898","descripcion":"Sudadera dama","2":"Sudadera dama","detalles":"Luce sensacional con esta increible sudadera","3":"Luce sensacional con esta increible sudadera","estado":"ACTIVO","4":"ACTIVO","existencia":"5","5":"5","color":"Gris","6":"Gris","noColor":"rgb(142, 142, 142)","7":"rgb(142, 142, 142)","talla":"UNT","8":"UNT","precio_etiqueta":"339","9":"339","precio_vendedora":"298","10":"298","precio_socia":"295","11":"295","precio_empresaria":"291","12":"291","imagen1":"fotos\/SM5898-VERDE-1.jpg","13":"fotos\/SM5898-VERDE-1.jpg","imagen2":"fotos\/SM5898-VERDE-2.jpg","14":"fotos\/SM5898-VERDE-2.jpg","imagen3":"fotos\/SM5898-VERDE-3.jpg","15":"fotos\/SM5898-VERDE-3.jpg","categoria":"sudadera","16":"sudadera"}
-                    Log.d("detalles3",String.valueOf(coloresIniciales.toString()));
-                    //D/detalles3:
-                    //[{"color":"Gris","0":"Gris","noColor":"rgb(142, 142, 142)","1":"rgb(142, 142, 142)","imagen1":"fotos\/SM5898-VERDE-1.jpg","2":"fotos\/SM5898-VERDE-1.jpg"},
-                    //{ "color":"Rosa","0":"Rosa","noColor":"rgb(240, 74, 141)","1":"rgb(240, 74, 141)","imagen1":"fotos\/SM5898-ROSA-1.jpg","2":"fotos\/SM5898-ROSA-1.jpg"},{"id":"3","0":"3","id_producto":"SM5898","1":"SM5898","color":"Negro","2":"Negro","noColor":"rgb(13, 13, 13)","3":"rgb(13, 13, 13)","imagen1":"fotos\/SM5898-NEGRO-1.jpg","4":"fotos\/SM5898-NEGRO-1.jpg"},
-                    //{ "color":"Azul","0":"Azul","noColor":"rgb(135, 182, 205)","1":"rgb(135, 182, 205)","imagen1":"fotos\/SM5898-AZUL-1.jpg","2":"fotos\/SM5898-AZUL-1.jpg"}
-                    //]
-                    Log.d("detalles4",String.valueOf(tallasTotales.toString()));
-                    //[{"talla":"UNT","0":"UNT"},{"talla":"G","0":"G"},{"talla":"M","0":"M"}]
+                    Log.d("coloresTotales",String.valueOf(coloresTotales.toString()));
+                    //[{"color":"Gris","noColor":"rgb(142, 142, 142)","imagen1":"fotos\/SM5898-VERDE-1.jpg","existencias":45,"tallas":[{"talla":"UNT","existencias":5},{"talla":"G","existencias":40}]}
+                    // ,{"color":"Rosa","noColor":"rgb(240, 74, 141)","imagen1":"fotos\/SM5898-ROSA-1.jpg","existencias":55,"tallas":[{"talla":"UNT","existencias":40},{"talla":"M","existencias":15}]}
+                    // ,{"color":"Negro","noColor":"rgb(13, 13, 13)","imagen1":"fotos\/SM5898-NEGRO-1.jpg","existencias":10,"tallas":[{"talla":"UNT","existencias":10}]}
+                    // ,{"color":"Azul","noColor":"rgb(135, 182, 205)","imagen1":"fotos\/SM5898-AZUL-1.jpg","existencias":10,"tallas":[{"talla":"G","existencias":10}]}]
+                    Log.d("tallasTotales",String.valueOf(tallasTotales.toString()));
+                    //[{"talla":"UNT","existencias":55}
+                    // ,{"talla":"G","existencias":50}
+                    // ,{"talla":"M","existencias":15}]
+
+                    informacionProductoInicial = response;
+
 
 
                     //=======LLENAMOS LAS 3 IMAGENES QUE SE MOSTRARAN EN EL RECYCLER VIEW========
@@ -333,19 +423,19 @@ public class DetallesActivity extends AppCompatActivity {
                     listaImagenesPrincipal = new ArrayList<HashMap>();
 
                     HashMap<String, String> map = new HashMap<>();
-                    String nombre = productoInicial.get("imagen1").toString();
+                    String nombre = informacionProductoInicial.get("imagen1").toString();
                     map.put(DetallesImagenAdapter.IMAGEN_NOMBRE,nombre);
                     map.put(DetallesImagenAdapter.IMAGEN_URL,KaliopeServerClient.BASE_URL + nombre);
                     listaImagenesPrincipal.add(map);
 
                     map = new HashMap<>();
-                    nombre = productoInicial.get("imagen2").toString();
+                    nombre = informacionProductoInicial.get("imagen2").toString();
                     map.put(DetallesImagenAdapter.IMAGEN_NOMBRE,nombre);
                     map.put(DetallesImagenAdapter.IMAGEN_URL,KaliopeServerClient.BASE_URL + nombre);
                     listaImagenesPrincipal.add(map);
 
                     map = new HashMap<>();
-                    nombre = productoInicial.get("imagen3").toString();
+                    nombre = informacionProductoInicial.get("imagen3").toString();
                     map.put(DetallesImagenAdapter.IMAGEN_NOMBRE,nombre);
                     map.put(DetallesImagenAdapter.IMAGEN_URL,KaliopeServerClient.BASE_URL + nombre);
                     listaImagenesPrincipal.add(map);
@@ -467,11 +557,11 @@ public class DetallesActivity extends AppCompatActivity {
 
                 try {
                     JSONObject productoPorColor = response.getJSONObject("imagenesColor");
-                    tallasPorColor = response.getJSONArray("tallas");
+                    JSONArray tallasPorColor = response.getJSONArray("tallas");
                     Log.d("detalles2.1",String.valueOf(productoPorColor.toString()));
                     //{"imagen1":"fotos\/SM5898-ROSA-1.jpg","0":"fotos\/SM5898-ROSA-1.jpg","imagen2":"fotos\/SM5898-ROSA-2.jpg","1":"fotos\/SM5898-ROSA-2.jpg","imagen3":"fotos\/SM5898-ROSA-3.jpg","2":"fotos\/SM5898-ROSA-3.jpg"}
                     Log.d("detalles3.1",String.valueOf(tallasPorColor.toString()));
-                    //[{"talla":"UNT","0":"UNT"},{"talla":"M","0":"M"}]
+                    //[{"talla":"UNT","existencias":5},{"talla":"G","existencias":40}]
 
 
 
@@ -508,7 +598,7 @@ public class DetallesActivity extends AppCompatActivity {
 
                    detallesImagenAdapter.notifyDataSetChanged();
                    llenarRecycler();                        //llenamos otra vez todo el recycler porque tengo problemas con las animaciones, se comienzan a hacer mas y mas chiquito con forme cambio de colores. Asi ya no tiene el problema lo malo es que se regresa a la posicion 0
-                   llenarSpinnerTallas();
+                   llenarSpinnerTallas(tallasPorColor);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

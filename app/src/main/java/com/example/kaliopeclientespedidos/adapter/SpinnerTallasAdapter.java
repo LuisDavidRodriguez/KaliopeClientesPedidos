@@ -17,6 +17,7 @@ import java.util.Objects;
 public class SpinnerTallasAdapter extends BaseAdapter {
     public static final String COLUMNA_TALLA = "talla";
     public static final String COLUMNA_EXISTENCIAS = "existencias" ;
+    public static final String COLUMNA_ACTIVO = "activo";
 
 
     List<HashMap<String, String>> listTallas;
@@ -62,14 +63,20 @@ public class SpinnerTallasAdapter extends BaseAdapter {
 
         String tallaTemp = listTallas.get(position).get(COLUMNA_TALLA);
         int existenciasTemp = Integer.parseInt(Objects.requireNonNull(listTallas.get(position).get(COLUMNA_EXISTENCIAS)));
+        boolean activo = Boolean.parseBoolean(listTallas.get(position).get(COLUMNA_ACTIVO));
         String mensaje = "";
 
 
-        if(existenciasTemp <= 0){
-            mensaje = "Producto Agotado";
-            relativeLayout.setBackgroundResource(R.drawable.cuadro_redondeado_spinner_agotado);
+        if(activo){
+            if(existenciasTemp>0){
+                mensaje = existenciasTemp + "pz disponibles";
+            }else{
+                mensaje = existenciasTemp + "Producto Agotado";
+            }
+
         }else{
-            mensaje = existenciasTemp + "pz disponibles";
+            mensaje = "no disponible en este color";
+            relativeLayout.setBackgroundResource(R.drawable.cuadro_redondeado_spinner_agotado);
         }
 
         tvTalla.setText(tallaTemp);
