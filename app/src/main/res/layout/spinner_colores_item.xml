@@ -3,13 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="100dp"
-    android:padding="10dp"
+    android:padding="5dp"
     android:theme="@style/AppTheme"
     android:layout_marginTop="5dp"
     android:layout_marginEnd="5dp"
     android:background="@drawable/cuadro_redondeado_spinner"
     >
 
+
+    <TextView
+        android:id="@+id/spinner_colores_item_TextViewDisponibilidad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spinner_colores_item_TextViewColor"
+        android:layout_alignEnd="@+id/spinner_colores_item_TextViewColor"
+        android:layout_alignParentBottom="true"
+        android:text="Agotado!"
+        android:textColor="@color/colorBlack"
+        android:textSize="20sp"
+        android:gravity="center"
+        />
 
     <TextView
         android:id="@+id/spinner_colores_item_TextViewColor"

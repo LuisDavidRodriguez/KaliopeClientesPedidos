@@ -22,6 +22,7 @@ import com.example.kaliopeclientespedidos.R;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import cz.msebera.android.httpclient.client.cache.Resource;
 
@@ -34,6 +35,8 @@ public class SpinnerColoresAdapter extends BaseAdapter {
     public static final String NOMBRE_COLOR = "nombre_color";
     public static final String URL_IMAGEN = "url_imagen";
     public static final String RGB_COLOR_STRING = "rgb_color";
+    public static final String EXISTENCIAS = "existencias";
+    public static final String ACTIVO = "activo";
 
     public SpinnerColoresAdapter(@NonNull Context context, @NonNull List<HashMap<String, String>> objects) {
         this.objects = objects;
@@ -75,15 +78,43 @@ public class SpinnerColoresAdapter extends BaseAdapter {
 
 
         TextView textViewColor = (TextView) viewFila.findViewById(R.id.spinner_colores_item_TextViewColor);
+        TextView textViewDisponibilidad = (TextView) viewFila.findViewById(R.id.spinner_colores_item_TextViewDisponibilidad);
         ImageView imageView = (ImageView) viewFila.findViewById(R.id.spinner_colores_item_imageView);
 
         String nombre = objects.get(position).get(NOMBRE_COLOR).toString();
         String urlImagenColor = objects.get(position).get(URL_IMAGEN).toString();
         String colorRGB = objects.get(position).get(RGB_COLOR_STRING).toString();                //rgb(142,142,142)
+        int existenciasTemp = Integer.parseInt(Objects.requireNonNull(objects.get(position).get(EXISTENCIAS)));
+        boolean itemActivo = Boolean.parseBoolean(objects.get(position).get(ACTIVO).toString());
 
+        String mensaje = "";
+
+        if(itemActivo){
+            if(existenciasTemp>0){
+                mensaje = existenciasTemp + (existenciasTemp>1?" disponibles":" disponible");
+                textViewColor.setTextColor(textViewColor.getResources().getColor(R.color.colorBlack));
+                textViewDisponibilidad.setVisibility(View.VISIBLE);
+                textViewDisponibilidad.setTextSize(14);
+                textViewDisponibilidad.setTextColor(textViewColor.getResources().getColor(R.color.colorGris));
+
+
+            }else{
+                mensaje = "Color Agotado!";
+                textViewColor.setTextColor(textViewColor.getResources().getColor(R.color.colorGris));
+                textViewDisponibilidad.setVisibility(View.VISIBLE);
+                textViewDisponibilidad.setTextSize(16);
+            }
+
+        }else{
+            mensaje = "Color Agotado!";
+            textViewColor.setTextColor(textViewColor.getResources().getColor(R.color.colorGris));
+            textViewDisponibilidad.setVisibility(View.VISIBLE);
+            textViewDisponibilidad.setTextSize(20);
+        }
 
 
         textViewColor.setText(nombre);
+        textViewDisponibilidad.setText(mensaje);
 
 
         boolean online = true;

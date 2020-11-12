@@ -69,12 +69,12 @@ public class SpinnerTallasAdapter extends BaseAdapter {
 
         if(activo){
             if(existenciasTemp>0){
-                mensaje = existenciasTemp + " disponibles";
+                mensaje = existenciasTemp + (existenciasTemp>1?" disponibles":" disponible");
                 tvTalla.setTextColor(tvTalla.getResources().getColor(R.color.colorBlack));
                 tvTalla.setBackgroundResource(R.drawable.cuadro_redondeado);
                 tvExistencias.setTextColor(tvTalla.getResources().getColor(R.color.colorBlack));
             }else{
-                mensaje = existenciasTemp + "Talla agotada en este color";
+                mensaje = "Talla agotada en este color";
                 tvTalla.setTextColor(tvTalla.getResources().getColor(R.color.colorGris));
                 tvTalla.setBackgroundResource(R.drawable.cuadro_redondeado_gris);
                 tvExistencias.setTextColor(tvTalla.getResources().getColor(R.color.colorGris));

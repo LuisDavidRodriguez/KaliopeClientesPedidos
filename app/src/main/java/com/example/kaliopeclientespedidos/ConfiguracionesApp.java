@@ -38,8 +38,8 @@ public class ConfiguracionesApp {
     private static final String NOMBRE_CODIGO_DISPOSITIVO_UNICO_UUID = "codigoDeDispositivo";
 
     /*
-    Por ejemplo cuando se conecte por primera vez se descarga la informacion principal de todos los productos
-    pero solo de los codigos que son distintos,
+    Por ejemplo cuando se conecte por primera vez se descarga un json del servidor que contiene
+    toda la informacion de todos los productos con existencias tallas ETC
      */
     private static final String JSON_OFFLINE_INFORMACION_GENERAL_POR_CODIGO = "infoGeneral";
 
@@ -325,6 +325,54 @@ public class ConfiguracionesApp {
 
 
 
+    /**
+     * Consulta la cadena unica con la que la instancia de la aplicacion fue creada en un dispositivo
+     * @return String=la cadena unica de la instancia de la aplicacion
+     * <p> SinValor= si aun no se a guardado ninguna cadena unica
+     * */
+    public static JSONArray getInformacionOffline (Activity activity){
+
+        SharedPreferences sharedPreferences =
+                activity.getSharedPreferences(NOMBRE_ARCHIVO_CONFIGURACIONES, Context.MODE_PRIVATE);
+
+
+
+       String valorRecuperado = sharedPreferences.getString(JSON_OFFLINE_INFORMACION_GENERAL_POR_CODIGO,"");        //retornamos si no se encuentra el dato, un string "" vacio para que el json array no arroje error cuando se construya
+
+        JSONArray retorno = new JSONArray();            //nos aseguramos que se retorne por lo menos un Json vacio
+
+        try {
+            retorno = new JSONArray(valorRecuperado);   //si la cadena no tiene error y se pasa exitosamente a Json entonces asignamos el valor
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        return retorno;
+
+
+    }
+
+    public static void setInformacionOffline ( Activity activity, JSONArray jsonArray){
+
+        SharedPreferences preferences =
+                activity.getSharedPreferences(NOMBRE_ARCHIVO_CONFIGURACIONES, Context.MODE_PRIVATE);//para que solo la app kaliope pueda leer o escribir sobre el archivo
+
+
+        //convertimos el json array en su reperentacion String para guardara en el xml
+        String valor = jsonArray.toString();
+
+
+        SharedPreferences.Editor editor = preferences.edit(); // Declaramos una variable (objeto) de tipo SharedPreferences.Editor, necesario para guardar cambios en el fichero de preferencias.
+        editor.putString(JSON_OFFLINE_INFORMACION_GENERAL_POR_CODIGO,valor);
+        //editor.commit();//guardamos nuestro fichero
+        editor.apply();
+
+    }
+    private static void deleteInformacionOffline(Activity activity){
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(NOMBRE_ARCHIVO_CONFIGURACIONES,Context.MODE_PRIVATE);
+        sharedPreferences.edit().remove(JSON_OFFLINE_INFORMACION_GENERAL_POR_CODIGO).apply();
+    }
 
 
 

@@ -325,17 +325,20 @@ public class Ingreso extends AppCompatActivity {
                 try {
                     JSONObject informacion = response.getJSONObject("informacion");
                     JSONObject datosPersonales = response.getJSONObject("datosPersonales");
+                    JSONArray datosOffline = response.getJSONArray("datosOffline");
 
-                    Log.d("Informacion",String.valueOf(informacion.getString("id")));
+                    Log.d("Informacion",informacion.toString());
+                    Log.d("DatosOffline",datosOffline.toString());                              //los datos offline es un json array enorme tiene todos y cada uno de los productos que se manejan
 
                     String usuario = informacion.getString("usuario");
                     String nombreCompleto = datosPersonales.getString("nombre");
                     String numeroCuenta = datosPersonales.getString("no_cuenta");
 
-                    Log.d("DatosInicioSesion", usuario + " " + nombreCompleto + " " + numeroCuenta);
+                    Log.d("DatosInicioSesion", usuario + "-" + nombreCompleto + "-" + numeroCuenta);
 
 
                     ConfiguracionesApp.iniciarSesion(activity, nombreCompleto, usuario, numeroCuenta);
+                    ConfiguracionesApp.setInformacionOffline(activity, datosOffline);                       //guardamos los datos offline en shared preferences
 
                     nextActivity();
 
