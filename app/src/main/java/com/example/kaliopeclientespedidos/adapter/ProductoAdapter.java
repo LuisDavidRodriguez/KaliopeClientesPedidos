@@ -1,5 +1,7 @@
 package com.example.kaliopeclientespedidos.adapter;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +55,30 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
         String url_image_producto = producto.getUrl_image();
 
         holder.nombre.setText(producto.getNombre());
-        holder.precio.setText(producto.getPrecio());
+        String precio = "$" + producto.getPrecio();
+        holder.precio.setText(precio);
+        holder.modelo.setText(producto.getId());
+        if(producto.getExistencias()>0){
+            int existencias = producto.getExistencias();
+            String mensaje = (existencias>1? String.valueOf(existencias) + " disponibles": "Ultimo disponible!");
+
+            holder.existencias.setTextColor(Color.GRAY);
+            holder.existencias.setTextSize(14);
+            holder.existencias.setText(mensaje);
+
+            holder.nombre.setTextColor(Color.BLACK);
+            holder.precio.setTextColor(Color.BLACK);
+        }else{
+            holder.existencias.setTextColor(Color.RED);
+            holder.existencias.setTextSize(18);
+            holder.existencias.setText("Producto agotado");
+
+            holder.nombre.setTextColor(Color.LTGRAY);
+            holder.precio.setTextColor(Color.LTGRAY);
+        }
+
+
+
 
         Glide.with(holder.itemView)
                 .load(url_image_producto)
@@ -71,7 +96,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
 
     public class ViewHolderProducto extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView imageProducto;
-        private TextView nombre, precio;
+        private TextView nombre, precio, existencias, modelo;
 
         //====5=====
         OnProductListener onProductListener;
@@ -84,7 +109,8 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
             imageProducto =(ImageView) itemView.findViewById(R.id.item_container_producto_image);
             nombre = (TextView) itemView.findViewById(R.id.item_container_producto_textNombre);
             precio = (TextView) itemView.findViewById(R.id.item_container_producto_price);
-
+            existencias =(TextView) itemView.findViewById(R.id.item_container_producto_existencias);
+            modelo = (TextView) itemView.findViewById(R.id.item_container_producto_modelo);
 
 
 

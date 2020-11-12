@@ -151,6 +151,7 @@ public class MainActivityRecycler extends AppCompatActivity implements ProductoA
                         imagenDeInicio.getJSONObject(i).getString("descripcion"),
                         URL_Imagen,
                         imagenDeInicio.getJSONObject(i).getString("precio_etiqueta"),
+                        imagenDeInicio.getJSONObject(i).getString("existencias"),
                         0,
                         imagenDeInicio.getJSONObject(i).getString("id_producto"));
 

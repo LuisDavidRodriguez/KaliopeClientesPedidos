@@ -41,10 +41,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolBarLuisda);
-        TextView textViewTituloPersonalizado = findViewById(R.id.toolbarLuisda_tituloPersonalizado);
-        //primero se tiene que remover el titulo que venga pro defecto en la barra de tareas esto porque puse textView personalizados en la toolbar
-        toolbar.setTitle("");
-        textViewTituloPersonalizado.setText("Kaliope Pedidos");
+        //TextView textViewTituloPersonalizado = findViewById(R.id.toolbarLuisda_tituloPersonalizado);
+        //primero se tiene que remover el titulo que venga pro defecto en la barra de tareas esto porque puse textView personalizados en la toolbar se que se puede poner titulo y subtitulo sin necesidad de definirlo en el Layout de  la toolbar pero quice probar asi para ver que otros items poner
+        toolbar.setTitle("Kaliope Pedidos");
+        //textViewTituloPersonalizado.setText("Kaliope Pedidos");
         setSupportActionBar(toolbar);
 
         drawerLayout = findViewById(R.id.drawerLayoutMainActivity);
@@ -85,6 +85,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         nombreDrawerTV.setText(nombreCompleto);
         cuentaDrawerTV.setText(cuentaCliente);
         usuarioDrawerTV.setText(usuario);
+
+
+        toolbar.setSubtitle(nombreCompleto);
 
 
 

@@ -1,5 +1,6 @@
 package com.example.kaliopeclientespedidos.adapter;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,15 +70,15 @@ public class SpinnerTallasAdapter extends BaseAdapter {
 
         if(activo){
             if(existenciasTemp>0){
-                mensaje = existenciasTemp + (existenciasTemp>1?" disponibles":" disponible");
+                mensaje = (existenciasTemp>1)? existenciasTemp+" disponibles":"Ultimo disponible!";
                 tvTalla.setTextColor(tvTalla.getResources().getColor(R.color.colorBlack));
                 tvTalla.setBackgroundResource(R.drawable.cuadro_redondeado);
-                tvExistencias.setTextColor(tvTalla.getResources().getColor(R.color.colorBlack));
+                tvExistencias.setTextColor(tvTalla.getResources().getColor(R.color.colorGris));
             }else{
                 mensaje = "Talla agotada en este color";
                 tvTalla.setTextColor(tvTalla.getResources().getColor(R.color.colorGris));
                 tvTalla.setBackgroundResource(R.drawable.cuadro_redondeado_gris);
-                tvExistencias.setTextColor(tvTalla.getResources().getColor(R.color.colorGris));
+                tvExistencias.setTextColor(Color.RED);
             }
 
         }else{
@@ -85,7 +86,7 @@ public class SpinnerTallasAdapter extends BaseAdapter {
             //relativeLayout.setBackgroundResource(R.drawable.cuadro_redondeado_spinner_agotado);
             tvTalla.setTextColor(tvTalla.getResources().getColor(R.color.colorGris));
             tvTalla.setBackgroundResource(R.drawable.cuadro_redondeado_gris);
-            tvExistencias.setTextColor(tvTalla.getResources().getColor(R.color.colorGris));
+            tvExistencias.setTextColor(Color.RED);
         }
 
         tvTalla.setText(tallaTemp);

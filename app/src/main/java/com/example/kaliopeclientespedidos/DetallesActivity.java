@@ -15,6 +15,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -45,12 +46,14 @@ public class DetallesActivity extends AppCompatActivity {
 
     TextView numeroImagenTV,
             nombreProductoTV,
+            modeloTV,
             precioTV,
             fechaEntregaTV;
 
     Spinner spinerColores, spinnerTallas, spinnerCantidad;
     String colorSeleccionado = "";
     String tallaSeleccionada = "";
+    int cantidadSeleccioanda = 0;
 
 
     String id_producto;
@@ -96,6 +99,7 @@ public class DetallesActivity extends AppCompatActivity {
 
         spinerColores = (Spinner) findViewById(R.id.detalles_spinner_color);
         spinnerTallas = (Spinner) findViewById(R.id.detalles_spinner_talla);
+        spinnerCantidad = (Spinner) findViewById(R.id.detalles_spinner_cantidad);
 
 
 
@@ -486,12 +490,14 @@ public class DetallesActivity extends AppCompatActivity {
 
     private void llenarVistas(){
         nombreProductoTV = (TextView) findViewById(R.id.detalles_nombreProducto);
+        modeloTV = (TextView) findViewById(R.id.detalles_modelo);
         precioTV = (TextView) findViewById(R.id.detalles_TV_precio);
         fechaEntregaTV = (TextView) findViewById(R.id.detalles_TV_instruccionesFechaEntrega);
 
 
-        String nombrePro = null;
-        String precio = null;
+        String nombrePro = "";
+        String modelo = "";
+        String precio = "";
 
         try {
             /*
@@ -503,9 +509,11 @@ public class DetallesActivity extends AppCompatActivity {
                 ,{"color":"Azul","noColor":"rgb(135, 182, 205)","imagen1":"fotos\/SM5898-AZUL-1.jpg","existencias":10,"tallas":[{"talla":"G","existencias":10}]}]}
              */
             nombrePro = informacionProductoInicial.getString("descripcion");
+            modelo = informacionProductoInicial.getString("id_producto");
             precio = informacionProductoInicial.getString("precio_etiqueta");
 
             nombreProductoTV.setText(nombrePro);
+            modeloTV.setText(modelo);
             precioTV.setText(precio);
 
 
@@ -572,11 +580,11 @@ public class DetallesActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 HashMap map = (HashMap) spinerColores.getSelectedItem();
-                colorSeleccionado = map.get(SpinnerColoresAdapter.RGB_COLOR_STRING).toString();
                 boolean itemActivo = Boolean.parseBoolean(map.get(SpinnerColoresAdapter.ACTIVO).toString());
 
 
                 if(itemActivo){
+                    colorSeleccionado = map.get(SpinnerColoresAdapter.RGB_COLOR_STRING).toString();
                     spinnerTallas.setVisibility(View.VISIBLE);
                     spinnerTallas.startAnimation(animationLlegada);
 
@@ -604,6 +612,7 @@ public class DetallesActivity extends AppCompatActivity {
                     }
 
                 }else{
+                    colorSeleccionado = "";
 
                     Snackbar.make(view, "Por favor seleccione una color con existencias", Snackbar.LENGTH_SHORT).setAction("accion",null).show();
 
@@ -718,11 +727,26 @@ public class DetallesActivity extends AppCompatActivity {
                 if(tallasPequenas.contains(tallaEnCurso)){
 
                     int posicion = tallasPequenas.indexOf(tallaEnCurso);                                                                           //obtenemos el indice de la lista donde esta la talla que consultamos para saber despues consultar esa posicion en el josonArray que contiene la informacion de las existencias
+                    String existencias = tallasPorColor.getJSONObject(posicion).getString("existencias");
+
                     map.put(SpinnerTallasAdapter.COLUMNA_TALLA, tallaEnCurso);
-                    map.put(SpinnerTallasAdapter.COLUMNA_EXISTENCIAS,tallasPorColor.getJSONObject(posicion).getString("existencias"));      //colocamos las existencias de la talla por color
-                    map.put(SpinnerTallasAdapter.COLUMNA_ACTIVO, "true");
+                    map.put(SpinnerTallasAdapter.COLUMNA_EXISTENCIAS, existencias);      //colocamos las existencias de la talla por color
+
+                    //dependiendo de si hay existencias o no hay lo ponemos que se pueda seleccionar o que no se pueda
+                    if(Integer.parseInt(existencias)>0){
+                        map.put(SpinnerTallasAdapter.COLUMNA_ACTIVO, "true");
+                    }else{
+                        map.put(SpinnerTallasAdapter.COLUMNA_ACTIVO, "false");
+                    }
+
+
+
                     listaTallas.add(map);
                 }else{
+                    /*
+                    En este punto significa que si en total existe talla G M CH en este modelo pero al consltar color solo se encuentran G
+                    lo que es M y CH se mostraran pero se pondran como inactivas, para que cuando el cleinte las seleccine arroje un error
+                     */
                     map.put(SpinnerTallasAdapter.COLUMNA_TALLA, tallaEnCurso);
                     map.put(SpinnerTallasAdapter.COLUMNA_EXISTENCIAS,"0");
                     map.put(SpinnerTallasAdapter.COLUMNA_ACTIVO, "false");
@@ -760,12 +784,25 @@ public class DetallesActivity extends AppCompatActivity {
 
                 if(tallaActiva){
                     tallaSeleccionada = mapSelected.get(SpinnerTallasAdapter.COLUMNA_TALLA).toString();
-                    Toast.makeText(getApplicationContext(),tallaSeleccionada, Toast.LENGTH_SHORT).show();
+
+
+
+                    spinnerCantidad.setVisibility(View.VISIBLE);
+                    spinnerCantidad.startAnimation(animationLlegada);
+                    try {
+                        int cantidadMaxima = Integer.parseInt(mapSelected.get(SpinnerTallasAdapter.COLUMNA_EXISTENCIAS).toString());
+                        llenarSpinnerCantidad(cantidadMaxima);
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                        llenarSpinnerCantidad(1);
+                    }
 
                 }else{
+                    tallaSeleccionada = "";
                     Snackbar.make(view, "Por favor seleccione una talla con existencias", Snackbar.LENGTH_SHORT).setAction("accion",null).show();
 
-
+                    llenarSpinnerCantidad(0);
+                    spinnerCantidad.setVisibility(View.GONE);
                     spinnerTallas.startAnimation(animationSacudida);
 
                     /*
@@ -801,6 +838,23 @@ public class DetallesActivity extends AppCompatActivity {
 
 
 
+
+
+    }
+
+    private void llenarSpinnerCantidad(int cantidadMaxima){
+        ArrayList<Integer> cantidades = new ArrayList<>();
+
+        for (int i=1; i<= cantidadMaxima; i++){
+            cantidades.add(i);
+        }
+
+
+        ArrayAdapter<Integer> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,cantidades);
+
+
+
+        spinnerCantidad.setAdapter(adapter);
 
 
     }

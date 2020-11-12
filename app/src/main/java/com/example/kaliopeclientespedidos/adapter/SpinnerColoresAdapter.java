@@ -91,7 +91,7 @@ public class SpinnerColoresAdapter extends BaseAdapter {
 
         if(itemActivo){
             if(existenciasTemp>0){
-                mensaje = existenciasTemp + (existenciasTemp>1?" disponibles":" disponible");
+                mensaje =  (existenciasTemp>1)? existenciasTemp + " disponibles":"Ultimo disponible!";
                 textViewColor.setTextColor(textViewColor.getResources().getColor(R.color.colorBlack));
                 textViewDisponibilidad.setVisibility(View.VISIBLE);
                 textViewDisponibilidad.setTextSize(14);
@@ -103,13 +103,15 @@ public class SpinnerColoresAdapter extends BaseAdapter {
                 textViewColor.setTextColor(textViewColor.getResources().getColor(R.color.colorGris));
                 textViewDisponibilidad.setVisibility(View.VISIBLE);
                 textViewDisponibilidad.setTextSize(16);
+                textViewDisponibilidad.setTextColor(Color.RED);
             }
 
         }else{
             mensaje = "Color Agotado!";
             textViewColor.setTextColor(textViewColor.getResources().getColor(R.color.colorGris));
             textViewDisponibilidad.setVisibility(View.VISIBLE);
-            textViewDisponibilidad.setTextSize(20);
+            textViewDisponibilidad.setTextSize(16);
+            textViewDisponibilidad.setTextColor(Color.RED);
         }
 
 

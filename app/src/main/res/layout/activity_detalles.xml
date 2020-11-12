@@ -28,6 +28,21 @@
             android:textColor="@color/colorBlack"
             />
 
+        <TextView
+            android:id="@+id/detalles_modelo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="SH2500"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_toEndOf="@+id/detalles_nombreProducto"
+            android:layout_alignBaseline="@+id/detalles_nombreProducto"
+            android:layout_marginStart="15dp"
+            android:textSize="14sp"
+            android:textColor="@color/colorGris"
+            />
+
 
 
         <FrameLayout
