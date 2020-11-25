@@ -13,4 +13,6 @@
     <string name="cantidad">Quantity:</string>
     <string name="TituloHome">All products</string>
     <string name="Cuenta">Account:</string>
+    <string name="sin_internet">No internet connection</string>
+    <string name="entiendo">I got it</string>
 </resources>

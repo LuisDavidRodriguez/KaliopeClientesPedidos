@@ -1,27 +1,37 @@
-package com.example.kaliopeclientespedidos;
+ package com.example.kaliopeclientespedidos;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kaliopeclientespedidos.adapter.DetallesImagenAdapter;
+import com.example.kaliopeclientespedidos.adapter.SeleccionarCantidadAdapter;
 import com.example.kaliopeclientespedidos.adapter.SpinnerColoresAdapter;
 import com.example.kaliopeclientespedidos.adapter.SpinnerTallasAdapter;
 import com.google.android.material.snackbar.Snackbar;
@@ -38,8 +48,9 @@ import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
 
+import static com.example.kaliopeclientespedidos.Constantes.offline;
+
 public class DetallesActivity extends AppCompatActivity {
-    private boolean offline = false;
 
 
     //fuente para las animaciones y el snapHelper https://www.youtube.com/watch?v=4yyLeI4H1rQ   esta padrisimo!!
@@ -50,7 +61,9 @@ public class DetallesActivity extends AppCompatActivity {
             precioTV,
             fechaEntregaTV;
 
-    Spinner spinerColores, spinnerTallas, spinnerCantidad;
+    Spinner spinerColores, spinnerTallas;
+    RecyclerView cantidadRecyclerView;
+    Button buttonAgregarCarrito;
     String colorSeleccionado = "";
     String tallaSeleccionada = "";
     int cantidadSeleccioanda = 0;
@@ -62,11 +75,23 @@ public class DetallesActivity extends AppCompatActivity {
 
 
 
-    ArrayList<HashMap> listaImagenesPrincipal;
+    ArrayList<HashMap> listaImagenesPrincipal = new ArrayList<HashMap>();;
     DetallesImagenAdapter detallesImagenAdapter;
     RecyclerView recyclerViewDetalles;
     RecyclerView.LayoutManager layoutManager;
     SnapHelper snapHelper;
+
+
+
+
+    RecyclerView.LayoutManager layoutManagerCantidad;
+    SeleccionarCantidadAdapter seleccionarCantidadAdapter;
+    SnapHelper snapHelperCantidad;
+    ArrayList<Integer> cantidadesSeleccionables = new ArrayList<>();
+
+
+
+    MediaPlayer mediaPlayer;
 
 
     public final String URL_DETALLES_PRODUCTO = "app_movil/consultar_detalles_producto.php";
@@ -86,6 +111,8 @@ public class DetallesActivity extends AppCompatActivity {
         snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(recyclerViewDetalles);
 
+
+
         animationSacudida = AnimationUtils.loadAnimation(this,R.anim.sacudida_2); //cargamos la animacion pruebas de animacion de elementos en la pantalla
         animationLlegada = AnimationUtils.loadAnimation(this,R.anim.llegada); //cargamos la animacion pruebas de animacion de elementos en la pantalla
 
@@ -99,8 +126,13 @@ public class DetallesActivity extends AppCompatActivity {
 
         spinerColores = (Spinner) findViewById(R.id.detalles_spinner_color);
         spinnerTallas = (Spinner) findViewById(R.id.detalles_spinner_talla);
-        spinnerCantidad = (Spinner) findViewById(R.id.detalles_spinner_cantidad);
+        cantidadRecyclerView = (RecyclerView) findViewById(R.id.detalles_cantidadRecyclerView);
+        buttonAgregarCarrito = (Button) findViewById(R.id.detalles_agregarCarritoButton);
 
+        layoutManagerCantidad = new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false);
+        cantidadRecyclerView.setLayoutManager(layoutManagerCantidad);
+        snapHelperCantidad = new LinearSnapHelper();
+        snapHelperCantidad.attachToRecyclerView(cantidadRecyclerView);
 
 
         Bundle bundle = getIntent().getExtras();
@@ -111,9 +143,67 @@ public class DetallesActivity extends AppCompatActivity {
         }
 
         Toast.makeText(this, id_producto, Toast.LENGTH_SHORT).show();
+        mediaPlayer = MediaPlayer.create(this,R.raw.click);
 
 
-        consultaInicial();
+
+        if(offline){
+
+            try {
+                Log.d(Constantes.TAG_OFFLINE ,"mostrando datos almacenados en shared preferences");
+                informacionProductoInicial = ConfiguracionesApp.getInformacionOfflineProducto(this, id_producto);
+                llenarListaParaRecycler(informacionProductoInicial);
+                llenarRecycler();
+                llenarVistas();
+                llenarSpinnerColor();
+                /*
+                    {"id_producto":"SM5898","descripcion":"Sudadera dama","estado":"ACTIVO","precio_etiqueta":"339","precio_vendedora":"298","precio_empresaria":"291","imagen1":"fotos\/SM5898-VERDE-1.jpg","imagen2":"fotos\/SM5898-VERDE-2.jpg","imagen3":"fotos\/SM5898-VERDE-3.jpg","categoria":"sudadera","existencias":120,
+                     "tallas":[{"talla":"UNT","existencias":55},{"talla":"G","existencias":50},{"talla":"M","existencias":15}],
+                     "colores":[{"color":"Gris","noColor":"rgb(142, 142, 142)","imagen1":"fotos\/SM5898-VERDE-1.jpg","existencias":45,"tallas":[{"talla":"UNT","existencias":5},{"talla":"G","existencias":40}]}
+                     ,{"color":"Rosa","noColor":"rgb(240, 74, 141)","imagen1":"fotos\/SM5898-ROSA-1.jpg","existencias":55,"tallas":[{"talla":"UNT","existencias":40},{"talla":"M","existencias":15}]}
+                     ,{"color":"Negro","noColor":"rgb(13, 13, 13)","imagen1":"fotos\/SM5898-NEGRO-1.jpg","existencias":10,"tallas":[{"talla":"UNT","existencias":10}]}
+                     ,{"color":"Azul","noColor":"rgb(135, 182, 205)","imagen1":"fotos\/SM5898-AZUL-1.jpg","existencias":10,"tallas":[{"talla":"G","existencias":10}]}]}
+
+                 */
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Error al obtener la cadena en modo offline " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+
+        }else{
+            consultaInicial();
+        }
+
+
+
+
+        buttonAgregarCarrito.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                if(offline){
+                    dialogoOffline();
+                }else{
+                    Intent intent = new Intent(getApplicationContext(), CarritoActivity.class);
+                    intent.putExtra("ID_PRODUCTO", id_producto);
+                    intent.putExtra("COLOR_SELECCIONADO", colorSeleccionado);
+                    intent.putExtra("TALLA_SELECCIONADA",tallaSeleccionada);
+                    intent.putExtra("CANTIDAD_SELECCIONADA", cantidadSeleccioanda);
+                    startActivity(intent);
+                }
+
+            }
+        });
+
+
+
+
+
+
+
+
     }
 
 
@@ -142,48 +232,18 @@ public class DetallesActivity extends AppCompatActivity {
                 // ,{"color":"Negro","noColor":"rgb(13, 13, 13)","imagen1":"fotos\/SM5898-NEGRO-1.jpg","existencias":10,"tallas":[{"talla":"UNT","existencias":10}]}
                 // ,{"color":"Azul","noColor":"rgb(135, 182, 205)","imagen1":"fotos\/SM5898-AZUL-1.jpg","existencias":10,"tallas":[{"talla":"G","existencias":10}]}]}
 
-                try {
+
+
+                informacionProductoInicial = response;
 
 
 
 
-                    informacionProductoInicial = response;
+                llenarListaParaRecycler(informacionProductoInicial);
+                llenarRecycler();
+                llenarVistas();
+                llenarSpinnerColor();
 
-
-
-                    //=======LLENAMOS LAS 3 IMAGENES QUE SE MOSTRARAN EN EL RECYCLER VIEW========
-                    //debido a que las 3 imagenes del producto vienen en el solo objeto json entonces vamos a llenar la lista haciendo 3 veces lo mismo xD
-                    //con la imagen 1 la 2 y la 3 para que se manden al recycler view y ademas enviamos el nombre de la imagen por si se tiene que hacer algo con ella cuando se haga clic.
-
-                    listaImagenesPrincipal = new ArrayList<HashMap>();
-
-                    HashMap<String, String> map = new HashMap<>();
-                    String nombre = informacionProductoInicial.get("imagen1").toString();
-                    map.put(DetallesImagenAdapter.IMAGEN_NOMBRE,nombre);
-                    map.put(DetallesImagenAdapter.IMAGEN_URL,KaliopeServerClient.BASE_URL + nombre);
-                    listaImagenesPrincipal.add(map);
-
-                    map = new HashMap<>();
-                    nombre = informacionProductoInicial.get("imagen2").toString();
-                    map.put(DetallesImagenAdapter.IMAGEN_NOMBRE,nombre);
-                    map.put(DetallesImagenAdapter.IMAGEN_URL,KaliopeServerClient.BASE_URL + nombre);
-                    listaImagenesPrincipal.add(map);
-
-                    map = new HashMap<>();
-                    nombre = informacionProductoInicial.get("imagen3").toString();
-                    map.put(DetallesImagenAdapter.IMAGEN_NOMBRE,nombre);
-                    map.put(DetallesImagenAdapter.IMAGEN_URL,KaliopeServerClient.BASE_URL + nombre);
-                    listaImagenesPrincipal.add(map);
-                    Log.d("detalles4",listaImagenesPrincipal.toString());
-                    //=======FIN LLENAMOS LAS 3 IMAGENES QUE SE MOSTRARAN EN EL RECYCLER VIEW========
-
-
-                    llenarRecycler();
-                    llenarVistas();
-                    llenarSpinnerColor();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
 
 
 
@@ -300,37 +360,9 @@ public class DetallesActivity extends AppCompatActivity {
 
 
 
-                    //=======LIMPIAMOS Y LLENAMOS LAS 3 IMAGENES QUE SE MOSTRARAN EN EL RECYCLER VIEW PERO AHORA SERAN LAS DEL COLOR SELECICONADO========
-                    //debido a que las 3 imagenes del producto vienen en el solo objeto json entonces vamos a llenar la lista haciendo 3 veces lo mismo xD
-                    //con la imagen 1 la 2 y la 3 para que se manden al recycler view y ademas enviamos el nombre de la imagen por si se tiene que hacer algo con ella cuando se haga clic.
 
-                    listaImagenesPrincipal.clear();                         //importante hacer el clear y no volver a inicializar el objeto con new, porque el recycler view usa una referencia de este objeto
-
-                    HashMap<String, String> map = new HashMap<>();
-                    String nombre = productoPorColor.get("imagen1").toString();
-                    map.put(DetallesImagenAdapter.IMAGEN_NOMBRE,nombre);
-                    map.put(DetallesImagenAdapter.IMAGEN_URL,KaliopeServerClient.BASE_URL + nombre);
-                    listaImagenesPrincipal.add(map);
-
-                    map = new HashMap<>();
-                    nombre = productoPorColor.get("imagen2").toString();
-                    map.put(DetallesImagenAdapter.IMAGEN_NOMBRE,nombre);
-                    map.put(DetallesImagenAdapter.IMAGEN_URL,KaliopeServerClient.BASE_URL + nombre);
-                    listaImagenesPrincipal.add(map);
-
-                    map = new HashMap<>();
-                    nombre = productoPorColor.get("imagen3").toString();
-                    map.put(DetallesImagenAdapter.IMAGEN_NOMBRE,nombre);
-                    map.put(DetallesImagenAdapter.IMAGEN_URL,KaliopeServerClient.BASE_URL + nombre);
-                    listaImagenesPrincipal.add(map);
-                    Log.d("detalles4.1",listaImagenesPrincipal.toString());
-                    //=======FIN LLENAMOS LAS 3 IMAGENES QUE SE MOSTRARAN EN EL RECYCLER VIEW========
-
-
-
-
-
-
+                   listaImagenesPrincipal.clear();                         //importante hacer el clear y no volver a inicializar el objeto con new, porque el recycler view usa una referencia de este objeto
+                   llenarListaParaRecycler(productoPorColor);
                    detallesImagenAdapter.notifyDataSetChanged();
                    llenarRecycler();                        //llenamos otra vez todo el recycler porque tengo problemas con las animaciones, se comienzan a hacer mas y mas chiquito con forme cambio de colores. Asi ya no tiene el problema lo malo es que se regresa a la posicion 0
                    llenarSpinnerTallas(tallasPorColor);
@@ -423,12 +455,52 @@ public class DetallesActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * En diversas partes del codigo deberemos llenar la lista con las imagenes del producto
+     * que se mostraran en el recycler, debemos usar este metodo porque si no repetiremos mucho codigo
+     * cuando se entra por primera vez a detalles dependiendo de si esta en modo offline o online
+     * se deberan cargar las imagenes a recycler de diferentes fuentes una de red y otra almacenada
+     * en la memoria.
+     * Cuando el cliente selecciona el color, se descargan las 3 imagenes del color seleccionado
+     * y deberemos cargarlas al recycler de una fuente diferente
+     * @param imagenesPorMostrar    El json objet con las imagenes del producto por color
+     */
+    private void llenarListaParaRecycler(JSONObject imagenesPorMostrar){
+        //=======LLENAMOS LAS 3 IMAGENES QUE SE MOSTRARAN EN EL RECYCLER VIEW========
+        //debido a que las 3 imagenes del producto vienen en el solo objeto json entonces vamos a llenar la lista haciendo 3 veces lo mismo xD
+        //con la imagen 1 la 2 y la 3 para que se manden al recycler view y ademas enviamos el nombre de la imagen por si se tiene que hacer algo con ella cuando se haga clic.
 
+        try {
+            HashMap<String, String> map = new HashMap<>();
+            String nombre = imagenesPorMostrar.get("imagen1").toString();
+            map.put(DetallesImagenAdapter.IMAGEN_NOMBRE,nombre);
+            map.put(DetallesImagenAdapter.IMAGEN_URL,KaliopeServerClient.BASE_URL + nombre);
+            listaImagenesPrincipal.add(map);
 
+            map = new HashMap<>();
+            nombre = imagenesPorMostrar.get("imagen2").toString();
+            map.put(DetallesImagenAdapter.IMAGEN_NOMBRE,nombre);
+            map.put(DetallesImagenAdapter.IMAGEN_URL,KaliopeServerClient.BASE_URL + nombre);
+            listaImagenesPrincipal.add(map);
 
+            map = new HashMap<>();
+            nombre = imagenesPorMostrar.get("imagen3").toString();
+            map.put(DetallesImagenAdapter.IMAGEN_NOMBRE,nombre);
+            map.put(DetallesImagenAdapter.IMAGEN_URL,KaliopeServerClient.BASE_URL + nombre);
+            listaImagenesPrincipal.add(map);
+            Log.d("detalles4",listaImagenesPrincipal.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //=======FIN LLENAMOS LAS 3 IMAGENES QUE SE MOSTRARAN EN EL RECYCLER VIEW========
+
+    }
 
 
     private void llenarRecycler(){
+
+
+
 
 
         detallesImagenAdapter = new DetallesImagenAdapter(listaImagenesPrincipal);
@@ -587,6 +659,7 @@ public class DetallesActivity extends AppCompatActivity {
                     colorSeleccionado = map.get(SpinnerColoresAdapter.RGB_COLOR_STRING).toString();
                     spinnerTallas.setVisibility(View.VISIBLE);
                     spinnerTallas.startAnimation(animationLlegada);
+                    buttonAgregarCarrito.setVisibility(View.VISIBLE);
 
 
 
@@ -597,9 +670,10 @@ public class DetallesActivity extends AppCompatActivity {
                   */
 
                     if(offline){
+                        Log.d(Constantes.TAG_OFFLINE,"Mostrando las tallas de la informacion guardada en shared preferences");
                         //le enviamos las tallas del color seleccionado
-                        //estas tallas ya se encuentran el el array que se descargo la primera vez
-
+                        //estas tallas ya se encuentran el el array que se descargo la primera vez y que se obtubo con COnfiguracionesApp
+                        //en modo offline no mostramos las imagenes del color seleccioando en los detalles
                         try {
                             JSONArray tallasPorColor = finalColoresTotales.getJSONObject(position).getJSONArray("tallas");
                             llenarSpinnerTallas(tallasPorColor);
@@ -608,17 +682,23 @@ public class DetallesActivity extends AppCompatActivity {
                         }
 
                     }else{
-                        consultarDetallePorColor(id_producto,colorSeleccionado);        //si esta en online vamos a conectarnos al servidor para consultar las tallas reales
+                        Log.d(Constantes.TAG_ONLINE,"Consultando las tallas con el servidor");
+                        consultarDetallePorColor(id_producto,colorSeleccionado);
+                        //si esta en online vamos a conectarnos al servidor para consultar las tallas reales
+                        // y a su vez vamos a mostrar las imagenes del color seleccionado en los detalles del producto
                     }
 
                 }else{
+
                     colorSeleccionado = "";
+                    buttonAgregarCarrito.setVisibility(View.INVISIBLE);
 
                     Snackbar.make(view, "Por favor seleccione una color con existencias", Snackbar.LENGTH_SHORT).setAction("accion",null).show();
 
 
                     spinerColores.startAnimation(animationSacudida);
                     spinnerTallas.setVisibility(View.INVISIBLE);            //escondemos el item tallas
+                    cantidadRecyclerView.setVisibility(View.INVISIBLE);
 
                 }
 
@@ -787,23 +867,25 @@ public class DetallesActivity extends AppCompatActivity {
 
 
 
-                    spinnerCantidad.setVisibility(View.VISIBLE);
-                    spinnerCantidad.startAnimation(animationLlegada);
+                    cantidadRecyclerView.setVisibility(View.VISIBLE);
+                    cantidadRecyclerView.startAnimation(animationLlegada);
+                    buttonAgregarCarrito.setVisibility(View.VISIBLE);
                     try {
                         int cantidadMaxima = Integer.parseInt(mapSelected.get(SpinnerTallasAdapter.COLUMNA_EXISTENCIAS).toString());
-                        llenarSpinnerCantidad(cantidadMaxima);
+                        llenarRecyclerCantidad(cantidadMaxima);
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
-                        llenarSpinnerCantidad(1);
+                        llenarRecyclerCantidad(1);
                     }
 
                 }else{
                     tallaSeleccionada = "";
                     Snackbar.make(view, "Por favor seleccione una talla con existencias", Snackbar.LENGTH_SHORT).setAction("accion",null).show();
 
-                    llenarSpinnerCantidad(0);
-                    spinnerCantidad.setVisibility(View.GONE);
+                    cantidadRecyclerView.setVisibility(View.INVISIBLE);
                     spinnerTallas.startAnimation(animationSacudida);
+
+                    buttonAgregarCarrito.setVisibility(View.INVISIBLE);
 
                     /*
                     //recorremos todos los items del spinner buscando alguno que este como activo, y seleccionamos el primero que este activo
@@ -842,22 +924,92 @@ public class DetallesActivity extends AppCompatActivity {
 
     }
 
-    private void llenarSpinnerCantidad(int cantidadMaxima){
-        ArrayList<Integer> cantidades = new ArrayList<>();
+    private void llenarRecyclerCantidad(int cantidadMaxima){
 
+        cantidadesSeleccionables.clear();
         for (int i=1; i<= cantidadMaxima; i++){
-            cantidades.add(i);
+            cantidadesSeleccionables.add(i);
         }
 
 
-        ArrayAdapter<Integer> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item,cantidades);
+        seleccionarCantidadAdapter = new SeleccionarCantidadAdapter(cantidadesSeleccionables);
+        seleccionarCantidadAdapter.notifyDataSetChanged();
+        cantidadRecyclerView.setAdapter(seleccionarCantidadAdapter);
+        cantidadRecyclerView.setPadding(0,45,0,45);         //Creamos al recycler view un padding solo al primer y ultimo item, esto nos ayuda a que aparesca centrado el primer item y ultimo a la atura de nuestro recyclerView lo voy centrando al tanteo a ver que pasa xD
 
 
 
-        spinnerCantidad.setAdapter(adapter);
+        cantidadRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                View view = snapHelperCantidad.findSnapView(layoutManagerCantidad);        //obtenemos la vista que esta snapeada xD
+                int posicion = layoutManagerCantidad.getPosition(view);            //obtenemos la posicion del item snapeado
+
+                mediaPlayer.start();
+
+
+                //obtenemos el layout que contiene la vista del container para animarla
+                RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(posicion);
+                LinearLayout linearLayout = viewHolder.itemView.findViewById(R.id.item_container_cantidad_layout);
+
+                if(newState == RecyclerView.SCROLL_STATE_IDLE){
+                    linearLayout.animate().scaleX(1).scaleY(1).setDuration(250).setInterpolator(new DecelerateInterpolator()).start();
+                    linearLayout.setBackgroundResource(R.drawable.cuadro_redondeado);
+                    cantidadSeleccioanda = (int) seleccionarCantidadAdapter.getItemValue(posicion);
+
+
+
+                }else{
+                    linearLayout.animate().scaleX(0.90f).scaleY(0.90f).setDuration(250).setInterpolator(new DecelerateInterpolator()).start();
+                    linearLayout.setBackgroundResource(R.drawable.cuadro_redondeado_rosa_sin_bordes);
+                }
+
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //obtenemos el view holder de la posicion
+                RecyclerView.ViewHolder viewHolder = cantidadRecyclerView.findViewHolderForAdapterPosition(0);
+                LinearLayout linearLayout = viewHolder.itemView.findViewById(R.id.item_container_cantidad_layout);
+                linearLayout.animate().scaleY(1).scaleX(1).setInterpolator(new DecelerateInterpolator()).setDuration(500).start();
+                linearLayout.setBackgroundResource(R.drawable.cuadro_redondeado);
+                cantidadSeleccioanda = 1;
+            }
+        },500);
+
 
 
     }
 
+
+
+
+    private void dialogoOffline(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+
+
+
+        builder.setTitle(R.string.sin_internet);
+        builder.setMessage(R.string.Offline_carrito);
+        builder.setPositiveButton(R.string.entiendo, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+
+        builder.create();
+        builder.show();
+    }
 
 }

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.kaliopeclientespedidos.Constantes;
 import com.example.kaliopeclientespedidos.R;
 
 import java.util.HashMap;
@@ -25,6 +26,8 @@ import java.util.List;
 import java.util.Objects;
 
 import cz.msebera.android.httpclient.client.cache.Resource;
+
+import static com.example.kaliopeclientespedidos.Constantes.offline;
 
 public class SpinnerColoresAdapter extends BaseAdapter {
 
@@ -119,11 +122,14 @@ public class SpinnerColoresAdapter extends BaseAdapter {
         textViewDisponibilidad.setText(mensaje);
 
 
-        boolean online = true;
-        if(online){
-            Glide.with(parent).load(urlImagenColor).apply(RequestOptions.centerCropTransform()).into(imageView);
-        }else{
+        if(offline){
+            Log.d(Constantes.TAG_OFFLINE,"Mostrando solo cuadritos con el color");
+            //si estamos en modo offline solo mostramos los colores con un cuadrito de color
             imageView.setBackgroundColor(obtenerColorDesdeRGB(colorRGB));
+        }else{
+            //si estamos en online mostramos los colores con la imagen del producto
+            Log.d(Constantes.TAG_ONLINE,"Mostrando y descargando imagenes de colores del producto");
+            Glide.with(parent).load(urlImagenColor).apply(RequestOptions.centerCropTransform()).into(imageView);
         }
 
         return viewFila;

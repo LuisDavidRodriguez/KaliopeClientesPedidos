@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 /**Clase usada para manejar las configuraciones de la app
  * y mantenerlas aunque la app se cierre
@@ -330,7 +331,7 @@ public class ConfiguracionesApp {
      * @return String=la cadena unica de la instancia de la aplicacion
      * <p> SinValor= si aun no se a guardado ninguna cadena unica
      * */
-    public static JSONArray getInformacionOffline (Activity activity){
+    public static JSONArray getInformacionOffline (Activity activity) throws Exception{
 
         SharedPreferences sharedPreferences =
                 activity.getSharedPreferences(NOMBRE_ARCHIVO_CONFIGURACIONES, Context.MODE_PRIVATE);
@@ -339,18 +340,65 @@ public class ConfiguracionesApp {
 
        String valorRecuperado = sharedPreferences.getString(JSON_OFFLINE_INFORMACION_GENERAL_POR_CODIGO,"");        //retornamos si no se encuentra el dato, un string "" vacio para que el json array no arroje error cuando se construya
 
-        JSONArray retorno = new JSONArray();            //nos aseguramos que se retorne por lo menos un Json vacio
+        if(valorRecuperado.equals("")){
+            throw new Exception("No hay cadena en la memoria, conectarse al servidor para descargarla");
+
+        }else{
+
+            try {
+                return new JSONArray(valorRecuperado);   //si la cadena no tiene error y se pasa exitosamente a Json entonces asignamos el valor
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            throw new Exception("Ocurrio un error al convertir el String a un Json Array");
+        }
+
+
+
+
+
+
+
+    }
+
+    /**
+     *Para el area de detalles del producto, en este metodo recuperamos toda la cadena que se descarga
+     * de modo offline, esta es un JsonArray con todos los productos, queremos solo retornar
+     * la informacion de un producto en especifico, porque es el que se visualizara en el area de detalles
+     * @param activity
+     * @param idProductoBuscado El producto del cual quieres obtener su informacion detallada
+     * @return JsonObject       devuelve la informacion detallada del producto buscado
+     * @throws Exception        si no encuentra el producto en la lista u ocurre un error lanza una exepcion
+     */
+    public static JSONObject getInformacionOfflineProducto (Activity activity, String idProductoBuscado) throws Exception{
+        SharedPreferences sharedPreferences =
+                activity.getSharedPreferences(NOMBRE_ARCHIVO_CONFIGURACIONES, Context.MODE_PRIVATE);
+
+
+
+        String valorRecuperado = sharedPreferences.getString(JSON_OFFLINE_INFORMACION_GENERAL_POR_CODIGO,"");        //retornamos si no se encuentra el dato, un string "" vacio para que el json array no arroje error cuando se construya
+
 
         try {
-            retorno = new JSONArray(valorRecuperado);   //si la cadena no tiene error y se pasa exitosamente a Json entonces asignamos el valor
+            JSONArray retorno = new JSONArray(valorRecuperado);   //si la cadena no tiene error y se pasa exitosamente a Json entonces asignamos el valor
+
+            for (int i=0; i<retorno.length(); i++){
+                String idTemporal = retorno.getJSONObject(i).getString("id_producto");
+
+                if(idTemporal.equals(idProductoBuscado)){
+                    return retorno.getJSONObject(i);
+                }
+
+            }
+
+            //si ningun id se encuentra en nuestro json array devolvemos un jsonObjet vacio
+            throw new Exception("Id de producto no existe");
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-
-        return retorno;
-
-
+        throw new Exception("Error al decodificar JSON");
     }
 
     public static void setInformacionOffline ( Activity activity, JSONArray jsonArray){
