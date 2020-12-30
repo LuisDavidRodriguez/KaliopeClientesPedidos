@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:orientation="vertical"
+    >
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="30dp"
+        app:cardCornerRadius="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        >
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/linearLayout1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/item_container_carrito_idBaseDatos"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="102"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/item_container_carrito_idProducto"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="stm8099"
+                android:textColor="@color/colorBlack"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/item_container_carrito_descripcion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:text="Sueter mujer"
+                android:textColor="@color/colorBlack"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+
+        <ImageView
+            android:id="@+id/item_container_carrito_imagen"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_below="@+id/linearLayout1"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@mipmap/ic_launcher" />
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_container_carrito_imagen"
+            android:layout_alignStart="@+id/linearLayout1"
+            android:orientation="horizontal"
+            android:padding="5dp">
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cantidad"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/item_container_carrito_cantidad"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/talla"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/item_container_carrito_talla"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="M"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/color"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/item_container_carrito_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Verde"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearLayout2"
+            android:layout_alignStart="@+id/linearLayout1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="@string/PrecioPublico"
+                android:textColor="@color/colorBlack"
+                android:textSize="15sp" />
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="@string/Distribucion"
+                android:textColor="@color/colorBlack"
+                android:textSize="15sp" />
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="@string/Ganancia"
+                android:textColor="@color/colorBlack"
+                android:textSize="15sp" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearLayout5"
+            android:layout_alignStart="@+id/linearLayout1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/item_container_carrito_precioVenta"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="399"
+                android:textColor="@color/colorBlack"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/item_container_carrito_precioDistribucion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="320"
+                android:textColor="@color/colorBlack"
+                android:textSize="18sp" />
+
+
+            <TextView
+                android:id="@+id/item_container_carrito_ganancia"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="79"
+                android:textColor="@color/colorBlack"
+                android:textSize="18sp" />
+
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/linearLayout3"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="@string/FormaDePago"
+            android:textColor="@color/colorBlack"
+            android:textSize="16sp" />
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView1"
+            android:layout_alignStart="@+id/linearLayout1"
+            android:orientation="horizontal">
+
+
+            <Button
+                android:id="@+id/item_container_carrito_botonCredito"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/boton_redondo_credito"
+                android:text="@string/CreditoKaliope"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+            <Button
+                android:id="@+id/item_container_carrito_botonInversionista"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/boton_redondo_inversionista"
+                android:text="@string/Inversionista"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+
+            <Button
+                android:id="@+id/item_container_carrito_botonRegalo"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/boton_redondo_regalo"
+                android:text="@string/PuntosKaliope"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout6"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearLayout4"
+            android:layout_alignStart="@+id/linearLayout1"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/item_container_carrito_comentarioCredito"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="A precio de socia"
+                android:textColor="@color/colorBlack"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/item_container_carrito_comentarioInversionista"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="¡Gana mas!"
+                android:textColor="@color/colorBlack"
+                android:textSize="12sp" />
+
+
+            <TextView
+                android:id="@+id/item_container_carrito_comentarioPuntos"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="Puntos Insuficientes"
+                android:textColor="@color/colorBlack"
+                android:textSize="12sp" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/linearLayout7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/linearLayout4"
+            android:layout_alignStart="@+id/linearLayout1"
+            android:orientation="horizontal"
+            android:visibility="invisible">
+
+
+            <TextView
+                android:id="@+id/item_container_carrito_estadoDelProducto"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="Sin confirmar"
+                android:textColor="@color/colorBlack"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/item_container_carrito_productoConfirmado"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Verde"
+                android:textSize="15sp" />
+
+
+            <TextView
+                android:id="@+id/item_container_carrito_seguimientoDelProducto"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Verde"
+                android:textSize="15sp" />
+
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

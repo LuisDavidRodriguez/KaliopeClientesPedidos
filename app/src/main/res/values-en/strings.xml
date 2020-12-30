@@ -15,4 +15,15 @@
     <string name="Cuenta">Account:</string>
     <string name="sin_internet">No internet connection</string>
     <string name="entiendo">I got it</string>
+    <string name="si_ordenas_ahora">"If you order right away your product will arrive on: "</string>
+    <string name="PrecioPublico">Public price:</string>
+    <string name="Distribucion">Seller price:</string>
+    <string name="Ganancia">Profit:</string>
+    <string name="FormaDePago">Select your payment metod:</string>
+    <string name="CreditoKaliope">Kaliope Credit</string>
+    <string name="Inversionista">Investor</string>
+    <string name="PuntosKaliope">Kaliope Gifts</string>
+    <string name="Aviso">Atention</string>
+    <string name="ganaMas">¡Bigger profits!</string>
+    <string name="aPrecioDe">"List price of "</string>
 </resources>

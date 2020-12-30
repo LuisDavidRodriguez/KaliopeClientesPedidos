@@ -335,6 +335,7 @@ public class utilidadesApp extends AppCompatActivity {
     }
 
 
+
     public static boolean evaluarFechaVencimiento (String fechaVencimiento){
         //(usare este metodo para que en el adaptador del listView clientes
         // el cliente que sea de mes, es decir que su fecha de vencimiento es

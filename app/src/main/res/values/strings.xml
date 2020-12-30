@@ -32,4 +32,15 @@
     <string name="Offline_carrito">La aplicacion no tiene conexion a internet, recomendamos que apuntes el codigo de producto en una libreta con las tallas y colores que solicito tu cliente para que lo agreges al carrito en cuanto estes en un lugar con conexion a internet</string>
     <string name="sin_internet">Sin conexion a Internet</string>
     <string name="entiendo">Entiendo</string>
+    <string name="si_ordenas_ahora">Si ordenas ahora tu pedido llegara el:</string>
+    <string name="PrecioPublico">Precio al Publico:</string>
+    <string name="Distribucion">Distribución:</string>
+    <string name="Ganancia">Ganancia:</string>
+    <string name="FormaDePago">Elige tu forma de pago:</string>
+    <string name="CreditoKaliope">Crédito Kaliope</string>
+    <string name="Inversionista">Inversionista</string>
+    <string name="PuntosKaliope">Puntos Kaliope</string>
+    <string name="Aviso">Aviso</string>
+    <string name="aPrecioDe">A precio de</string>
+    <string name="ganaMas">¡Gana mas!</string>
 </resources>

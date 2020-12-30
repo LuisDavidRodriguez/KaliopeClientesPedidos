@@ -1,6 +1,7 @@
 package com.example.kaliopeclientespedidos;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -45,7 +46,17 @@ public class ConfiguracionesApp {
     private static final String JSON_OFFLINE_INFORMACION_GENERAL_POR_CODIGO = "infoGeneral";
 
 
+    private static final String JSON_DATOS_CLIENTE_OFFLINE = "datosCliente";
 
+
+
+
+    public static final int CLAVE_ZONA = 1;
+    public static final int CLAVE_FECHA = 2;
+    public static final int CLAVE_GRADO = 3;
+    public static final int CLAVE_CREDITO = 4;
+    public static final int CLAVE_DIAS = 5;
+    public static final int CLAVE_PUNTOS_DISPONIBLES = 6;
 
 
 
@@ -420,6 +431,86 @@ public class ConfiguracionesApp {
     private static void deleteInformacionOffline(Activity activity){
         SharedPreferences sharedPreferences = activity.getSharedPreferences(NOMBRE_ARCHIVO_CONFIGURACIONES,Context.MODE_PRIVATE);
         sharedPreferences.edit().remove(JSON_OFFLINE_INFORMACION_GENERAL_POR_CODIGO).apply();
+    }
+
+    /**
+     * Guardaremos los datos del cliente como puntos, fecha de siguiente visita, zona, su grado, limite de credito dias y puntos disponibles
+     * @param activity
+     * @param jsonObject
+     */
+    public static void setInformacionClienteOffline(Activity activity, JSONObject jsonObject){
+        //{"nombre":"MONICA HERNANDEZ GARCIA","zona":"EL PALMITO","fecha":"15-12-2020","grado":"VENDEDORA","credito":"1400","dias":"14","puntos_disponibles":"0"}
+        SharedPreferences preferences =
+                activity.getSharedPreferences(NOMBRE_ARCHIVO_CONFIGURACIONES, Context.MODE_PRIVATE);//para que solo la app kaliope pueda leer o escribir sobre el archivo
+
+
+        //convertimos el json array en su reperentacion String para guardara en el xml
+        String valor = jsonObject.toString();
+
+
+        SharedPreferences.Editor editor = preferences.edit(); // Declaramos una variable (objeto) de tipo SharedPreferences.Editor, necesario para guardar cambios en el fichero de preferencias.
+        editor.putString(JSON_DATOS_CLIENTE_OFFLINE,valor);
+        //editor.commit();//guardamos nuestro fichero
+        editor.apply();
+    }
+
+    /**
+     *Devuelve los datos del cliente que se almacenan cuando se conecta al servidor, los mas imprtantes
+     * son la fecha de entrega del producto el limite de credito, y el grado
+     * puedes consultar dependiendo de la palabra clave que se envie
+     * @param activity
+     * @param datoPorRecuperar Las opciones estan en ConfiguracionesApp.CLAVE->
+     *                         <br>ZONA retorna la zona del cliente
+     *                         <br>FECHA retorna la fecha de sigiente visita o de entrega
+     *                         <br>GRADO retorna el grado del cliente
+     *                         <br>CREDITO retorna el limite de credito del cliente
+     *                         <br>DIAS retorna los dias de credito del cliente
+     *                         <br>PUNTOS_DISPONIBLES retorna los puntos que tiene disponibles el cliente
+     * @return String dato
+     */
+    public static String getDatoClienteOffline(Activity activity, int datoPorRecuperar){
+        //{"nombre":"MONICA HERNANDEZ GARCIA","zona":"EL PALMITO","fecha":"15-12-2020","grado":"VENDEDORA","credito":"1400","dias":"14","puntos_disponibles":"0"}
+
+        //obtendremos el json guardado y buscaremos la cadena del valor zona
+        SharedPreferences sharedPreferences =
+                activity.getSharedPreferences(NOMBRE_ARCHIVO_CONFIGURACIONES, Context.MODE_PRIVATE);
+
+
+
+        String valorRecuperado = sharedPreferences.getString(JSON_DATOS_CLIENTE_OFFLINE,"");        //retornamos si no se encuentra el dato, un string "" vacio para que el json array no arroje error cuando se construya
+
+
+        try {
+            JSONObject retorno = new JSONObject(valorRecuperado);   //si la cadena no tiene error y se pasa exitosamente a Json entonces asignamos el valor
+
+
+            switch (datoPorRecuperar){
+                case CLAVE_ZONA:
+                    return retorno.getString("zona");
+
+                case CLAVE_FECHA:
+                    return retorno.getString("fecha");
+
+                case CLAVE_GRADO:
+                    return retorno.getString("grado");
+
+                case CLAVE_CREDITO:
+                    return retorno.getString("credito");
+
+                case CLAVE_DIAS:
+                    return retorno.getString("dias");
+
+                case CLAVE_PUNTOS_DISPONIBLES:
+                    return retorno.getString("puntos_disponibles");
+
+
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+
+        }
+        return "";
     }
 
 

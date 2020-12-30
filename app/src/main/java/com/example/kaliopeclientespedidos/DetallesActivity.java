@@ -42,9 +42,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -570,6 +574,21 @@ public class DetallesActivity extends AppCompatActivity {
         String nombrePro = "";
         String modelo = "";
         String precio = "";
+        String mensajeFechaEntrega = "";
+
+        Date auxiliar = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH); //EL FORMATO QUE VA A RECIBIR PARA CONVERTIRLO
+        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("EEE, d-MMM",Locale.ENGLISH); //EL FORMATO QUE VA A ENTREGAR LUN, 16-DIC
+        try {
+            auxiliar = simpleDateFormat.parse(ConfiguracionesApp.getDatoClienteOffline(this,ConfiguracionesApp.CLAVE_FECHA));
+
+            mensajeFechaEntrega = getResources().getString(R.string.si_ordenas_ahora ) + simpleDateFormat1.format(auxiliar);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            mensajeFechaEntrega = getResources().getString(R.string.si_ordenas_ahora );
+        }
+
+        fechaEntregaTV.setText(mensajeFechaEntrega);
 
         try {
             /*
@@ -583,6 +602,7 @@ public class DetallesActivity extends AppCompatActivity {
             nombrePro = informacionProductoInicial.getString("descripcion");
             modelo = informacionProductoInicial.getString("id_producto");
             precio = informacionProductoInicial.getString("precio_etiqueta");
+
 
             nombreProductoTV.setText(nombrePro);
             modeloTV.setText(modelo);

@@ -319,7 +319,8 @@ public class Ingreso extends AppCompatActivity {
 
                 Log.d ("datosRecibidos",String.valueOf(response));
 
-                //{"informacion":{"id":"inicio de sesion exitoso 15670ac8-824c-4eab-ab6e-b97b338a69fa ","usuario":"PAQUITA"},"datosPersonales":{"no_cuenta":"1049","0":"1049","nombre":"SUSANA BENTARCOURT PIñA","1":"SUSANA BENTARCOURT PIñA"}}
+                //{"informacion":{"id":"inicio de sesion exitoso 15670ac8-824c-4eab-ab6e-b97b338a69fa ","usuario":"PAQUITA"},
+                // "datosPersonales":{"no_cuenta":"1049","0":"1049","nombre":"SUSANA BENTARCOURT PIñA","1":"SUSANA BENTARCOURT PIñA"}}
 
 
                 try {
