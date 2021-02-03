@@ -7,7 +7,6 @@
     android:theme="@style/AppTheme"
     android:layout_marginTop="5dp"
     android:layout_marginEnd="5dp"
-    android:background="@drawable/cuadro_redondeado_spinner"
     >
 
 
@@ -29,11 +28,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="40dp"
+        android:layout_marginEnd="20dp"
         android:layout_toStartOf="@+id/cardView1"
         android:text="Color"
         android:textColor="@color/colorBlack"
-        android:textSize="25sp" />
+        android:textSize="20sp" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView1"

@@ -8,10 +8,13 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -100,9 +103,13 @@ public class DetallesActivity extends AppCompatActivity {
 
     public final String URL_DETALLES_PRODUCTO = "app_movil/consultar_detalles_producto.php";
     public final String URL_DETALLES_POR_COLOR = "app_movil/consultar_detalles_por_color.php";
+    public final String URL_RECIBIR_PEDIDO = "app_movil/recibir_pedido.php";
 
     Animation animationSacudida;
     Animation animationLlegada;
+
+    ProgressDialog progressDialog;
+    Activity activity = this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -190,16 +197,14 @@ public class DetallesActivity extends AppCompatActivity {
                 if(offline){
                     dialogoOffline();
                 }else{
-                    Intent intent = new Intent(getApplicationContext(), CarritoActivity.class);
-                    intent.putExtra("ID_PRODUCTO", id_producto);
-                    intent.putExtra("COLOR_SELECCIONADO", colorSeleccionado);
-                    intent.putExtra("TALLA_SELECCIONADA",tallaSeleccionada);
-                    intent.putExtra("CANTIDAD_SELECCIONADA", cantidadSeleccioanda);
-                    startActivity(intent);
+                    enviarProductoAlServidor();
                 }
 
             }
         });
+
+
+
 
 
 
@@ -1032,4 +1037,134 @@ public class DetallesActivity extends AppCompatActivity {
         builder.show();
     }
 
+
+
+    private void enviarProductoAlServidor() {
+        RequestParams params = new RequestParams();
+        params.put("CUENTA_CLIENTE", ConfiguracionesApp.getCuentaCliente(this));
+        params.put("ID_PRODUCTO", id_producto);
+        params.put("COLOR_SELECCIONADO", colorSeleccionado);
+        params.put("TALLA_SELECCIONADA", tallaSeleccionada);
+        params.put("CANTIDAD_SELECCIONADA", cantidadSeleccioanda);
+
+        showProgresDialog(activity);
+
+        KaliopeServerClient.post(URL_RECIBIR_PEDIDO, params, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                progressDialog.dismiss();
+                Log.d("detalles1", String.valueOf(response));
+                //D/detalles1: {"mensaje":"Tu producto se ha agregado correctamente a tu carrito"}
+
+
+                try {
+                    String responseString = response.getString("mensaje");
+
+                    new AlertDialog.Builder(activity)
+                            .setTitle("Exito")
+                            .setMessage(responseString + "\n\n Status Code" + statusCode)
+                            .setIcon(R.drawable.logo_kaliope_burbuja)
+                            .setPositiveButton(R.string.continuar_eligiendo, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            })
+                            .setNegativeButton(R.string.ver_carrito, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    startActivity(new Intent(activity, CarritoActivity.class));
+                                }
+                            }).create().show();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                //cuando por se recibe como respuesta un objeto que no puede ser convertido a jsonData
+                //es decir si se conecta al servidor, pero desde el retornamos un echo de error
+                //con un simple String lo recibimos en este metodo, crei que lo recibiria en el metodo onSUcces que tiene como parametro el responseString
+                //pero parese que no, lo envia a este onFaiulure con Status Code
+
+                //Si el nombre del archivo php esta mal para el ejemplo el correcto es: comprobar_usuario_app_kaliope.php
+                // y el incorrecto es :comprobar_usuario_app_kaliop.php se llama a este metodo y entrega el codigo 404
+                //lo que imprime en el log es un codigo http donde dice que <h1>Object not found!</h1>
+                //            <p>
+                //
+                //
+                //                The requested URL was not found on this server.
+                //
+                //
+                //
+                //                If you entered the URL manually please check your
+                //                spelling and try again.
+                //es decir si se encontro conexion al servidor y este respondio con ese mensaje
+                //tambien si hay errores con alguna variable o algo asi, en este medio retorna el error como si lo viernas en el navegador
+                //te dice la linea del error etc.
+
+
+                String info = "Status Code: " + String.valueOf(statusCode) + "  responseString: " + responseString;
+                Log.d("onFauile 1", info);
+                //Toast.makeText(MainActivity.this,responseString + "  Status Code: " + String.valueOf(statusCode) , Toast.LENGTH_LONG).show();
+                progressDialog.dismiss();
+                utilidadesApp.dialogoResultadoConexion(activity,"Error al conectarce al servidor", responseString + "\nStatus Code: " + String.valueOf(statusCode));
+
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+
+                //cuando no se ha podido conectar con el servidor el statusCode=0 cz.msebera.android.httpclient.conn.ConnectTimeoutException: Connect to /192.168.1.10:8080 timed out
+                //para simular esto estoy en un servidor local, obiamente el celular debe estar a la misma red, lo desconecte y lo movi a la red movil
+
+                //cuando no hay coneccion a internet apagados datos y wifi se llama al metodo retry 5 veces y arroja la excepcion:
+                // java.net.ConnectException: failed to connect to /192.168.1.10 (port 8080) from /:: (port 0) after 10000ms: connect failed: ENETUNREACH (Network is unreachable)
+
+
+                //Si la url principal del servidor esta mal para simularlo cambiamos estamos a un servidor local con:
+                //"http://192.168.1.10:8080/KALIOPE/" cambiamos la ip a "http://192.168.1.1:8080/KALIOPE/";
+                //se llama al onRetry 5 veces y se arroja la excepcion en el log:
+                //estatus code: 0 java.net.ConnectException: failed to connect to /192.168.1.1 (port 8080) from /192.168.1.71 (port 36134) after 10000ms: isConnected failed: EHOSTUNREACH (No route to host)
+                //no hay ruta al Host
+
+                //Si desconectamos el servidor de la ip antes la ip en el servidor de la computadora era 192.168.1.10, lo movimos a 192.168.1.1
+                //genera lo mismo como si cambiaramos la ip en el programa android la opcion dew arriba. No
+                //StatusCode0  Twhowable:   java.net.ConnectException: failed to connect to /192.168.1.10 (port 8080) from /192.168.1.71 (port 37786) after 10000ms: isConnected failed: EHOSTUNREACH (No route to host)
+                //Llamo a reatry 5 veces
+
+
+                String info = "StatusCode" + String.valueOf(statusCode) + "  Twhowable:   " + throwable.toString();
+                Log.d("onFauile 2", info);
+                progressDialog.dismiss();
+                utilidadesApp.dialogoResultadoConexion(activity,"Error al conectarce al servidor", info);
+
+            }
+
+
+            @Override
+            public void onRetry(int retryNo) {
+                progressDialog.setMessage("Reintentando conexion No: " + String.valueOf(retryNo));
+            }
+
+
+        });
+    }
+
+    private void showProgresDialog(Activity activity){
+
+        progressDialog = new ProgressDialog(activity);
+        progressDialog.setMessage("Conectando al Servidor");
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+    }
 }

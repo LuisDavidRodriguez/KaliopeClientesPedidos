@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.client.cache.Resource;
 
 public class CarritoActivity extends AppCompatActivity {
 
@@ -33,11 +32,11 @@ public class CarritoActivity extends AppCompatActivity {
     int cantidadSeleccionada = 1;
 
 
-    public final String URL_RECIBIR_PEDIDO = "app_movil/recibir_pedido.php";
+    public final String URL_CONSULTAR_PEDIDO = "app_movil/consultar_pedido.php";
 
 
     private JSONArray datosCarrito = new JSONArray();
-    private String errorCarrito = "";               //si el producto no se pudo agregar al carrito se entregara aqui un error
+    private JSONObject totalesCarrito = new JSONObject();
 
 
     RecyclerView recyclerViewLista;
@@ -56,22 +55,13 @@ public class CarritoActivity extends AppCompatActivity {
         recyclerViewLista.setLayoutManager(layoutManager);
 
 
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            id_producto = bundle.getString("ID_PRODUCTO");
-            colorSeleccionado = bundle.getString("COLOR_SELECCIONADO");
-            tallaSeleccionada = bundle.getString("TALLA_SELECCIONADA");
-            cantidadSeleccionada = bundle.getInt("CANTIDAD_SELECCIONADA");
 
-        } else {
-            throw new IllegalArgumentException("No se encontro extras del intent");
-        }
 
 
         Toast.makeText(this, id_producto + " " + colorSeleccionado + " " + tallaSeleccionada + " " + cantidadSeleccionada, Toast.LENGTH_LONG).show();
 
 
-        enviarProductoAlServidor();
+        consultarCarrito();
     }
 
 
@@ -80,15 +70,11 @@ public class CarritoActivity extends AppCompatActivity {
      * una vez agredado el servidor nos retorna un json con los productos que tiene en la lista del
      * carrito del cliente.
      */
-    private void enviarProductoAlServidor() {
+    private void consultarCarrito() {
         RequestParams params = new RequestParams();
         params.put("CUENTA_CLIENTE", ConfiguracionesApp.getCuentaCliente(this));
-        params.put("ID_PRODUCTO", id_producto);
-        params.put("COLOR_SELECCIONADO", colorSeleccionado);
-        params.put("TALLA_SELECCIONADA", tallaSeleccionada);
-        params.put("CANTIDAD_SELECCIONADA", cantidadSeleccionada);
 
-        KaliopeServerClient.post(URL_RECIBIR_PEDIDO, params, new JsonHttpResponseHandler() {
+        KaliopeServerClient.post(URL_CONSULTAR_PEDIDO, params, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -99,7 +85,8 @@ public class CarritoActivity extends AppCompatActivity {
                 {"id":"109","no_pedido":"4","fecha_entrega_pedido":"2020-12-15","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","puntos_disponibles":"0","id_producto":"ST5898","descripcion":"Sueter dama","talla":"UNT","cantidad":"1","color":"VERDE AGUA","no_color":"rgb(200, 235, 231)","precio_etiqueta":"359","precio_vendedora":"310","precio_socia":"305","precio_empresaria":"301","precio_inversionista":null,"imagen_permanente":null,"producto_confirmado":"false","estado_producto":"CREDITO","seguimiento_producto":"Producto sin confirmar","diferencia_regalo":"0","puntos_tomados":"0"},
                 {"id":"110","no_pedido":"4","fecha_entrega_pedido":"2020-12-15","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","puntos_disponibles":"0","id_producto":"ST5898","descripcion":"Sueter dama","talla":"UNT","cantidad":"1","color":"VERDE AGUA","no_color":"rgb(200, 235, 231)","precio_etiqueta":"359","precio_vendedora":"310","precio_socia":"305","precio_empresaria":"301","precio_inversionista":null,"imagen_permanente":null,"producto_confirmado":"false","estado_producto":"CREDITO","seguimiento_producto":"Producto sin confirmar","diferencia_regalo":"0","puntos_tomados":"0"},
                 {"id":"111","no_pedido":"4","fecha_entrega_pedido":"2020-12-15","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","puntos_disponibles":"0","id_producto":"ST5898","descripcion":"Sueter dama","talla":"UNT","cantidad":"1","color":"VERDE AGUA","no_color":"rgb(200, 235, 231)","precio_etiqueta":"359","precio_vendedora":"310","precio_socia":"305","precio_empresaria":"301","precio_inversionista":null,"imagen_permanente":null,"producto_confirmado":"false","estado_producto":"CREDITO","seguimiento_producto":"Producto sin confirmar","diferencia_regalo":"0","puntos_tomados":"0"}]
-                ,"error":""}
+                "totales":{"suma_productos":3,"suma_productos_etiqueta":1087,"suma_productos_vendedora":1182,"suma_productos_socia":1167,"suma_productos_empresaria":1143,"suma_productos_inversion":0,"suma_productos_credito":1182,"diferencia_credito":0}}
+
 
 
                 obtendremos de vuelta todos los productos que el cliente tiene en su carrito,
@@ -108,7 +95,8 @@ public class CarritoActivity extends AppCompatActivity {
                  */
                 try {
                     datosCarrito = response.getJSONArray("carritoCliente");
-                    errorCarrito = response.getString("error");
+                    totalesCarrito = response.getJSONObject("totales");
+                    Log.d("totales", String.valueOf(totalesCarrito));
                     llenarRecyclerLista();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -222,7 +210,11 @@ public class CarritoActivity extends AppCompatActivity {
                 map.put(CarritoAdapter.VENDEDORA, datosCarrito.getJSONObject(i).getString("precio_vendedora"));
                 map.put(CarritoAdapter.INVERSIONISTA, datosCarrito.getJSONObject(i).getString("precio_inversionista"));
                 map.put(CarritoAdapter.GRADO_CLIENTE, datosCarrito.getJSONObject(i).getString("grado_cliente"));
-                map.put(CarritoAdapter.FORMA_PAGO, datosCarrito.getJSONObject(i).getString("estado_producto"));//CREDITO, REGALO, INVERSIONISTA
+                map.put(CarritoAdapter.FORMA_PAGO, datosCarrito.getJSONObject(i).getString("estado_producto"));//CREDITO, INVERSIONISTA
+                map.put(CarritoAdapter.PRODUCTO_CONFIRMADO, datosCarrito.getJSONObject(i).getString("producto_confirmado"));    //false true
+                map.put(CarritoAdapter.SEGUIMIENTO_PRODUCTO, datosCarrito.getJSONObject(i).getString("seguimiento_producto"));   //PRODUCTO SIN CONFIRMAR, PRODUCTO CONFIRMADO
+                map.put(CarritoAdapter.COMENTARIO_APURATE_CONFIRMAR, "ejemplo apurate a confirmar");
+                map.put(CarritoAdapter.LIMITE_CREDITO, datosCarrito.getJSONObject(i).getString("credito_cliente"));
                 map.put(CarritoAdapter.IMAGEN_PERMANENTE, urlImagen);
 
                 listaCarrito.add(map);
@@ -233,30 +225,14 @@ public class CarritoActivity extends AppCompatActivity {
 
         }
 
-        CarritoAdapter carritoAdapter = new CarritoAdapter(listaCarrito);
+        CarritoAdapter carritoAdapter = new CarritoAdapter(listaCarrito,this);
         recyclerViewLista.setAdapter(carritoAdapter);
-
-
-        if (!errorCarrito.isEmpty()) {
-            /*
-            Si el producto que añadio no se agrego correctamente al carrito entonces
-            el servidor nos retornara un error, y lo mostraremos en un dialogo
-            pero aun asi se mostrara la lista de los productos que tenga en el carrito
-             */
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-            builder.setTitle(getResources().getText(R.string.Aviso));
-            builder.setMessage(errorCarrito);
-            builder.setPositiveButton(getResources().getText(R.string.entiendo), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-
-                }
-            }).create().show();
-        }
 
 
     }
 
+
+    public void mostrarTotales(JSONObject totales){
+
+    }
 }

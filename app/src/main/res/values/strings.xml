@@ -43,4 +43,26 @@
     <string name="Aviso">Aviso</string>
     <string name="aPrecioDe">A precio de</string>
     <string name="ganaMas">¡Gana mas!</string>
+    <string name="Eliminalo">Eliminalo</string>
+    <string name="O">ó</string>
+    <string name="confirma_producto">Confirma tu producto</string>
+    <string name="ver_carrito">Ver mi carrito</string>
+    <string name="continuar_eligiendo">Continuar Eligiendo</string>
+    <string name="cambiar_metodo_pago">Cambiar metodo de pago</string>
+    <string name="instrucciones_inversion">Al ser inversionista pagaras este producto de contado al recibir el pedido, eso te permitira obtener los precios mas bajos con mejores ganancias.\n En este producto aumentaras tu ganancia de:<b> $%1s </b> a <b>$%2s</b> </string>
+    <string name="instrucciones_credito">Usaras tu credito Kaliope al recibir tu pedido. \nTu lista de precios es: %1s \nLimite de credito: $%2s<b></b> </string>
+
+
+    <!--El uso de plurales https://www.develou.com/uso-de-strings-en-android-como-recursos-de-texto/-->
+    <plurals name="productosEncontrados">
+        <item quantity="one">se encontro %d producto</item>
+        <item quantity="other">se encontraron %d productos</item>
+    </plurals>
+
+
+    <string name="confirmar_cambio_inversion">Si, Invertir!</string>
+    <string name="cancelar">cancelar</string>
+    <string name="confirmar_cambio_credito">Si, pagar a credito</string>
+    <string name="titulo_eliminar">Eliminar</string>
+    <string name="instrucciones_eliminar">¿Estas seguro que deseas eliminar este producto de tu carrito?</string>
 </resources>

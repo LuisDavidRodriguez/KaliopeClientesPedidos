@@ -2,6 +2,7 @@ package com.example.kaliopeclientespedidos;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
@@ -448,6 +449,23 @@ public class utilidadesApp extends AppCompatActivity {
         }
     }
 
+
+
+
+
+
+    public static void dialogoResultadoConexion (Activity activity, String title,String mensaje){
+        new android.app.AlertDialog.Builder(activity)
+                .setTitle(title)
+                .setMessage(mensaje)
+                .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .create().show();
+    }
 
 
 

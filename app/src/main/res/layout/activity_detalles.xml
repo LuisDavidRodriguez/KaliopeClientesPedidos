@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Sudadera de Hombre"
+            android:text=""
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:textSize="20sp"
@@ -113,7 +113,7 @@
                     android:id="@+id/detalles_TV_precio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="139"
+                    android:text=""
                     android:textColor="@color/colorBlack"
                     android:textSize="25sp"
                     android:textStyle="italic" />
@@ -124,7 +124,7 @@
                 android:id="@+id/detalles_TV_instruccionesFechaEntrega"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Si ordenas ates del 30-Oct tu pedido llegara el: 4-Nov"
+                android:text=""
                 android:textColor="@color/colorBlack"
                 android:textSize="18sp"
                 android:textStyle="italic"
@@ -144,7 +144,7 @@
                 >
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="@string/color"
                     android:textColor="@color/colorPrimaryDark"
@@ -167,7 +167,7 @@
                 >
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="@string/talla"
                     android:textColor="@color/colorPrimaryDark"
@@ -191,7 +191,7 @@
                 >
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:text="@string/cantidad"
                     android:textColor="@color/colorPrimaryDark"

@@ -121,6 +121,15 @@ public class SpinnerColoresAdapter extends BaseAdapter {
         textViewColor.setText(nombre);
         textViewDisponibilidad.setText(mensaje);
 
+        if(nombre.length()>=8){                      //dependiendo del largo del nombre del color definimos el tamaño de la letra
+            textViewColor.setTextSize(18);
+        }else if(nombre.length()>=6){
+            textViewColor.setTextSize(20);
+        }else{
+            textViewColor.setTextSize(24);
+        }
+
+
 
         if(offline){
             Log.d(Constantes.TAG_OFFLINE,"Mostrando solo cuadritos con el color");

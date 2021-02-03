@@ -11,6 +11,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -112,6 +113,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //Toast.makeText(getApplicationContext(),"personas",Toast.LENGTH_SHORT).show();
         }
 
+
+        if(item.getItemId() == R.id.carrito){
+            //navController.navigate(R.id.informacionCuentaFragment);
+            //Toast.makeText(getApplicationContext(),"personas",Toast.LENGTH_SHORT).show();
+
+            startActivity(new Intent(this, CarritoActivity.class));
+        }
+
         //cerramos el navigation cuando haya un clicl
         //drawerLayout.closeDrawer(GravityCompat.START);
         drawerLayout.closeDrawers();
@@ -131,6 +140,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //lo mismo para el otro menu de la barra de tareas
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.search){
+            startActivity(new Intent(this, CarritoActivity.class));
+        }
         return super.onOptionsItemSelected(item);
     }
 

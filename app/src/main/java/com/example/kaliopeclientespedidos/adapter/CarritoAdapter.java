@@ -1,11 +1,15 @@
 package com.example.kaliopeclientespedidos.adapter;
 
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,17 +17,31 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.kaliopeclientespedidos.CarritoActivity;
+import com.example.kaliopeclientespedidos.ConfiguracionesApp;
+import com.example.kaliopeclientespedidos.Ingreso;
+import com.example.kaliopeclientespedidos.KaliopeServerClient;
 import com.example.kaliopeclientespedidos.R;
+import com.example.kaliopeclientespedidos.utilidadesApp;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 
-import java.lang.reflect.Array;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import cz.msebera.android.httpclient.client.cache.Resource;
+import cz.msebera.android.httpclient.Header;
+
+import static com.loopj.android.http.AsyncHttpClient.log;
 
 public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHolderCarrito> {
 
     ArrayList<HashMap> listaCarrito;
+
+    Activity activity;
+    ProgressDialog progressDialog;
 
 
 
@@ -39,19 +57,28 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
     public static final String VENDEDORA = "vendedora";
     public static final String INVERSIONISTA = "inversionista";
     public static final String GANANCIA = "ganacia";
-    public static final String FORMA_PAGO = "formaDePago";      //credito, inversionista, regalo
+    public static final String FORMA_PAGO = "formaDePago";      //credito, inversionista
     public static final String COMENTARIO_CREDITO = "comentarioCredito";
     public static final String COMENTARIO_INVERSIONISTA = "comentarioInversionsita";
-    public static final String COMENTARIO_PUNTOS = "comentarioPuntos";
+    public static final String COMENTARIO_APURATE_CONFIRMAR = "apurateConfirmar";       //quedan 33 piezas en existencias apurate a confirmar
     public static final String GRADO_CLIENTE = "gradoCliente";
+    public static final String LIMITE_CREDITO = "limiteCredito";
     public static final String IMAGEN_PERMANENTE = "imagenPermanente";
+    public static final String PRODUCTO_CONFIRMADO = "productoConfirmado";//false true
+    public static final String SEGUIMIENTO_PRODUCTO = "segimientoProducto";//producto sin confirmar, producto confirmado surtiendoce en almacen etc
+
+
+
+
+    public static final String URL_EDICION_CARRITO = "app_movil/editar_pedido.php";
 
 
 
 
 
-    public CarritoAdapter(ArrayList<HashMap> listaCarrito) {
+    public CarritoAdapter(ArrayList<HashMap> listaCarrito, Activity activity) {
         this.listaCarrito = listaCarrito;
+        this.activity = activity;
     }
 
     @NonNull
@@ -68,9 +95,14 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolderCarrito holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolderCarrito holder, final int position) {
             //es donde actualizamos la vista de cada item
-        HashMap map = listaCarrito.get(position);
+        HashMap map = listaCarrito.get(position);           //nuestro map lo creamos aqui asi podremos tener una instancia para cada producto en la memoria que podremos modificar, si lo creamos como campo, esa posibilidad no es ya que solo abra una instancia que se reciclara en cada producto, esto nos sirve para poder cambiar la info en nuestro adapter
+
+
+        Glide.with(holder.itemView)
+                .load(map.get(IMAGEN_PERMANENTE).toString())
+                .into(holder.imagenPermanente);
 
         holder.tvId.setText(map.get(ID_DATA).toString());
         holder.tvIdProducto.setText(map.get(ID_PRODUCTO).toString());
@@ -81,12 +113,11 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
         holder.tvPrecioPublico.setText(map.get(PRECIO_PUBLICO).toString());
 
 
-        String gradoCliente = map.get(GRADO_CLIENTE).toString();
-        String formaDePago = map.get(FORMA_PAGO).toString();
+        final String gradoCliente = map.get(GRADO_CLIENTE).toString();
+        final String formaDePago = map.get(FORMA_PAGO).toString();
 
-        int precioEtiqueta = 0;
+
         String precioDist = "0";
-        int precioDistribucion = 0;
         int ganancia = 0;
 
 
@@ -110,22 +141,10 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
         }else if(formaDePago.equals("INVERSIONISTA")){
             holder.activarBotonInversionista();
             precioDist = map.get(INVERSIONISTA).toString();
-
-        }else if (formaDePago.equals("REGALO")){
-            holder.activarBotonRegalo();
-            precioDist = "0";
         }
-
-
         //calculamos la ganancia
-        try {
-            precioEtiqueta = Integer.parseInt(map.get(PRECIO_PUBLICO).toString());
-            precioDistribucion = Integer.parseInt(precioDist);
-            ganancia = precioEtiqueta - precioDistribucion;
-
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
+        ganancia = calgularGananciaDesdeString(map.get(PRECIO_PUBLICO).toString(),precioDist);
+        int gananciaInversionista = calgularGananciaDesdeString(map.get(PRECIO_PUBLICO).toString(), map.get(INVERSIONISTA).toString());     //obtenemos aun asi la ganancia de inversionista solo para usarla en los mensajes de motivacion
 
 
 
@@ -143,16 +162,124 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
 
 
 
+        holder.tvApurateConfirmar.setText(map.get(COMENTARIO_APURATE_CONFIRMAR).toString());
+        holder.tvEstatusDelProducto.setText(map.get(SEGUIMIENTO_PRODUCTO).toString());
+
+
+        if(map.get(PRODUCTO_CONFIRMADO).toString().equals("true")){
+            //si el producto ya esta confirmado ocultamos los botones y datos inecesarios
+            holder.productoConfirmado();
+        }
 
 
 
 
 
 
+        /*===========El boton credito e inversionista no se deberan conectar al servidor sino que mostraran los datos
+        inmediatamente y hasta que se le de en confirmar ahora si se conectara al servidor para actualizar la informacion, tendre un problema
+        podria confundir al cliente ya que al hacer los cambios inmediatamente el cliente vera su producto como inversionista pero solo mientras
+        esta en la actividad carrito, cuando se salga y vuelva a entrar se obtendra la lista nueva del servidor y el producto que puso
+        como inversionista antes de confirmar ahora aparecera como credito otra vez. lo mejor seria que al hacer el cambio se conecte al servidor
+        y cambie ese producto a inversionista.=========*/
+        final HashMap mapFinal = map;
+        final String gananciaMensaje = String.valueOf(ganancia);
+        final String gananciainversionistaMensaje = String.valueOf(gananciaInversionista);
 
-        Glide.with(holder.itemView)
-                .load(map.get(IMAGEN_PERMANENTE).toString())
-                .into(holder.imagenPermanente);
+
+        holder.buttonCreditoKaliope.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String recurso = activity.getResources().getString(R.string.instrucciones_credito);
+                String mensajeCredito = String.format(recurso,gradoCliente, mapFinal.get(LIMITE_CREDITO).toString());
+
+
+                if (formaDePago.equals("INVERSIONISTA")) {              //solo mostramos el mensaje si la forma de pago no es credito
+
+                    new android.app.AlertDialog.Builder(activity)
+                            .setTitle(R.string.cambiar_metodo_pago)
+                            .setMessage(mensajeCredito)
+                            .setPositiveButton(R.string.confirmar_cambio_credito, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    conectarServerActualizarMetodoPago(mapFinal.get(ID_DATA).toString(), "CREDITO", mapFinal, position);
+                                }
+                            }).setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    }).create().show();
+
+                }
+            }
+        });
+
+
+        holder.buttonInversionista.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String recurso = activity.getResources().getString(R.string.instrucciones_inversion);
+                String mensajeInversionista = String.format(recurso, gananciaMensaje, gananciainversionistaMensaje);    //remplaso en mi mensaje que esta guardado en values String los aprametros que quiero
+
+                if (formaDePago.equals("CREDITO")) {                    //solo mostramos el mensaje si la forma de pago no es inversion
+                    new AlertDialog.Builder(activity)
+                            .setTitle(R.string.cambiar_metodo_pago)
+                            .setMessage(mensajeInversionista)
+                            .setPositiveButton(R.string.confirmar_cambio_inversion, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    conectarServerActualizarMetodoPago(mapFinal.get(ID_DATA).toString(), "INVERSIONISTA", mapFinal, position);
+
+                                }
+                            })
+                            .setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+                                }
+                            }).create().show();
+                }
+            }
+        });
+
+
+        /*===========Definimos la accion de los botones cada uno se debera conectar al servidor=========*/
+        holder.buttonConfirmar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        holder.imageButtonEliminar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                new AlertDialog.Builder(activity)
+                        .setTitle(R.string.titulo_eliminar)
+                        .setMessage(R.string.instrucciones_eliminar)
+                        .setPositiveButton(R.string.titulo_eliminar, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                conectarServerEliminarProducto(mapFinal.get(ID_DATA).toString(), position);
+
+                            }
+                        })
+                        .setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        }).create().show();
+
+
+            }
+        });
+
+
     }
 
     @Override
@@ -161,6 +288,269 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
     }
 
 
+    private int calgularGananciaDesdeString(String precioPublico, String precioDis){
+        //calculamos la ganancia
+        try {
+            int precioEtiqueta = Integer.parseInt(precioPublico);
+            int precioDistribucion = Integer.parseInt(precioDis);
+            return precioEtiqueta - precioDistribucion;
+
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    /**
+     *
+     * @param idBaseDeDatos
+     * @param metodoDePago
+     * @param map   Recibimos el map que contiene la info del producto donde se modificara, esto para cambiar sus valores
+     *              y poder cumplir con lo de la documentacion, notificaremos al adaptador que a cambiado los datos
+     */
+    private void conectarServerActualizarMetodoPago(String idBaseDeDatos, final String metodoDePago, final HashMap map, final int position){
+        RequestParams params = new RequestParams();
+        params.put("OPERACION",1);      //para actualizar el metodo de pago el codigo de operacion sera 1
+        params.put("CUENTA_CLIENTE", ConfiguracionesApp.getCuentaCliente(activity));      //para actualizar el metodo de pago el codigo de operacion sera 1
+        params.put("ID_PRODUCTO", idBaseDeDatos);
+        params.put("METODO_PAGO",metodoDePago);
+
+        showProgresDialog(activity);
+
+        KaliopeServerClient.post(URL_EDICION_CARRITO,params, new JsonHttpResponseHandler(){
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                progressDialog.dismiss();
+                Log.d("responseCode1", String.valueOf(response));
+                //D/responseCode1: {"resultado":"exito","mensaje":"Hemos cambiado tu pago a CREDITO"}
+
+                try {
+                    String resultado = response.getString("resultado");
+                    String mensaje = response.getString("mensaje");
+                    utilidadesApp.dialogoResultadoConexion(activity, resultado, mensaje);
+
+
+                    if (resultado.compareToIgnoreCase("exito") == 0) {                        //comparamos la respuesta del servidor ignoramos las mayusculas por cualquier cosa, si es igual a exito entonces notificamos a nuestro adaptador para que actualice la imagen, en caso que el servidor tenga un error al modificar el item y retonre error entonces no notificamos al adaptador y no cambiamos el metodo de pago
+
+                        map.put(FORMA_PAGO, metodoDePago);                                      //modificamos en el map el metodo de pago, este map contiene los datos del producto al cual se le hiso clicl en el boton cambiar metodo de pago, cambiamos su informacion
+                        listaCarrito.set(position, map);                                         //renovamos en la lista de productos, el nuevo map modificado con la nueva forma de pago, usamos la posicion donde se hiso clicl para renovar solo ese map en la lista
+                        //notifyDataSetChanged();                                                 //notificamos al adaptador que se cambiaron elementos de la lista, para que los actualice y los muestre al usuario
+                        notifyItemChanged(position);                                            //notificamos al adaptadro que cambiamos solo un elementod de la lista para que solo actualice ese
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+
+            }
+
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                //cuando por se recibe como respuesta un objeto que no puede ser convertido a jsonData
+                //es decir si se conecta al servidor, pero desde el retornamos un echo de error
+                //con un simple String lo recibimos en este metodo, crei que lo recibiria en el metodo onSUcces que tiene como parametro el responseString
+                //pero parese que no, lo envia a este onFaiulure con Status Code
+
+                //Si el nombre del archivo php esta mal para el ejemplo el correcto es: comprobar_usuario_app_kaliope.php
+                // y el incorrecto es :comprobar_usuario_app_kaliop.php se llama a este metodo y entrega el codigo 404
+                //lo que imprime en el log es un codigo http donde dice que <h1>Object not found!</h1>
+                //            <p>
+                //
+                //
+                //                The requested URL was not found on this server.
+                //
+                //
+                //
+                //                If you entered the URL manually please check your
+                //                spelling and try again.
+                //es decir si se encontro conexion al servidor y este respondio con ese mensaje
+                //tambien si hay errores con alguna variable o algo asi, en este medio retorna el error como si lo viernas en el navegador
+                //te dice la linea del error etc.
+
+
+                String info = "Status Code: " + String.valueOf(statusCode) + "  responseString: " + responseString;
+                Log.d("onFauile 1", info);
+                //Toast.makeText(MainActivity.this,responseString + "  Status Code: " + String.valueOf(statusCode) , Toast.LENGTH_LONG).show();
+                progressDialog.dismiss();
+                utilidadesApp.dialogoResultadoConexion(activity,"Fallo de conexion", responseString + "\nStatus Code: " + String.valueOf(statusCode));
+
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+
+                //cuando no se ha podido conectar con el servidor el statusCode=0 cz.msebera.android.httpclient.conn.ConnectTimeoutException: Connect to /192.168.1.10:8080 timed out
+                //para simular esto estoy en un servidor local, obiamente el celular debe estar a la misma red, lo desconecte y lo movi a la red movil
+
+                //cuando no hay coneccion a internet apagados datos y wifi se llama al metodo retry 5 veces y arroja la excepcion:
+                // java.net.ConnectException: failed to connect to /192.168.1.10 (port 8080) from /:: (port 0) after 10000ms: connect failed: ENETUNREACH (Network is unreachable)
+
+
+                //Si la url principal del servidor esta mal para simularlo cambiamos estamos a un servidor local con:
+                //"http://192.168.1.10:8080/KALIOPE/" cambiamos la ip a "http://192.168.1.1:8080/KALIOPE/";
+                //se llama al onRetry 5 veces y se arroja la excepcion en el log:
+                //estatus code: 0 java.net.ConnectException: failed to connect to /192.168.1.1 (port 8080) from /192.168.1.71 (port 36134) after 10000ms: isConnected failed: EHOSTUNREACH (No route to host)
+                //no hay ruta al Host
+
+                //Si desconectamos el servidor de la ip antes la ip en el servidor de la computadora era 192.168.1.10, lo movimos a 192.168.1.1
+                //genera lo mismo como si cambiaramos la ip en el programa android la opcion dew arriba. No
+                //StatusCode0  Twhowable:   java.net.ConnectException: failed to connect to /192.168.1.10 (port 8080) from /192.168.1.71 (port 37786) after 10000ms: isConnected failed: EHOSTUNREACH (No route to host)
+                //Llamo a reatry 5 veces
+
+
+                String info = "StatusCode" + String.valueOf(statusCode) + "  Twhowable:   " + throwable.toString();
+                Log.d("onFauile 2", info);
+                //Toast.makeText(MainActivity.this,info, Toast.LENGTH_LONG).show();
+                progressDialog.dismiss();
+                utilidadesApp.dialogoResultadoConexion(activity,"Fallo de conexion", info);
+
+            }
+
+
+            @Override
+            public void onRetry(int retryNo) {
+                progressDialog.setMessage("Reintentando conexion No: " + String.valueOf(retryNo));
+            }
+
+
+
+        });
+    }
+
+
+    private void conectarServerEliminarProducto(String idBaseDeDatos, final int position){
+        RequestParams params = new RequestParams();
+        params.put("OPERACION",2);      //para eliminar un producto sera el el codigo 2
+        params.put("CUENTA_CLIENTE", ConfiguracionesApp.getCuentaCliente(activity));      //para actualizar el metodo de pago el codigo de operacion sera 1
+        params.put("ID_PRODUCTO", idBaseDeDatos);
+
+        showProgresDialog(activity);
+
+        KaliopeServerClient.post(URL_EDICION_CARRITO,params, new JsonHttpResponseHandler(){
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                progressDialog.dismiss();
+                Log.d("responseCode1", String.valueOf(response));
+                //D/responseCode1: {"resultado":"exito","mensaje":"Hemos eliminado tu producto del carrito"}
+
+                try {
+                    String resultado = response.getString("resultado");
+                    String mensaje = response.getString("mensaje");
+                    utilidadesApp.dialogoResultadoConexion(activity, resultado, mensaje);
+
+
+
+                    if (resultado.compareToIgnoreCase("exito") == 0) {                        //comparamos la respuesta del servidor ignoramos las mayusculas por cualquier cosa, si es igual a exito entonces notificamos a nuestro adaptador para que actualice la imagen, en caso que el servidor tenga un error al modificar el item y retonre error entonces no notificamos al adaptador y no cambiamos el metodo de pago
+
+                        Log.d("lista antes", String.valueOf(listaCarrito.size()));
+                        Log.d("Posicion", String.valueOf(position));
+
+                        listaCarrito.remove(position);                                         // Eliminamos de la lista ese item
+                        notifyItemRemoved(position);                                           //notificamos al adaptador que eliminamos ese elemento para que lo deje de mostrar al usuario
+
+                        Log.d("lista Despues", String.valueOf(listaCarrito.size()));
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+
+            }
+
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                //cuando por se recibe como respuesta un objeto que no puede ser convertido a jsonData
+                //es decir si se conecta al servidor, pero desde el retornamos un echo de error
+                //con un simple String lo recibimos en este metodo, crei que lo recibiria en el metodo onSUcces que tiene como parametro el responseString
+                //pero parese que no, lo envia a este onFaiulure con Status Code
+
+                //Si el nombre del archivo php esta mal para el ejemplo el correcto es: comprobar_usuario_app_kaliope.php
+                // y el incorrecto es :comprobar_usuario_app_kaliop.php se llama a este metodo y entrega el codigo 404
+                //lo que imprime en el log es un codigo http donde dice que <h1>Object not found!</h1>
+                //            <p>
+                //
+                //
+                //                The requested URL was not found on this server.
+                //
+                //
+                //
+                //                If you entered the URL manually please check your
+                //                spelling and try again.
+                //es decir si se encontro conexion al servidor y este respondio con ese mensaje
+                //tambien si hay errores con alguna variable o algo asi, en este medio retorna el error como si lo viernas en el navegador
+                //te dice la linea del error etc.
+
+
+                String info = "Status Code: " + String.valueOf(statusCode) + "  responseString: " + responseString;
+                Log.d("onFauile 1", info);
+                //Toast.makeText(MainActivity.this,responseString + "  Status Code: " + String.valueOf(statusCode) , Toast.LENGTH_LONG).show();
+                progressDialog.dismiss();
+                utilidadesApp.dialogoResultadoConexion(activity,"Fallo de conexion", responseString + "\nStatus Code: " + String.valueOf(statusCode));
+
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+
+                //cuando no se ha podido conectar con el servidor el statusCode=0 cz.msebera.android.httpclient.conn.ConnectTimeoutException: Connect to /192.168.1.10:8080 timed out
+                //para simular esto estoy en un servidor local, obiamente el celular debe estar a la misma red, lo desconecte y lo movi a la red movil
+
+                //cuando no hay coneccion a internet apagados datos y wifi se llama al metodo retry 5 veces y arroja la excepcion:
+                // java.net.ConnectException: failed to connect to /192.168.1.10 (port 8080) from /:: (port 0) after 10000ms: connect failed: ENETUNREACH (Network is unreachable)
+
+
+                //Si la url principal del servidor esta mal para simularlo cambiamos estamos a un servidor local con:
+                //"http://192.168.1.10:8080/KALIOPE/" cambiamos la ip a "http://192.168.1.1:8080/KALIOPE/";
+                //se llama al onRetry 5 veces y se arroja la excepcion en el log:
+                //estatus code: 0 java.net.ConnectException: failed to connect to /192.168.1.1 (port 8080) from /192.168.1.71 (port 36134) after 10000ms: isConnected failed: EHOSTUNREACH (No route to host)
+                //no hay ruta al Host
+
+                //Si desconectamos el servidor de la ip antes la ip en el servidor de la computadora era 192.168.1.10, lo movimos a 192.168.1.1
+                //genera lo mismo como si cambiaramos la ip en el programa android la opcion dew arriba. No
+                //StatusCode0  Twhowable:   java.net.ConnectException: failed to connect to /192.168.1.10 (port 8080) from /192.168.1.71 (port 37786) after 10000ms: isConnected failed: EHOSTUNREACH (No route to host)
+                //Llamo a reatry 5 veces
+
+
+                String info = "StatusCode" + String.valueOf(statusCode) + "  Twhowable:   " + throwable.toString();
+                Log.d("onFauile 2", info);
+                //Toast.makeText(MainActivity.this,info, Toast.LENGTH_LONG).show();
+                progressDialog.dismiss();
+                utilidadesApp.dialogoResultadoConexion(activity,"Fallo de conexion", info);
+
+            }
+
+
+            @Override
+            public void onRetry(int retryNo) {
+                progressDialog.setMessage("Reintentando conexion No: " + String.valueOf(retryNo));
+            }
+
+
+
+        });
+    }
+
+
+    private void showProgresDialog(Activity activity){
+
+        progressDialog = new ProgressDialog(activity);
+        progressDialog.setMessage("Conectando al Servidor");
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+    }
 
 
 
@@ -177,11 +567,16 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
         tvGanancia,
         tvComentarioCredito,
         tvComentarioInversionista,
-        tvComentarioPuntos;
+        tvApurateConfirmar,
+        tvEstatusDelProducto,
+        tvExtraTextoO,
+        tvExtraTextoEliminalo;
 
         Button buttonCreditoKaliope,
         buttonInversionista,
-        buttonPuntosKaliope;
+        buttonConfirmar;
+
+        ImageButton imageButtonEliminar;
 
 
         ImageView imagenPermanente;
@@ -202,10 +597,15 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
             tvGanancia = (TextView) itemView.findViewById(R.id.item_container_carrito_ganancia);
             tvComentarioCredito = (TextView) itemView.findViewById(R.id.item_container_carrito_comentarioCredito);
             tvComentarioInversionista = (TextView) itemView.findViewById(R.id.item_container_carrito_comentarioInversionista);
-            tvComentarioPuntos = (TextView) itemView.findViewById(R.id.item_container_carrito_comentarioPuntos);
             buttonCreditoKaliope = (Button) itemView.findViewById(R.id.item_container_carrito_botonCredito);
             buttonInversionista = (Button) itemView.findViewById(R.id.item_container_carrito_botonInversionista);
-            buttonPuntosKaliope = (Button) itemView.findViewById(R.id.item_container_carrito_botonRegalo);
+            tvApurateConfirmar = (TextView) itemView.findViewById(R.id.item_container_carrito_textApurateConfirmar);
+            buttonConfirmar = (Button) itemView.findViewById(R.id.item_container_carrito_botonConfirmar);
+            imageButtonEliminar = (ImageButton) itemView.findViewById(R.id.item_container_carrito_botonEliminar);
+            tvEstatusDelProducto = (TextView) itemView.findViewById(R.id.item_container_carrito_textSeguimientoDelProducto);
+            tvExtraTextoO = (TextView)itemView.findViewById(R.id.item_container_carrito_textO);
+            tvExtraTextoEliminalo = (TextView) itemView.findViewById(R.id.item_container_carrito_textEliminalo);
+
             imagenPermanente = (ImageView) itemView.findViewById(R.id.item_container_carrito_imagen);
 
 
@@ -220,21 +620,27 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
 
             buttonCreditoKaliope.setBackgroundResource(R.drawable.boton_redondo_credito);
             buttonInversionista.setBackgroundResource(R.drawable.boton_redondo_gris);
-            buttonPuntosKaliope.setBackgroundResource(R.drawable.boton_redondo_gris);
         }
 
         public void activarBotonInversionista(){
             buttonCreditoKaliope.setBackgroundResource(R.drawable.boton_redondo_gris);
             buttonInversionista.setBackgroundResource(R.drawable.boton_redondo_inversionista);
-            buttonPuntosKaliope.setBackgroundResource(R.drawable.boton_redondo_gris);
         }
 
-        public void activarBotonRegalo(){
-            buttonCreditoKaliope.setBackgroundResource(R.drawable.boton_redondo_gris);
-            buttonInversionista.setBackgroundResource(R.drawable.boton_redondo_gris);
-            buttonPuntosKaliope.setBackgroundResource(R.drawable.boton_redondo_regalo);
+
+        public void productoConfirmado(){
+            tvApurateConfirmar.setVisibility(View.GONE);
+            imageButtonEliminar.setVisibility(View.GONE);
+            buttonConfirmar.setVisibility(View.GONE);
+            tvExtraTextoO.setVisibility(View.GONE);
+            tvExtraTextoEliminalo.setVisibility(View.GONE);
         }
+
+
+
+
     }
+
 
 
 
