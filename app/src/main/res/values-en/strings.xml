@@ -37,5 +37,17 @@
     <string name="confirmar_cambio_credito">Pay it with credit</string>
     <string name="titulo_eliminar">Delete item</string>
     <string name="instrucciones_eliminar">Do you want to delete this item from your car?</string>
+    <string name="limite_credito">Credit Limit: $</string>
+    <string name="grado">Grade:</string>
+    <string name="dias_credito">Credit Days:</string>
+    <string name="zona">Zone:</string>
+    <string name="piezas_totales">Total Quantity:</string>
+    <string name="pedido_numero">Package Number:</string>
+    <string name="fecha_entrega">Delivery on:</string>
+    <string name="credito">Credit</string>
+    <string name="importe">Total:</string>
+    <string name="inversion">Investor</string>
+    <string name="ganancia_total">Total profit:</string>
+    <string name="confirmar_enviar_pedido">Confirm your Package</string>
 
 </resources>

@@ -268,13 +268,13 @@
                     android:textSize="12sp" />
 
                 <Button
-                    android:id="@+id/item_container_carrito_botonInversionista"
+                    android:id="@+id/item_container_carrito_botonInversion"
                     android:layout_width="0dp"
                     android:layout_height="35dp"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
                     android:layout_weight="1"
-                    android:background="@drawable/boton_redondo_inversionista"
+                    android:background="@drawable/boton_redondo_inversion"
                     android:text="@string/Inversionista"
                     android:textColor="@color/white"
                     android:textSize="12sp" />
@@ -303,7 +303,7 @@
                     android:textSize="12sp" />
 
                 <TextView
-                    android:id="@+id/item_container_carrito_comentarioInversionista"
+                    android:id="@+id/item_container_carrito_comentarioInversion"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

@@ -1,12 +1,10 @@
 package com.example.kaliopeclientespedidos;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -84,8 +82,8 @@ public class CarritoActivity extends AppCompatActivity {
                 {"carritoCliente":[{"id":"108","no_pedido":"4","fecha_entrega_pedido":"2020-12-15","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","puntos_disponibles":"0","id_producto":"SM5898","descripcion":"Sudadera dama","talla":"UNT","cantidad":"1","color":"Rosa","no_color":"rgb(240, 74, 141)","precio_etiqueta":"339","precio_vendedora":"298","precio_socia":"295","precio_empresaria":"291","precio_inversionista":null,"imagen_permanente":null,"producto_confirmado":"false","estado_producto":"CREDITO","seguimiento_producto":"Producto sin confirmar","diferencia_regalo":"0","puntos_tomados":"0"},
                 {"id":"109","no_pedido":"4","fecha_entrega_pedido":"2020-12-15","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","puntos_disponibles":"0","id_producto":"ST5898","descripcion":"Sueter dama","talla":"UNT","cantidad":"1","color":"VERDE AGUA","no_color":"rgb(200, 235, 231)","precio_etiqueta":"359","precio_vendedora":"310","precio_socia":"305","precio_empresaria":"301","precio_inversionista":null,"imagen_permanente":null,"producto_confirmado":"false","estado_producto":"CREDITO","seguimiento_producto":"Producto sin confirmar","diferencia_regalo":"0","puntos_tomados":"0"},
                 {"id":"110","no_pedido":"4","fecha_entrega_pedido":"2020-12-15","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","puntos_disponibles":"0","id_producto":"ST5898","descripcion":"Sueter dama","talla":"UNT","cantidad":"1","color":"VERDE AGUA","no_color":"rgb(200, 235, 231)","precio_etiqueta":"359","precio_vendedora":"310","precio_socia":"305","precio_empresaria":"301","precio_inversionista":null,"imagen_permanente":null,"producto_confirmado":"false","estado_producto":"CREDITO","seguimiento_producto":"Producto sin confirmar","diferencia_regalo":"0","puntos_tomados":"0"},
-                {"id":"111","no_pedido":"4","fecha_entrega_pedido":"2020-12-15","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","puntos_disponibles":"0","id_producto":"ST5898","descripcion":"Sueter dama","talla":"UNT","cantidad":"1","color":"VERDE AGUA","no_color":"rgb(200, 235, 231)","precio_etiqueta":"359","precio_vendedora":"310","precio_socia":"305","precio_empresaria":"301","precio_inversionista":null,"imagen_permanente":null,"producto_confirmado":"false","estado_producto":"CREDITO","seguimiento_producto":"Producto sin confirmar","diferencia_regalo":"0","puntos_tomados":"0"}]
-                "totales":{"suma_productos":3,"suma_productos_etiqueta":1087,"suma_productos_vendedora":1182,"suma_productos_socia":1167,"suma_productos_empresaria":1143,"suma_productos_inversion":0,"suma_productos_credito":1182,"diferencia_credito":0}}
+                {"id":"111","no_pedido":"4","fecha_entrega_pedido":"2020-12-15","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","puntos_disponibles":"0","id_producto":"ST5898","descripcion":"Sueter dama","talla":"UNT","cantidad":"1","color":"VERDE AGUA","no_color":"rgb(200, 235, 231)","precio_etiqueta":"359","precio_vendedora":"310","precio_socia":"305","precio_empresaria":"301","precio_inversionista":null,"imagen_permanente":null,"producto_confirmado":"false","estado_producto":"CREDITO","seguimiento_producto":"Producto sin confirmar","diferencia_regalo":"0","puntos_tomados":"0"}],
+                totales: {"nombre":"MONICA HERNANDEZ GARCIA","limite_credito":"1400","grado":"VENDEDORA","dias":"14","ruta":"EL PALMITO","numero_pedido":"1","fecha_entrega":"2021-02-09","suma_cantidad":3,"suma_credito":2,"suma_inversion":1,"suma_productos_etiqueta":1087,"suma_productos_inversion":360,"suma_productos_credito":788,"suma_ganancia_cliente":-61,"diferencia_credito":-612,"mensaje_diferencia_credito":"Aun dispones de $612 en tu credito Kaliope"}
 
 
 
@@ -208,9 +206,9 @@ public class CarritoActivity extends AppCompatActivity {
                 map.put(CarritoAdapter.EMPRESARIA, datosCarrito.getJSONObject(i).getString("precio_empresaria"));
                 map.put(CarritoAdapter.SOCIA, datosCarrito.getJSONObject(i).getString("precio_socia"));
                 map.put(CarritoAdapter.VENDEDORA, datosCarrito.getJSONObject(i).getString("precio_vendedora"));
-                map.put(CarritoAdapter.INVERSIONISTA, datosCarrito.getJSONObject(i).getString("precio_inversionista"));
+                map.put(CarritoAdapter.INVERSION, datosCarrito.getJSONObject(i).getString("precio_inversionista"));
                 map.put(CarritoAdapter.GRADO_CLIENTE, datosCarrito.getJSONObject(i).getString("grado_cliente"));
-                map.put(CarritoAdapter.FORMA_PAGO, datosCarrito.getJSONObject(i).getString("estado_producto"));//CREDITO, INVERSIONISTA
+                map.put(CarritoAdapter.FORMA_PAGO, datosCarrito.getJSONObject(i).getString("estado_producto"));//CREDITO, INVERSION
                 map.put(CarritoAdapter.PRODUCTO_CONFIRMADO, datosCarrito.getJSONObject(i).getString("producto_confirmado"));    //false true
                 map.put(CarritoAdapter.SEGUIMIENTO_PRODUCTO, datosCarrito.getJSONObject(i).getString("seguimiento_producto"));   //PRODUCTO SIN CONFIRMAR, PRODUCTO CONFIRMADO
                 map.put(CarritoAdapter.COMENTARIO_APURATE_CONFIRMAR, "ejemplo apurate a confirmar");

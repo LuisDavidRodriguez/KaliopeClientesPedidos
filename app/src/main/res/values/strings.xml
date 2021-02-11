@@ -65,4 +65,16 @@
     <string name="confirmar_cambio_credito">Si, pagar a credito</string>
     <string name="titulo_eliminar">Eliminar</string>
     <string name="instrucciones_eliminar">¿Estas seguro que deseas eliminar este producto de tu carrito?</string>
+    <string name="limite_credito">Limite Credito: $</string>
+    <string name="grado">Grado:</string>
+    <string name="dias_credito">Dias Credito:</string>
+    <string name="zona">Zona:</string>
+    <string name="piezas_totales">Piezas totales:</string>
+    <string name="pedido_numero">Pedido numero:</string>
+    <string name="fecha_entrega">Fecha de entrega:</string>
+    <string name="credito">Credito</string>
+    <string name="importe">Importe:</string>
+    <string name="inversion">Inversion</string>
+    <string name="ganancia_total">Ganancia total:</string>
+    <string name="confirmar_enviar_pedido">Confirmar y enviar pedido</string>
 </resources>

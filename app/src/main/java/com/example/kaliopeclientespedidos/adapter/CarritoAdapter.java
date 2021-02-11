@@ -17,9 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.kaliopeclientespedidos.CarritoActivity;
 import com.example.kaliopeclientespedidos.ConfiguracionesApp;
-import com.example.kaliopeclientespedidos.Ingreso;
 import com.example.kaliopeclientespedidos.KaliopeServerClient;
 import com.example.kaliopeclientespedidos.R;
 import com.example.kaliopeclientespedidos.utilidadesApp;
@@ -33,8 +31,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import cz.msebera.android.httpclient.Header;
-
-import static com.loopj.android.http.AsyncHttpClient.log;
 
 public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHolderCarrito> {
 
@@ -55,11 +51,11 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
     public static final String EMPRESARIA = "empresaria";
     public static final String SOCIA = "socia";
     public static final String VENDEDORA = "vendedora";
-    public static final String INVERSIONISTA = "inversionista";
+    public static final String INVERSION = "inversion";
     public static final String GANANCIA = "ganacia";
-    public static final String FORMA_PAGO = "formaDePago";      //credito, inversionista
+    public static final String FORMA_PAGO = "formaDePago";      //credito, inversion
     public static final String COMENTARIO_CREDITO = "comentarioCredito";
-    public static final String COMENTARIO_INVERSIONISTA = "comentarioInversionsita";
+    public static final String COMENTARIO_INVERSION = "comentarioInversionsita";
     public static final String COMENTARIO_APURATE_CONFIRMAR = "apurateConfirmar";       //quedan 33 piezas en existencias apurate a confirmar
     public static final String GRADO_CLIENTE = "gradoCliente";
     public static final String LIMITE_CREDITO = "limiteCredito";
@@ -138,13 +134,13 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
                 precioDist = map.get(EMPRESARIA).toString();
             }
 
-        }else if(formaDePago.equals("INVERSIONISTA")){
-            holder.activarBotonInversionista();
-            precioDist = map.get(INVERSIONISTA).toString();
+        }else if(formaDePago.equals("INVERSION")){
+            holder.activarBotonInversion();
+            precioDist = map.get(INVERSION).toString();
         }
         //calculamos la ganancia
         ganancia = calgularGananciaDesdeString(map.get(PRECIO_PUBLICO).toString(),precioDist);
-        int gananciaInversionista = calgularGananciaDesdeString(map.get(PRECIO_PUBLICO).toString(), map.get(INVERSIONISTA).toString());     //obtenemos aun asi la ganancia de inversionista solo para usarla en los mensajes de motivacion
+        int gananciaInversion = calgularGananciaDesdeString(map.get(PRECIO_PUBLICO).toString(), map.get(INVERSION).toString());     //obtenemos aun asi la ganancia de inversion solo para usarla en los mensajes de motivacion
 
 
 
@@ -156,8 +152,8 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
         String comentarioCredito = holder.itemView.getResources().getString(R.string.aPrecioDe) + gradoCliente;
         holder.tvComentarioCredito.setText(comentarioCredito);
 
-        String comentarioInversionista = holder.itemView.getResources().getString(R.string.ganaMas);
-        holder.tvComentarioInversionista.setText(comentarioInversionista);
+        String comentarioInversion = holder.itemView.getResources().getString(R.string.ganaMas);
+        holder.tvComentarioInversion.setText(comentarioInversion);
 
 
 
@@ -176,15 +172,15 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
 
 
 
-        /*===========El boton credito e inversionista no se deberan conectar al servidor sino que mostraran los datos
+        /*===========El boton credito e inversion no se deberan conectar al servidor sino que mostraran los datos
         inmediatamente y hasta que se le de en confirmar ahora si se conectara al servidor para actualizar la informacion, tendre un problema
-        podria confundir al cliente ya que al hacer los cambios inmediatamente el cliente vera su producto como inversionista pero solo mientras
+        podria confundir al cliente ya que al hacer los cambios inmediatamente el cliente vera su producto como inversion pero solo mientras
         esta en la actividad carrito, cuando se salga y vuelva a entrar se obtendra la lista nueva del servidor y el producto que puso
-        como inversionista antes de confirmar ahora aparecera como credito otra vez. lo mejor seria que al hacer el cambio se conecte al servidor
-        y cambie ese producto a inversionista.=========*/
+        como inversion antes de confirmar ahora aparecera como credito otra vez. lo mejor seria que al hacer el cambio se conecte al servidor
+        y cambie ese producto a inversion.=========*/
         final HashMap mapFinal = map;
         final String gananciaMensaje = String.valueOf(ganancia);
-        final String gananciainversionistaMensaje = String.valueOf(gananciaInversionista);
+        final String gananciaInversionMensaje = String.valueOf(gananciaInversion);
 
 
         holder.buttonCreditoKaliope.setOnClickListener(new View.OnClickListener() {
@@ -195,7 +191,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
                 String mensajeCredito = String.format(recurso,gradoCliente, mapFinal.get(LIMITE_CREDITO).toString());
 
 
-                if (formaDePago.equals("INVERSIONISTA")) {              //solo mostramos el mensaje si la forma de pago no es credito
+                if (formaDePago.equals("INVERSION")) {              //solo mostramos el mensaje si la forma de pago no es credito
 
                     new android.app.AlertDialog.Builder(activity)
                             .setTitle(R.string.cambiar_metodo_pago)
@@ -217,21 +213,21 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
         });
 
 
-        holder.buttonInversionista.setOnClickListener(new View.OnClickListener() {
+        holder.buttonInversion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 String recurso = activity.getResources().getString(R.string.instrucciones_inversion);
-                String mensajeInversionista = String.format(recurso, gananciaMensaje, gananciainversionistaMensaje);    //remplaso en mi mensaje que esta guardado en values String los aprametros que quiero
+                String mensajeInversion = String.format(recurso, gananciaMensaje, gananciaInversionMensaje);    //remplaso en mi mensaje que esta guardado en values String los aprametros que quiero
 
                 if (formaDePago.equals("CREDITO")) {                    //solo mostramos el mensaje si la forma de pago no es inversion
                     new AlertDialog.Builder(activity)
                             .setTitle(R.string.cambiar_metodo_pago)
-                            .setMessage(mensajeInversionista)
+                            .setMessage(mensajeInversion)
                             .setPositiveButton(R.string.confirmar_cambio_inversion, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    conectarServerActualizarMetodoPago(mapFinal.get(ID_DATA).toString(), "INVERSIONISTA", mapFinal, position);
+                                    conectarServerActualizarMetodoPago(mapFinal.get(ID_DATA).toString(), "INVERSION", mapFinal, position);
 
                                 }
                             })
@@ -566,14 +562,14 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
         tvPrecioDistribucion,
         tvGanancia,
         tvComentarioCredito,
-        tvComentarioInversionista,
+                tvComentarioInversion,
         tvApurateConfirmar,
         tvEstatusDelProducto,
         tvExtraTextoO,
         tvExtraTextoEliminalo;
 
         Button buttonCreditoKaliope,
-        buttonInversionista,
+                buttonInversion,
         buttonConfirmar;
 
         ImageButton imageButtonEliminar;
@@ -596,9 +592,9 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
             tvPrecioDistribucion = (TextView) itemView.findViewById(R.id.item_container_carrito_precioDistribucion);
             tvGanancia = (TextView) itemView.findViewById(R.id.item_container_carrito_ganancia);
             tvComentarioCredito = (TextView) itemView.findViewById(R.id.item_container_carrito_comentarioCredito);
-            tvComentarioInversionista = (TextView) itemView.findViewById(R.id.item_container_carrito_comentarioInversionista);
+            tvComentarioInversion = (TextView) itemView.findViewById(R.id.item_container_carrito_comentarioInversion);
             buttonCreditoKaliope = (Button) itemView.findViewById(R.id.item_container_carrito_botonCredito);
-            buttonInversionista = (Button) itemView.findViewById(R.id.item_container_carrito_botonInversionista);
+            buttonInversion = (Button) itemView.findViewById(R.id.item_container_carrito_botonInversion);
             tvApurateConfirmar = (TextView) itemView.findViewById(R.id.item_container_carrito_textApurateConfirmar);
             buttonConfirmar = (Button) itemView.findViewById(R.id.item_container_carrito_botonConfirmar);
             imageButtonEliminar = (ImageButton) itemView.findViewById(R.id.item_container_carrito_botonEliminar);
@@ -619,12 +615,12 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
         public void activarBotonCredito(){
 
             buttonCreditoKaliope.setBackgroundResource(R.drawable.boton_redondo_credito);
-            buttonInversionista.setBackgroundResource(R.drawable.boton_redondo_gris);
+            buttonInversion.setBackgroundResource(R.drawable.boton_redondo_gris);
         }
 
-        public void activarBotonInversionista(){
+        public void activarBotonInversion(){
             buttonCreditoKaliope.setBackgroundResource(R.drawable.boton_redondo_gris);
-            buttonInversionista.setBackgroundResource(R.drawable.boton_redondo_inversionista);
+            buttonInversion.setBackgroundResource(R.drawable.boton_redondo_inversion);
         }
 
 
