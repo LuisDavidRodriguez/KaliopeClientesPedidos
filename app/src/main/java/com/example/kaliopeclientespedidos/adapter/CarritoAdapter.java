@@ -39,6 +39,8 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
     Activity activity;
     ProgressDialog progressDialog;
 
+    TotalAdapter totalAdapter;          //solicitamos una referencia de nuestro totalAdapter para poder solicitar una actualizacion de ese adaptador
+
 
 
     public static final String ID_DATA = "idDataBase";
@@ -72,15 +74,18 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
 
 
 
-    public CarritoAdapter(ArrayList<HashMap> listaCarrito, Activity activity) {
+    public CarritoAdapter(ArrayList<HashMap> listaCarrito, Activity activity, TotalAdapter totalAdapter) {
         this.listaCarrito = listaCarrito;
         this.activity = activity;
+        this.totalAdapter = totalAdapter;
     }
 
     @NonNull
     @Override
     public ViewHolderCarrito onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         //inflamos la vista de cada item
+
+
         View view = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.item_container_carrito,
                 parent,
@@ -243,12 +248,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
 
 
         /*===========Definimos la accion de los botones cada uno se debera conectar al servidor=========*/
-        holder.buttonConfirmar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-            }
-        });
 
         holder.imageButtonEliminar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -320,11 +320,14 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 progressDialog.dismiss();
                 Log.d("responseCode1", String.valueOf(response));
-                //D/responseCode1: {"resultado":"exito","mensaje":"Hemos cambiado tu pago a CREDITO"}
+               //responseCode1: {"resultado":"Exito","mensaje":"Hemos cambiado tu pago a INVERSION",
+                // "totales":{"nombre":"MONICA HERNANDEZ GARCIA","cuenta":"4926","limite_credito":"1400","grado":"VENDEDORA","dias":"14","ruta":"EL PALMITO","numero_pedido":"1","fecha_entrega":"2021-02-23","suma_cantidad":2,"suma_credito":1,"suma_inversion":1,"suma_productos_etiqueta":678,"suma_productos_inversion":280,"suma_productos_credito":298,"suma_ganancia_cliente":100,"diferencia_credito":-1102,"mensaje_diferencia_credito":"Aun dispones de $1102 en tu credito Kaliope","mensaje_todo_inversion":"","mensaje_resumido_puntos":" + 100 puntos Kaliope","mensaje_completo_puntos":"Tambien has ganado 100 puntos Kaliope, recueda que estos puntos se validaran con tu agente Kaliope y seran solo si realizas los pagos completos de este pedido."}}
+
 
                 try {
                     String resultado = response.getString("resultado");
                     String mensaje = response.getString("mensaje");
+                    JSONObject totalesJsonObject = response.getJSONObject("totales");
                     utilidadesApp.dialogoResultadoConexion(activity, resultado, mensaje);
 
 
@@ -334,6 +337,10 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
                         listaCarrito.set(position, map);                                         //renovamos en la lista de productos, el nuevo map modificado con la nueva forma de pago, usamos la posicion donde se hiso clicl para renovar solo ese map en la lista
                         //notifyDataSetChanged();                                                 //notificamos al adaptador que se cambiaron elementos de la lista, para que los actualice y los muestre al usuario
                         notifyItemChanged(position);                                            //notificamos al adaptadro que cambiamos solo un elementod de la lista para que solo actualice ese
+
+                        totalAdapter.cambiarJsonObject(totalesJsonObject);                      //actualizara nuestro adapter totales
+
+
                     }
 
                 } catch (JSONException e) {
@@ -434,11 +441,12 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 progressDialog.dismiss();
                 Log.d("responseCode1", String.valueOf(response));
-                //D/responseCode1: {"resultado":"exito","mensaje":"Hemos eliminado tu producto del carrito"}
+                //D/responseCode1: {"resultado":"Exito","mensaje":"Hemos eliminado el producto de tu carrito","totales":{"nombre":"MONICA HERNANDEZ GARCIA","cuenta":"4926","limite_credito":"1400","grado":"VENDEDORA","dias":"14","ruta":"EL PALMITO","numero_pedido":"1","fecha_entrega":"2021-02-23","suma_cantidad":1,"suma_credito":0,"suma_inversion":1,"suma_productos_etiqueta":339,"suma_productos_inversion":280,"suma_productos_credito":0,"suma_ganancia_cliente":59,"diferencia_credito":-1400,"mensaje_diferencia_credito":"Aun dispones de $1400 en tu credito Kaliope","mensaje_todo_inversion":"","mensaje_resumido_puntos":"+0 puntos Kaliope","mensaje_completo_puntos":"No has ganado puntos Kaliope en este pedido, pedido minimo para puntos son $500"}}
 
                 try {
                     String resultado = response.getString("resultado");
                     String mensaje = response.getString("mensaje");
+                    JSONObject totalesJsonObjet = response.getJSONObject("totales");
                     utilidadesApp.dialogoResultadoConexion(activity, resultado, mensaje);
 
 
@@ -450,6 +458,8 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
 
                         listaCarrito.remove(position);                                         // Eliminamos de la lista ese item
                         notifyItemRemoved(position);                                           //notificamos al adaptador que eliminamos ese elemento para que lo deje de mostrar al usuario
+
+                        totalAdapter.cambiarJsonObject(totalesJsonObjet);                       //notificamos a nuestro adaptador totales que le enviamos un nuevo jsonobhjet con los totales acutalizados por el servidor y que actualice las vistas
 
                         Log.d("lista Despues", String.valueOf(listaCarrito.size()));
                     }
@@ -596,10 +606,8 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
             buttonCreditoKaliope = (Button) itemView.findViewById(R.id.item_container_carrito_botonCredito);
             buttonInversion = (Button) itemView.findViewById(R.id.item_container_carrito_botonInversion);
             tvApurateConfirmar = (TextView) itemView.findViewById(R.id.item_container_carrito_textApurateConfirmar);
-            buttonConfirmar = (Button) itemView.findViewById(R.id.item_container_carrito_botonConfirmar);
             imageButtonEliminar = (ImageButton) itemView.findViewById(R.id.item_container_carrito_botonEliminar);
             tvEstatusDelProducto = (TextView) itemView.findViewById(R.id.item_container_carrito_textSeguimientoDelProducto);
-            tvExtraTextoO = (TextView)itemView.findViewById(R.id.item_container_carrito_textO);
             tvExtraTextoEliminalo = (TextView) itemView.findViewById(R.id.item_container_carrito_textEliminalo);
 
             imagenPermanente = (ImageView) itemView.findViewById(R.id.item_container_carrito_imagen);

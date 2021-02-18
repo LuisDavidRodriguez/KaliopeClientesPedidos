@@ -1,15 +1,19 @@
 package com.example.kaliopeclientespedidos;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.example.kaliopeclientespedidos.adapter.CarritoAdapter;
+import com.example.kaliopeclientespedidos.adapter.TotalAdapter;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -30,7 +34,7 @@ public class CarritoActivity extends AppCompatActivity {
     int cantidadSeleccionada = 1;
 
 
-    public final String URL_CONSULTAR_PEDIDO = "app_movil/consultar_pedido.php";
+    public static final String URL_CONSULTAR_PEDIDO = "app_movil/consultar_pedido.php";
 
 
     private JSONArray datosCarrito = new JSONArray();
@@ -42,6 +46,8 @@ public class CarritoActivity extends AppCompatActivity {
     RecyclerView.LayoutManager layoutManager;
 
     ArrayList<HashMap> listaCarrito = new ArrayList<HashMap>();
+
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +78,9 @@ public class CarritoActivity extends AppCompatActivity {
         RequestParams params = new RequestParams();
         params.put("CUENTA_CLIENTE", ConfiguracionesApp.getCuentaCliente(this));
 
+        showProgresDialog(this);
+
+
         KaliopeServerClient.post(URL_CONSULTAR_PEDIDO, params, new JsonHttpResponseHandler() {
 
             @Override
@@ -83,7 +92,7 @@ public class CarritoActivity extends AppCompatActivity {
                 {"id":"109","no_pedido":"4","fecha_entrega_pedido":"2020-12-15","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","puntos_disponibles":"0","id_producto":"ST5898","descripcion":"Sueter dama","talla":"UNT","cantidad":"1","color":"VERDE AGUA","no_color":"rgb(200, 235, 231)","precio_etiqueta":"359","precio_vendedora":"310","precio_socia":"305","precio_empresaria":"301","precio_inversionista":null,"imagen_permanente":null,"producto_confirmado":"false","estado_producto":"CREDITO","seguimiento_producto":"Producto sin confirmar","diferencia_regalo":"0","puntos_tomados":"0"},
                 {"id":"110","no_pedido":"4","fecha_entrega_pedido":"2020-12-15","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","puntos_disponibles":"0","id_producto":"ST5898","descripcion":"Sueter dama","talla":"UNT","cantidad":"1","color":"VERDE AGUA","no_color":"rgb(200, 235, 231)","precio_etiqueta":"359","precio_vendedora":"310","precio_socia":"305","precio_empresaria":"301","precio_inversionista":null,"imagen_permanente":null,"producto_confirmado":"false","estado_producto":"CREDITO","seguimiento_producto":"Producto sin confirmar","diferencia_regalo":"0","puntos_tomados":"0"},
                 {"id":"111","no_pedido":"4","fecha_entrega_pedido":"2020-12-15","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","puntos_disponibles":"0","id_producto":"ST5898","descripcion":"Sueter dama","talla":"UNT","cantidad":"1","color":"VERDE AGUA","no_color":"rgb(200, 235, 231)","precio_etiqueta":"359","precio_vendedora":"310","precio_socia":"305","precio_empresaria":"301","precio_inversionista":null,"imagen_permanente":null,"producto_confirmado":"false","estado_producto":"CREDITO","seguimiento_producto":"Producto sin confirmar","diferencia_regalo":"0","puntos_tomados":"0"}],
-                totales: {"nombre":"MONICA HERNANDEZ GARCIA","limite_credito":"1400","grado":"VENDEDORA","dias":"14","ruta":"EL PALMITO","numero_pedido":"1","fecha_entrega":"2021-02-09","suma_cantidad":3,"suma_credito":2,"suma_inversion":1,"suma_productos_etiqueta":1087,"suma_productos_inversion":360,"suma_productos_credito":788,"suma_ganancia_cliente":-61,"diferencia_credito":-612,"mensaje_diferencia_credito":"Aun dispones de $612 en tu credito Kaliope"}
+                totales: {"nombre":"MONICA HERNANDEZ GARCIA","cuenta":"4926","limite_credito":"1400","grado":"VENDEDORA","dias":"14","ruta":"EL PALMITO","numero_pedido":"1","fecha_entrega":"2021-02-09","suma_cantidad":5,"suma_credito":4,"suma_inversion":1,"suma_productos_etiqueta":2015,"suma_productos_inversion":360,"suma_productos_credito":1288,"suma_ganancia_cliente":367,"diferencia_credito":-112,"mensaje_diferencia_credito":"Aun dispones de $112 en tu credito Kaliope","mensaje_todo_inversion":"Si pagaras todo tu pedido en Inversion ganarias $367","mensaje_resumido_puntos":" + 300 puntos Kaliope","mensaje_completo_puntos":"Tambien has ganado 300 puntos Kaliope, recueda que estos puntos se validaran con tu agente Kaliope y seran solo si realizas los pagos completos de este pedido."}}
 
 
 
@@ -99,6 +108,8 @@ public class CarritoActivity extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                progressDialog.dismiss();
 
 
             }
@@ -131,7 +142,7 @@ public class CarritoActivity extends AppCompatActivity {
                 String info = "Status Code: " + String.valueOf(statusCode) + "  responseString: " + responseString;
                 Log.d("onFauile 1", info);
                 //Toast.makeText(MainActivity.this,responseString + "  Status Code: " + String.valueOf(statusCode) , Toast.LENGTH_LONG).show();
-                //progressDialog.dismiss();
+               progressDialog.dismiss();
                 //dialogoDeConexion("Fallo de inicio de sesion", responseString + "\nStatus Code: " + String.valueOf(statusCode));
 
 
@@ -162,7 +173,7 @@ public class CarritoActivity extends AppCompatActivity {
                 String info = "StatusCode" + String.valueOf(statusCode) + "  Twhowable:   " + throwable.toString();
                 Log.d("onFauile 2", info);
                 //Toast.makeText(MainActivity.this,info, Toast.LENGTH_LONG).show();
-                //progressDialog.dismiss();
+                progressDialog.dismiss();
                 //dialogoDeConexion("Fallo de conexion", info);
             }
 
@@ -223,14 +234,23 @@ public class CarritoActivity extends AppCompatActivity {
 
         }
 
-        CarritoAdapter carritoAdapter = new CarritoAdapter(listaCarrito,this);
-        recyclerViewLista.setAdapter(carritoAdapter);
+        TotalAdapter totalAdapter = new TotalAdapter(totalesCarrito, this);
+        CarritoAdapter carritoAdapter = new CarritoAdapter(listaCarrito,this, totalAdapter);
+        totalAdapter.setCarritoAdapterReferencia(carritoAdapter);                                           //le enviamos la referencia para poder notificar al adaptador
+        ConcatAdapter concatAdapter = new ConcatAdapter(totalAdapter,carritoAdapter);
+        recyclerViewLista.setAdapter(concatAdapter);
 
 
     }
 
 
-    public void mostrarTotales(JSONObject totales){
+    private void showProgresDialog(Activity activity){
+
+        progressDialog = new ProgressDialog(activity);
+        progressDialog.setMessage("Conectando al Servidor");
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
 
     }
 }

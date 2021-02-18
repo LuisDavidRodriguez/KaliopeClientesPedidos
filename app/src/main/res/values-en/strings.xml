@@ -49,5 +49,6 @@
     <string name="inversion">Investor</string>
     <string name="ganancia_total">Total profit:</string>
     <string name="confirmar_enviar_pedido">Confirm your Package</string>
+    <string name="oh_no">¡Oh no!\nYour car still empty</string>
 
 </resources>

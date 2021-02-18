@@ -331,40 +331,12 @@
                 android:layout_marginTop="20dp"/>
 
 
-
-
-            <Button
-                android:id="@+id/item_container_carrito_botonConfirmar"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:layout_below="@+id/item_container_carrito_textApurateConfirmar"
-                android:layout_centerHorizontal="true"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/boton_redondo_regalo"
-                android:padding="5dp"
-                android:text="@string/confirma_producto"
-                android:textColor="@color/white"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/item_container_carrito_textO"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/item_container_carrito_botonConfirmar"
-                android:layout_alignBottom="@+id/item_container_carrito_botonConfirmar"
-                android:layout_toEndOf="@+id/item_container_carrito_botonConfirmar"
-                android:gravity="center_vertical"
-                android:text="@string/O"
-                android:textSize="16sp" />
-
             <ImageButton
                 android:id="@+id/item_container_carrito_botonEliminar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/item_container_carrito_botonConfirmar"
-                android:layout_alignBottom="@+id/item_container_carrito_botonConfirmar"
-                android:layout_toEndOf="@+id/item_container_carrito_textO"
+                android:layout_below="@+id/item_container_carrito_textApurateConfirmar"
+                android:layout_centerHorizontal="true"
                 android:src="@android:drawable/ic_menu_delete" />
 
             <TextView

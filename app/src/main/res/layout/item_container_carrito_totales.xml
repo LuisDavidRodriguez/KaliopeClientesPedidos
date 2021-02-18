@@ -1,25 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    >
+
+<androidx.cardview.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardElevation="30dp"
+    app:cardCornerRadius="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp">
 
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardElevation="30dp"
-        app:cardCornerRadius="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        >
+
+
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/item_container_carrito_totales_constrainLayoutTotales"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="5dp">
+            android:padding="5dp"
+            >
 
 
             <TextView
@@ -251,26 +255,52 @@
                     android:layout_marginTop="10dp"
                     android:text="@string/importe" />
 
-                <TextView
-                    android:id="@+id/item_container_carrito_totales_importeCreditoTV"
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="$500" />
+                    android:orientation="horizontal">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="$" />
+
+                    <TextView
+                        android:id="@+id/item_container_carrito_totales_importeCreditoTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="500" />
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:id="@+id/item_container_carrito_totales_mensajeTodoInversionTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="Si pagaras todo tu pedido en Inversion ganarias $549"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    />
 
             </LinearLayout>
 
 
             <LinearLayout
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="24dp"
                 android:background="@drawable/cuadro_inversion"
-                android:gravity="center"
+                android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:paddingBottom="10dp"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
+                android:paddingBottom="10dp"
+                app:layout_constraintBottom_toBottomOf="@+id/linearLayout9"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.15"
                 app:layout_constraintStart_toEndOf="@+id/textView6"
@@ -298,11 +328,27 @@
                     android:layout_marginTop="10dp"
                     android:text="@string/importe" />
 
-                <TextView
-                    android:id="@+id/item_container_carrito_totales_importeInversionTV"
+
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="$500" />
+                    android:orientation="horizontal">
+
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="$" />
+
+                    <TextView
+                        android:id="@+id/item_container_carrito_totales_importeInversionTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="$500" />
+
+                </LinearLayout>
+
+
 
             </LinearLayout>
 
@@ -318,16 +364,30 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout9" />
 
+
+
+
             <TextView
                 android:id="@+id/item_container_carrito_totales_gananciaTotalTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="$549"
+                android:text="549"
                 android:textColor="@color/colorBlack"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$"
+                android:textColor="@color/colorBlack"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="@+id/item_container_carrito_totales_gananciaTotalTV"
+                app:layout_constraintEnd_toStartOf="@+id/item_container_carrito_totales_gananciaTotalTV" />
 
             <TextView
                 android:id="@+id/item_container_carrito_totales_mensajePuntosCortos"
@@ -361,13 +421,27 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/item_container_carrito_totales_confirmarEnviarPedidoButton" />
+                app:layout_constraintTop_toBottomOf="@+id/item_container_carrito_totales_confirmarEnviarPedidoButton"
+                android:gravity="center"
+                />
+
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+<!--Este item se mostrara cuando el carrito este vacio, lo colocamos en un frame layout para que uno este sobre el otro-->
+    <include
+        android:id="@+id/item_container_carrito_totales_layout_vacio"
+        layout="@layout/item_carrito_totales_vacio"
+        android:visibility="invisible"
+        />
 
-    </androidx.cardview.widget.CardView>
 
-</LinearLayout>
+
+
+</androidx.cardview.widget.CardView>
+
+
+</FrameLayout>

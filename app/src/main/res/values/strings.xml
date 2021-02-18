@@ -77,4 +77,5 @@
     <string name="inversion">Inversion</string>
     <string name="ganancia_total">Ganancia total:</string>
     <string name="confirmar_enviar_pedido">Confirmar y enviar pedido</string>
+    <string name="oh_no">¡Oh no!\nTu carrito aún está vacio</string>
 </resources>
