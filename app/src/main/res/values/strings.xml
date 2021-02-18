@@ -78,4 +78,7 @@
     <string name="ganancia_total">Ganancia total:</string>
     <string name="confirmar_enviar_pedido">Confirmar y enviar pedido</string>
     <string name="oh_no">¡Oh no!\nTu carrito aún está vacio</string>
+    <string name="pago_seleccionado">Pagara con:</string>
+    <string name="agotado">Agotado eliminalo de tu carrito</string>
+    <string name="producto_confirmado">Producto Confirmado</string>
 </resources>

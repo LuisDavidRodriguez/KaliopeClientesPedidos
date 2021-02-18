@@ -4,16 +4,20 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -24,6 +28,7 @@ import com.example.kaliopeclientespedidos.utilidadesApp;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,10 +36,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.client.cache.Resource;
 
 public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHolderCarrito> {
 
-    ArrayList<HashMap> listaCarrito;
+    JSONArray listaCarrito;
+    /*
+            {"carritoCliente":[{"id":"108","no_pedido":"4","fecha_entrega_pedido":"2020-12-15","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","puntos_disponibles":"0","id_producto":"SM5898","descripcion":"Sudadera dama","talla":"UNT","cantidad":"1","color":"Rosa","no_color":"rgb(240, 74, 141)","precio_etiqueta":"339","precio_vendedora":"298","precio_socia":"295","precio_empresaria":"291","precio_inversionista":null,"imagen_permanente":null,"producto_confirmado":"false","estado_producto":"CREDITO","seguimiento_producto":"Producto sin confirmar","diferencia_regalo":"0","puntos_tomados":"0"},
+                {"id":"109","no_pedido":"4","fecha_entrega_pedido":"2020-12-15","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","puntos_disponibles":"0","id_producto":"ST5898","descripcion":"Sueter dama","talla":"UNT","cantidad":"1","color":"VERDE AGUA","no_color":"rgb(200, 235, 231)","precio_etiqueta":"359","precio_vendedora":"310","precio_socia":"305","precio_empresaria":"301","precio_inversionista":null,"imagen_permanente":null,"producto_confirmado":"false","estado_producto":"CREDITO","seguimiento_producto":"Producto sin confirmar","diferencia_regalo":"0","puntos_tomados":"0"},
+                {"id":"110","no_pedido":"4","fecha_entrega_pedido":"2020-12-15","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","puntos_disponibles":"0","id_producto":"ST5898","descripcion":"Sueter dama","talla":"UNT","cantidad":"1","color":"VERDE AGUA","no_color":"rgb(200, 235, 231)","precio_etiqueta":"359","precio_vendedora":"310","precio_socia":"305","precio_empresaria":"301","precio_inversionista":null,"imagen_permanente":null,"producto_confirmado":"false","estado_producto":"CREDITO","seguimiento_producto":"Producto sin confirmar","diferencia_regalo":"0","puntos_tomados":"0"},
+                {"id":"111","no_pedido":"4","fecha_entrega_pedido":"2020-12-15","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","puntos_disponibles":"0","id_producto":"ST5898","descripcion":"Sueter dama","talla":"UNT","cantidad":"1","color":"VERDE AGUA","no_color":"rgb(200, 235, 231)","precio_etiqueta":"359","precio_vendedora":"310","precio_socia":"305","precio_empresaria":"301","precio_inversionista":null,"imagen_permanente":null,"producto_confirmado":"false","estado_producto":"CREDITO","seguimiento_producto":"Producto sin confirmar","diferencia_regalo":"0","puntos_tomados":"0"}]
+
+             */
 
     Activity activity;
     ProgressDialog progressDialog;
@@ -42,28 +55,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
     TotalAdapter totalAdapter;          //solicitamos una referencia de nuestro totalAdapter para poder solicitar una actualizacion de ese adaptador
 
 
-
-    public static final String ID_DATA = "idDataBase";
-    public static final String ID_PRODUCTO = "idProducto";
-    public static final String DESCRIPCION = "descripcion";
-    public static final String CANTIDAD = "cantidad";
-    public static final String TALLA = "talla";
-    public static final String COLOR = "color";
-    public static final String PRECIO_PUBLICO = "precioPublico";
-    public static final String EMPRESARIA = "empresaria";
-    public static final String SOCIA = "socia";
-    public static final String VENDEDORA = "vendedora";
-    public static final String INVERSION = "inversion";
-    public static final String GANANCIA = "ganacia";
-    public static final String FORMA_PAGO = "formaDePago";      //credito, inversion
-    public static final String COMENTARIO_CREDITO = "comentarioCredito";
-    public static final String COMENTARIO_INVERSION = "comentarioInversionsita";
-    public static final String COMENTARIO_APURATE_CONFIRMAR = "apurateConfirmar";       //quedan 33 piezas en existencias apurate a confirmar
-    public static final String GRADO_CLIENTE = "gradoCliente";
-    public static final String LIMITE_CREDITO = "limiteCredito";
-    public static final String IMAGEN_PERMANENTE = "imagenPermanente";
-    public static final String PRODUCTO_CONFIRMADO = "productoConfirmado";//false true
-    public static final String SEGUIMIENTO_PRODUCTO = "segimientoProducto";//producto sin confirmar, producto confirmado surtiendoce en almacen etc
+    Animation animationLatido;
 
 
 
@@ -74,10 +66,15 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
 
 
 
-    public CarritoAdapter(ArrayList<HashMap> listaCarrito, Activity activity, TotalAdapter totalAdapter) {
+    public CarritoAdapter(JSONArray listaCarrito, Activity activity, TotalAdapter totalAdapter) {
         this.listaCarrito = listaCarrito;
         this.activity = activity;
         this.totalAdapter = totalAdapter;
+    }
+
+    public void cambiarJsonArray(JSONArray listaCarrito){
+        this.listaCarrito = listaCarrito;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -97,80 +94,111 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolderCarrito holder, final int position) {
+
+
+        try {
             //es donde actualizamos la vista de cada item
-        HashMap map = listaCarrito.get(position);           //nuestro map lo creamos aqui asi podremos tener una instancia para cada producto en la memoria que podremos modificar, si lo creamos como campo, esa posibilidad no es ya que solo abra una instancia que se reciclara en cada producto, esto nos sirve para poder cambiar la info en nuestro adapter
+            final JSONObject jsonObject = listaCarrito.getJSONObject(position);           //nuestro map lo creamos aqui asi podremos tener una instancia para cada producto en la memoria que podremos modificar, si lo creamos como campo, esa posibilidad no es ya que solo abra una instancia que se reciclara en cada producto, esto nos sirve para poder cambiar la info en nuestro adapter
+
+            String urlImagenPermanente = KaliopeServerClient.BASE_URL + jsonObject.getString("imagen_permanente");
+
+            Glide.with(holder.itemView)
+                    .load(urlImagenPermanente)
+                    .into(holder.imagenPermanente);
+
+            holder.tvId.setText(jsonObject.getString("id"));
+            holder.tvIdProducto.setText(jsonObject.getString("id_producto"));
+            holder.tvDescripcion.setText(jsonObject.getString("descripcion"));
+            holder.tvCantidad.setText(jsonObject.getString("cantidad"));
+            holder.tvTalla.setText(jsonObject.getString("talla"));
+            holder.tvColor.setText(jsonObject.getString("color"));
+            holder.tvPrecioPublico.setText(jsonObject.getString("precio_etiqueta"));
 
 
-        Glide.with(holder.itemView)
-                .load(map.get(IMAGEN_PERMANENTE).toString())
-                .into(holder.imagenPermanente);
-
-        holder.tvId.setText(map.get(ID_DATA).toString());
-        holder.tvIdProducto.setText(map.get(ID_PRODUCTO).toString());
-        holder.tvDescripcion.setText(map.get(DESCRIPCION).toString());
-        holder.tvCantidad.setText(map.get(CANTIDAD).toString());
-        holder.tvTalla.setText(map.get(TALLA).toString());
-        holder.tvColor.setText(map.get(COLOR).toString());
-        holder.tvPrecioPublico.setText(map.get(PRECIO_PUBLICO).toString());
+            final String gradoCliente = jsonObject.getString("grado_cliente");
+            final String formaDePago = jsonObject.getString("estado_producto");                     //aqui recibimos CREDITO INVERSION AGOTADO jaja yo se el agotado rompe las normas pero hay que hacerlo
+            final String limiteDeCretido = jsonObject.getString("credito_cliente");
+            final String idDataBase = jsonObject.getString("id");
+            final String productoConfirmado = jsonObject.getString("producto_confirmado");          //obtenemos en texto true or false dependiendo de si el producto fue confirmado
 
 
-        final String gradoCliente = map.get(GRADO_CLIENTE).toString();
-        final String formaDePago = map.get(FORMA_PAGO).toString();
+            String precioDist = "0";
+            int ganancia = 0;
 
 
-        String precioDist = "0";
-        int ganancia = 0;
+            //obtenemos el precio de distribucion segun el grado o forma de pago del cliente y a su ves activamos los botones
+            if(formaDePago.equals("CREDITO")){
 
+                holder.activarBotonCredito();
 
+                if(gradoCliente.equals("VENDEDORA")){
+                    precioDist = jsonObject.getString("precio_vendedora");
 
+                }else if(gradoCliente.equals("SOCIA")){
+                    precioDist = jsonObject.getString("precio_socia");
 
-        //obtenemos el precio de distribucion segun el grado o forma de pago del cliente y a su ves activamos los botones
-        if(formaDePago.equals("CREDITO")){
+                }else if(gradoCliente.equals("EMPRESARIA")){
+                    precioDist = jsonObject.getString("precio_empresaria");
+                }
 
-            holder.activarBotonCredito();
+            }else if(formaDePago.equals("INVERSION")){
+                holder.activarBotonInversion();
+                precioDist = jsonObject.getString("precio_inversionista");
 
-            if(gradoCliente.equals("VENDEDORA")){
-                precioDist = map.get(VENDEDORA).toString();
-
-            }else if(gradoCliente.equals("SOCIA")){
-                precioDist = map.get(SOCIA).toString();
-
-            }else if(gradoCliente.equals("EMPRESARIA")){
-                precioDist = map.get(EMPRESARIA).toString();
+            }else{
+                //si el producto esta como agotado
+                holder.marcarComoAgotado();
             }
 
-        }else if(formaDePago.equals("INVERSION")){
-            holder.activarBotonInversion();
-            precioDist = map.get(INVERSION).toString();
-        }
-        //calculamos la ganancia
-        ganancia = calgularGananciaDesdeString(map.get(PRECIO_PUBLICO).toString(),precioDist);
-        int gananciaInversion = calgularGananciaDesdeString(map.get(PRECIO_PUBLICO).toString(), map.get(INVERSION).toString());     //obtenemos aun asi la ganancia de inversion solo para usarla en los mensajes de motivacion
+
+            //calculamos la ganancia
+            ganancia = calgularGananciaDesdeString(jsonObject.getString("precio_etiqueta"),precioDist);
+            int gananciaInversion = calgularGananciaDesdeString(jsonObject.getString("precio_etiqueta"), jsonObject.getString("precio_inversionista"));     //obtenemos aun asi la ganancia de inversion solo para usarla en los mensajes de motivacion
 
 
+            holder.tvPrecioDistribucion.setText(precioDist);
 
-        holder.tvPrecioDistribucion.setText(precioDist);
-
-        holder.tvGanancia.setText(String.valueOf(ganancia));
-
-
-        String comentarioCredito = holder.itemView.getResources().getString(R.string.aPrecioDe) + gradoCliente;
-        holder.tvComentarioCredito.setText(comentarioCredito);
-
-        String comentarioInversion = holder.itemView.getResources().getString(R.string.ganaMas);
-        holder.tvComentarioInversion.setText(comentarioInversion);
+            holder.tvGanancia.setText(String.valueOf(ganancia));
 
 
+            String comentarioCredito = holder.itemView.getResources().getString(R.string.aPrecioDe) + gradoCliente;
+            holder.tvComentarioCredito.setText(comentarioCredito);
+
+            String comentarioInversion = holder.itemView.getResources().getString(R.string.ganaMas);
+            holder.tvComentarioInversion.setText(comentarioInversion);
 
 
-        holder.tvApurateConfirmar.setText(map.get(COMENTARIO_APURATE_CONFIRMAR).toString());
-        holder.tvEstatusDelProducto.setText(map.get(SEGUIMIENTO_PRODUCTO).toString());
+            holder.tvApurateConfirmar.setText("Ejemplo apurate a confirmar");
+            holder.tvEstatusDelProducto.setText(jsonObject.getString("seguimiento_producto"));
 
 
-        if(map.get(PRODUCTO_CONFIRMADO).toString().equals("true")){
-            //si el producto ya esta confirmado ocultamos los botones y datos inecesarios
-            holder.productoConfirmado();
-        }
+            if(jsonObject.getString("producto_confirmado").equals("true")){
+                //si el producto ya esta confirmado ocultamos los botones y datos inecesarios
+                holder.imageButtonEliminar.setVisibility(View.GONE);
+                holder.tvEliminalo.setVisibility(View.GONE);
+                holder.cardView.setCardBackgroundColor(activity.getResources().getColor(R.color.colorVisitado));
+                holder.tvApurateConfirmar.setVisibility(View.INVISIBLE);
+
+
+                holder.tvSeleccionarFormaPago.setText(activity.getResources().getString(R.string.producto_confirmado));
+                holder.tvSeleccionarFormaPago.setTextColor(Color.GREEN);
+                holder.tvSeleccionarFormaPago.setTextSize(25);
+
+
+                if(formaDePago.equals("INVERSION")){
+                    holder.buttonInversion.setVisibility(View.VISIBLE);
+                    holder.tvComentarioInversion.setVisibility(View.VISIBLE);
+                    holder.buttonCreditoKaliope.setVisibility(View.INVISIBLE);
+                    holder.tvComentarioCredito.setVisibility(View.INVISIBLE);
+                }else{
+                    holder.buttonInversion.setVisibility(View.INVISIBLE);
+                    holder.tvComentarioInversion.setVisibility(View.INVISIBLE);
+
+                    holder.buttonCreditoKaliope.setVisibility(View.VISIBLE);
+                    holder.tvComentarioCredito.setVisibility(View.VISIBLE);
+
+                }
+            }
 
 
 
@@ -183,56 +211,83 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
         esta en la actividad carrito, cuando se salga y vuelva a entrar se obtendra la lista nueva del servidor y el producto que puso
         como inversion antes de confirmar ahora aparecera como credito otra vez. lo mejor seria que al hacer el cambio se conecte al servidor
         y cambie ese producto a inversion.=========*/
-        final HashMap mapFinal = map;
-        final String gananciaMensaje = String.valueOf(ganancia);
-        final String gananciaInversionMensaje = String.valueOf(gananciaInversion);
+            final String gananciaMensaje = String.valueOf(ganancia);
+            final String gananciaInversionMensaje = String.valueOf(gananciaInversion);
 
 
-        holder.buttonCreditoKaliope.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            holder.buttonCreditoKaliope.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                String recurso = activity.getResources().getString(R.string.instrucciones_credito);
-                String mensajeCredito = String.format(recurso,gradoCliente, mapFinal.get(LIMITE_CREDITO).toString());
+                    String recurso = activity.getResources().getString(R.string.instrucciones_credito);
+                    String mensajeCredito = String.format(recurso,gradoCliente,limiteDeCretido);
 
 
-                if (formaDePago.equals("INVERSION")) {              //solo mostramos el mensaje si la forma de pago no es credito
+                    if (formaDePago.equals("INVERSION")) {              //solo mostramos el mensaje si la forma de pago no es credito
 
-                    new android.app.AlertDialog.Builder(activity)
-                            .setTitle(R.string.cambiar_metodo_pago)
-                            .setMessage(mensajeCredito)
-                            .setPositiveButton(R.string.confirmar_cambio_credito, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    conectarServerActualizarMetodoPago(mapFinal.get(ID_DATA).toString(), "CREDITO", mapFinal, position);
-                                }
-                            }).setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
-                        }
-                    }).create().show();
+                        new AlertDialog.Builder(activity)
+                                .setTitle(R.string.cambiar_metodo_pago)
+                                .setMessage(mensajeCredito)
+                                .setPositiveButton(R.string.confirmar_cambio_credito, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        conectarServerActualizarMetodoPago(idDataBase, "CREDITO", jsonObject, position);
+                                    }
+                                }).setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        }).create().show();
 
+                    }
                 }
-            }
-        });
+            });
 
 
-        holder.buttonInversion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+            holder.buttonInversion.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-                String recurso = activity.getResources().getString(R.string.instrucciones_inversion);
-                String mensajeInversion = String.format(recurso, gananciaMensaje, gananciaInversionMensaje);    //remplaso en mi mensaje que esta guardado en values String los aprametros que quiero
+                    String recurso = activity.getResources().getString(R.string.instrucciones_inversion);
+                    String mensajeInversion = String.format(recurso, gananciaMensaje, gananciaInversionMensaje);    //remplaso en mi mensaje que esta guardado en values String los aprametros que quiero
 
-                if (formaDePago.equals("CREDITO")) {                    //solo mostramos el mensaje si la forma de pago no es inversion
+                    if (formaDePago.equals("CREDITO")) {                    //solo mostramos el mensaje si la forma de pago no es inversion
+                        new AlertDialog.Builder(activity)
+                                .setTitle(R.string.cambiar_metodo_pago)
+                                .setMessage(mensajeInversion)
+                                .setPositiveButton(R.string.confirmar_cambio_inversion, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        conectarServerActualizarMetodoPago(idDataBase, "INVERSION", jsonObject, position);
+
+                                    }
+                                })
+                                .setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                }).create().show();
+                    }
+                }
+            });
+
+
+            /*===========Definimos la accion de los botones cada uno se debera conectar al servidor=========*/
+
+
+            holder.imageButtonEliminar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
                     new AlertDialog.Builder(activity)
-                            .setTitle(R.string.cambiar_metodo_pago)
-                            .setMessage(mensajeInversion)
-                            .setPositiveButton(R.string.confirmar_cambio_inversion, new DialogInterface.OnClickListener() {
+                            .setTitle(R.string.titulo_eliminar)
+                            .setMessage(R.string.instrucciones_eliminar)
+                            .setPositiveButton(R.string.titulo_eliminar, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    conectarServerActualizarMetodoPago(mapFinal.get(ID_DATA).toString(), "INVERSION", mapFinal, position);
+                                    conectarServerEliminarProducto(idDataBase, position);
 
                                 }
                             })
@@ -242,45 +297,20 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
                                     dialogInterface.dismiss();
                                 }
                             }).create().show();
+
+
                 }
-            }
-        });
-
-
-        /*===========Definimos la accion de los botones cada uno se debera conectar al servidor=========*/
-
-
-        holder.imageButtonEliminar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                new AlertDialog.Builder(activity)
-                        .setTitle(R.string.titulo_eliminar)
-                        .setMessage(R.string.instrucciones_eliminar)
-                        .setPositiveButton(R.string.titulo_eliminar, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                conectarServerEliminarProducto(mapFinal.get(ID_DATA).toString(), position);
-
-                            }
-                        })
-                        .setNegativeButton(R.string.cancelar, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        }).create().show();
-
-
-            }
-        });
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
 
     }
 
     @Override
     public int getItemCount() {
-        return listaCarrito.size();
+        return listaCarrito.length();
     }
 
 
@@ -302,10 +332,10 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
      *
      * @param idBaseDeDatos
      * @param metodoDePago
-     * @param map   Recibimos el map que contiene la info del producto donde se modificara, esto para cambiar sus valores
+     * @param jsonObject   Recibimos el map que contiene la info del producto donde se modificara, esto para cambiar sus valores
      *              y poder cumplir con lo de la documentacion, notificaremos al adaptador que a cambiado los datos
      */
-    private void conectarServerActualizarMetodoPago(String idBaseDeDatos, final String metodoDePago, final HashMap map, final int position){
+    private void conectarServerActualizarMetodoPago(String idBaseDeDatos, final String metodoDePago, final JSONObject jsonObject, final int position){
         RequestParams params = new RequestParams();
         params.put("OPERACION",1);      //para actualizar el metodo de pago el codigo de operacion sera 1
         params.put("CUENTA_CLIENTE", ConfiguracionesApp.getCuentaCliente(activity));      //para actualizar el metodo de pago el codigo de operacion sera 1
@@ -333,8 +363,8 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
 
                     if (resultado.compareToIgnoreCase("exito") == 0) {                        //comparamos la respuesta del servidor ignoramos las mayusculas por cualquier cosa, si es igual a exito entonces notificamos a nuestro adaptador para que actualice la imagen, en caso que el servidor tenga un error al modificar el item y retonre error entonces no notificamos al adaptador y no cambiamos el metodo de pago
 
-                        map.put(FORMA_PAGO, metodoDePago);                                      //modificamos en el map el metodo de pago, este map contiene los datos del producto al cual se le hiso clicl en el boton cambiar metodo de pago, cambiamos su informacion
-                        listaCarrito.set(position, map);                                         //renovamos en la lista de productos, el nuevo map modificado con la nueva forma de pago, usamos la posicion donde se hiso clicl para renovar solo ese map en la lista
+                        jsonObject.put("estado_producto", metodoDePago);                //modificamos en el map el metodo de pago, este map contiene los datos del producto al cual se le hiso clicl en el boton cambiar metodo de pago, cambiamos su informacion
+                        listaCarrito.put(position,jsonObject);                                       //renovamos en la lista de productos, el nuevo map modificado con la nueva forma de pago, usamos la posicion donde se hiso clicl para renovar solo ese map en la lista
                         //notifyDataSetChanged();                                                 //notificamos al adaptador que se cambiaron elementos de la lista, para que los actualice y los muestre al usuario
                         notifyItemChanged(position);                                            //notificamos al adaptadro que cambiamos solo un elementod de la lista para que solo actualice ese
 
@@ -453,7 +483,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
 
                     if (resultado.compareToIgnoreCase("exito") == 0) {                        //comparamos la respuesta del servidor ignoramos las mayusculas por cualquier cosa, si es igual a exito entonces notificamos a nuestro adaptador para que actualice la imagen, en caso que el servidor tenga un error al modificar el item y retonre error entonces no notificamos al adaptador y no cambiamos el metodo de pago
 
-                        Log.d("lista antes", String.valueOf(listaCarrito.size()));
+                        Log.d("lista antes", String.valueOf(listaCarrito.length()));
                         Log.d("Posicion", String.valueOf(position));
 
                         listaCarrito.remove(position);                                         // Eliminamos de la lista ese item
@@ -461,7 +491,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
 
                         totalAdapter.cambiarJsonObject(totalesJsonObjet);                       //notificamos a nuestro adaptador totales que le enviamos un nuevo jsonobhjet con los totales acutalizados por el servidor y que actualice las vistas
 
-                        Log.d("lista Despues", String.valueOf(listaCarrito.size()));
+                        Log.d("lista Despues", String.valueOf(listaCarrito.length()));
                     }
 
                 } catch (JSONException e) {
@@ -575,17 +605,18 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
                 tvComentarioInversion,
         tvApurateConfirmar,
         tvEstatusDelProducto,
-        tvExtraTextoO,
-        tvExtraTextoEliminalo;
+        tvEliminalo,
+        tvSeleccionarFormaPago;
 
         Button buttonCreditoKaliope,
-                buttonInversion,
-        buttonConfirmar;
+                buttonInversion;
 
         ImageButton imageButtonEliminar;
 
 
         ImageView imagenPermanente;
+
+        CardView cardView;
 
 
 
@@ -608,11 +639,17 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
             tvApurateConfirmar = (TextView) itemView.findViewById(R.id.item_container_carrito_textApurateConfirmar);
             imageButtonEliminar = (ImageButton) itemView.findViewById(R.id.item_container_carrito_botonEliminar);
             tvEstatusDelProducto = (TextView) itemView.findViewById(R.id.item_container_carrito_textSeguimientoDelProducto);
-            tvExtraTextoEliminalo = (TextView) itemView.findViewById(R.id.item_container_carrito_textEliminalo);
+            tvEliminalo = (TextView) itemView.findViewById(R.id.item_container_carrito_textEliminalo);
+            tvSeleccionarFormaPago = (TextView) itemView.findViewById(R.id.item_container_carrito_seleccionaFormaPagoTV);
 
             imagenPermanente = (ImageView) itemView.findViewById(R.id.item_container_carrito_imagen);
+            cardView = (CardView) itemView.findViewById(R.id.item_container_carrito_cardView);
 
 
+            animationLatido = AnimationUtils.loadAnimation(activity,R.anim.latido);
+            animationLatido.setFillAfter(true);//para que se quede donde termina la anim
+            animationLatido.setRepeatMode(Animation.REVERSE); //modo de repeticion, en el reverse se ejecuta la animacion y cuando termine de ejecutarse va  adar reversa
+            animationLatido.setRepeatCount(Animation.INFINITE); //cuantas veces queremos que se repita la animacion, podria ser un numero entero 20 para 20 veces por ejemplo
 
 
         }
@@ -631,14 +668,35 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
             buttonInversion.setBackgroundResource(R.drawable.boton_redondo_inversion);
         }
 
+        public void marcarComoAgotado(){
 
-        public void productoConfirmado(){
-            tvApurateConfirmar.setVisibility(View.GONE);
-            imageButtonEliminar.setVisibility(View.GONE);
-            buttonConfirmar.setVisibility(View.GONE);
-            tvExtraTextoO.setVisibility(View.GONE);
-            tvExtraTextoEliminalo.setVisibility(View.GONE);
+            tvId.setTextColor(Color.GRAY);
+            tvIdProducto.setTextColor(Color.GRAY);
+            tvDescripcion.setTextColor(Color.GRAY);
+            tvCantidad.setTextColor(Color.GRAY);
+            tvTalla.setTextColor(Color.GRAY);
+            tvColor.setTextColor(Color.GRAY);
+            tvPrecioPublico.setTextColor(Color.GRAY);
+            tvPrecioDistribucion.setVisibility(View.INVISIBLE);
+            tvGanancia.setVisibility(View.INVISIBLE);
+            tvComentarioCredito.setTextColor(Color.GRAY);
+            tvComentarioInversion.setTextColor(Color.GRAY);
+            cardView.setCardBackgroundColor(activity.getResources().getColor(R.color.colorRepaso));
+            buttonCreditoKaliope.setVisibility(View.GONE);
+            buttonInversion.setVisibility(View.GONE);
+            tvComentarioCredito.setVisibility(View.GONE);
+            tvComentarioInversion.setVisibility(View.GONE);
+            tvApurateConfirmar.setVisibility(View.INVISIBLE);
+
+            tvSeleccionarFormaPago.setText(activity.getResources().getString(R.string.agotado));
+            tvSeleccionarFormaPago.setTextColor(Color.RED);
+            tvSeleccionarFormaPago.setTextSize(25);
+
+
+            imageButtonEliminar.startAnimation(animationLatido);
         }
+
+
 
 
 

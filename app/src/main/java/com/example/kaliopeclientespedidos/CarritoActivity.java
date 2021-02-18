@@ -190,52 +190,11 @@ public class CarritoActivity extends AppCompatActivity {
 
     private void llenarRecyclerLista() {
 
-        listaCarrito.clear();
-
-        //recorremos el json array del carrito que recibimos del servidor
-        for (int i = 0; i < datosCarrito.length(); i++) {
-            /*
-            {"carritoCliente":[{"id":"108","no_pedido":"4","fecha_entrega_pedido":"2020-12-15","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","puntos_disponibles":"0","id_producto":"SM5898","descripcion":"Sudadera dama","talla":"UNT","cantidad":"1","color":"Rosa","no_color":"rgb(240, 74, 141)","precio_etiqueta":"339","precio_vendedora":"298","precio_socia":"295","precio_empresaria":"291","precio_inversionista":null,"imagen_permanente":null,"producto_confirmado":"false","estado_producto":"CREDITO","seguimiento_producto":"Producto sin confirmar","diferencia_regalo":"0","puntos_tomados":"0"},
-                {"id":"109","no_pedido":"4","fecha_entrega_pedido":"2020-12-15","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","puntos_disponibles":"0","id_producto":"ST5898","descripcion":"Sueter dama","talla":"UNT","cantidad":"1","color":"VERDE AGUA","no_color":"rgb(200, 235, 231)","precio_etiqueta":"359","precio_vendedora":"310","precio_socia":"305","precio_empresaria":"301","precio_inversionista":null,"imagen_permanente":null,"producto_confirmado":"false","estado_producto":"CREDITO","seguimiento_producto":"Producto sin confirmar","diferencia_regalo":"0","puntos_tomados":"0"},
-                {"id":"110","no_pedido":"4","fecha_entrega_pedido":"2020-12-15","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","puntos_disponibles":"0","id_producto":"ST5898","descripcion":"Sueter dama","talla":"UNT","cantidad":"1","color":"VERDE AGUA","no_color":"rgb(200, 235, 231)","precio_etiqueta":"359","precio_vendedora":"310","precio_socia":"305","precio_empresaria":"301","precio_inversionista":null,"imagen_permanente":null,"producto_confirmado":"false","estado_producto":"CREDITO","seguimiento_producto":"Producto sin confirmar","diferencia_regalo":"0","puntos_tomados":"0"},
-                {"id":"111","no_pedido":"4","fecha_entrega_pedido":"2020-12-15","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","puntos_disponibles":"0","id_producto":"ST5898","descripcion":"Sueter dama","talla":"UNT","cantidad":"1","color":"VERDE AGUA","no_color":"rgb(200, 235, 231)","precio_etiqueta":"359","precio_vendedora":"310","precio_socia":"305","precio_empresaria":"301","precio_inversionista":null,"imagen_permanente":null,"producto_confirmado":"false","estado_producto":"CREDITO","seguimiento_producto":"Producto sin confirmar","diferencia_regalo":"0","puntos_tomados":"0"}]
-
-             */
-
-            HashMap map = new HashMap();
-
-            try {
-                String urlImagen = KaliopeServerClient.BASE_URL + datosCarrito.getJSONObject(i).getString("imagen_permanente");
-
-                map.put(CarritoAdapter.ID_DATA, datosCarrito.getJSONObject(i).getString("id"));
-                map.put(CarritoAdapter.ID_PRODUCTO, datosCarrito.getJSONObject(i).getString("id_producto"));
-                map.put(CarritoAdapter.DESCRIPCION, datosCarrito.getJSONObject(i).getString("descripcion"));
-                map.put(CarritoAdapter.CANTIDAD, datosCarrito.getJSONObject(i).getString("cantidad"));
-                map.put(CarritoAdapter.TALLA, datosCarrito.getJSONObject(i).getString("talla"));
-                map.put(CarritoAdapter.COLOR, datosCarrito.getJSONObject(i).getString("color"));
-                map.put(CarritoAdapter.PRECIO_PUBLICO, datosCarrito.getJSONObject(i).getString("precio_etiqueta"));
-                map.put(CarritoAdapter.EMPRESARIA, datosCarrito.getJSONObject(i).getString("precio_empresaria"));
-                map.put(CarritoAdapter.SOCIA, datosCarrito.getJSONObject(i).getString("precio_socia"));
-                map.put(CarritoAdapter.VENDEDORA, datosCarrito.getJSONObject(i).getString("precio_vendedora"));
-                map.put(CarritoAdapter.INVERSION, datosCarrito.getJSONObject(i).getString("precio_inversionista"));
-                map.put(CarritoAdapter.GRADO_CLIENTE, datosCarrito.getJSONObject(i).getString("grado_cliente"));
-                map.put(CarritoAdapter.FORMA_PAGO, datosCarrito.getJSONObject(i).getString("estado_producto"));//CREDITO, INVERSION
-                map.put(CarritoAdapter.PRODUCTO_CONFIRMADO, datosCarrito.getJSONObject(i).getString("producto_confirmado"));    //false true
-                map.put(CarritoAdapter.SEGUIMIENTO_PRODUCTO, datosCarrito.getJSONObject(i).getString("seguimiento_producto"));   //PRODUCTO SIN CONFIRMAR, PRODUCTO CONFIRMADO
-                map.put(CarritoAdapter.COMENTARIO_APURATE_CONFIRMAR, "ejemplo apurate a confirmar");
-                map.put(CarritoAdapter.LIMITE_CREDITO, datosCarrito.getJSONObject(i).getString("credito_cliente"));
-                map.put(CarritoAdapter.IMAGEN_PERMANENTE, urlImagen);
-
-                listaCarrito.add(map);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
 
 
-        }
 
         TotalAdapter totalAdapter = new TotalAdapter(totalesCarrito, this);
-        CarritoAdapter carritoAdapter = new CarritoAdapter(listaCarrito,this, totalAdapter);
+        CarritoAdapter carritoAdapter = new CarritoAdapter(datosCarrito,this, totalAdapter);
         totalAdapter.setCarritoAdapterReferencia(carritoAdapter);                                           //le enviamos la referencia para poder notificar al adaptador
         ConcatAdapter concatAdapter = new ConcatAdapter(totalAdapter,carritoAdapter);
         recyclerViewLista.setAdapter(concatAdapter);

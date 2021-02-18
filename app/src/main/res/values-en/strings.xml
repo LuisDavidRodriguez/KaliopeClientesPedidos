@@ -50,5 +50,8 @@
     <string name="ganancia_total">Total profit:</string>
     <string name="confirmar_enviar_pedido">Confirm your Package</string>
     <string name="oh_no">¡Oh no!\nYour car still empty</string>
+    <string name="pago_seleccionado">It will be payed with:</string>
+    <string name="agotado">Out of Order delete it from your car</string>
+    <string name="producto_confirmado">Confirmed</string>
 
 </resources>

@@ -1,26 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp"
-    android:orientation="vertical"
+    android:elevation="30dp"
+    app:cardCornerRadius="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp"
+    android:id="@+id/item_container_carrito_cardView"
     >
-
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="30dp"
-        app:cardCornerRadius="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        >
-
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:padding="5dp"
+            >
 
             <LinearLayout
                 android:id="@+id/linearLayout1"
@@ -235,7 +229,7 @@
 
 
             <TextView
-                android:id="@+id/textView1"
+                android:id="@+id/item_container_carrito_seleccionaFormaPagoTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/linearLayout3"
@@ -243,14 +237,16 @@
                 android:layout_marginTop="10dp"
                 android:text="@string/FormaDePago"
                 android:textColor="@color/colorBlack"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:gravity="center"
+                />
 
 
             <LinearLayout
                 android:id="@+id/linearLayout4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/textView1"
+                android:layout_below="@+id/item_container_carrito_seleccionaFormaPagoTV"
                 android:layout_alignStart="@+id/linearLayout1"
                 android:orientation="horizontal">
 
@@ -355,13 +351,14 @@
                 android:layout_height="wrap_content"
                 android:text="Producto confirmado surtiendoce en almacen Kaliope"
                 android:layout_below="@+id/item_container_carrito_textEliminalo"
-                android:layout_centerHorizontal="true"/>
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                />
 
 
 
         </RelativeLayout>
 
 
-    </androidx.cardview.widget.CardView>
 
-</LinearLayout>
+</androidx.cardview.widget.CardView>
