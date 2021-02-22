@@ -95,8 +95,16 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolderCarrito holder, final int position) {
 
+        /*
+ {"carritoCliente":[{"id":"39","no_pedido":"1","fecha_entrega_pedido":"2021-02-23","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","id_producto":"SM5898","descripcion":"Sudadera dama","talla":"UNT","cantidad":"2","color":"Gris","no_color":"rgb(142, 142, 142)","precio_etiqueta":"339","precio_vendedora":"298","precio_socia":"295","precio_empresaria":"291","precio_inversionista":"280","imagen_permanente":"fotos\/SM5898-VERDE-1.jpg","producto_confirmado":"true","estado_producto":"CREDITO","seguimiento_producto":"Producto confirmado","ganancia":41,"ganancia_inversion":59,"existencias_restantes":0,"apurate_confirmar":"Ya no hay piezas disponibles para surir tu pedido, otros clientes confirmaron su pedido antes que tu y agotaron las existencias"},
+                {"id":"40","no_pedido":"1","fecha_entrega_pedido":"2021-02-23","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","id_producto":"ST5898","descripcion":"Sueter dama","talla":"UNT","cantidad":"1","color":"GRIS","no_color":"rgb(122, 125, 130)","precio_etiqueta":"359","precio_vendedora":"310","precio_socia":"305","precio_empresaria":"301","precio_inversionista":"280","imagen_permanente":"fotos\/ST5898-GRIS-1.jpg","producto_confirmado":"true","estado_producto":"CREDITO","seguimiento_producto":"Producto confirmado","ganancia":49,"ganancia_inversion":79,"existencias_restantes":8,"apurate_confirmar":""},
+                {"id":"41","no_pedido":"1","fecha_entrega_pedido":"2021-02-23","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","id_producto":"SM5898","descripcion":"Sudadera dama","talla":"UNT","cantidad":"1","color":"Gris","no_color":"rgb(142, 142, 142)","precio_etiqueta":"339","precio_vendedora":"298","precio_socia":"295","precio_empresaria":"291","precio_inversionista":"280","imagen_permanente":"fotos\/SM5898-VERDE-1.jpg","producto_confirmado":"true","estado_producto":"CREDITO","seguimiento_producto":"Producto confirmado","ganancia":41,"ganancia_inversion":59,"existencias_restantes":0,"apurate_confirmar":"Ya no hay piezas disponibles para surir tu pedido, otros clientes confirmaron su pedido antes que tu y agotaron las existencias"},
+
+         */
+
 
         try {
+            Log.d("carritoAdapter", listaCarrito.getJSONObject(position).toString());
             //es donde actualizamos la vista de cada item
             final JSONObject jsonObject = listaCarrito.getJSONObject(position);           //nuestro map lo creamos aqui asi podremos tener una instancia para cada producto en la memoria que podremos modificar, si lo creamos como campo, esa posibilidad no es ya que solo abra una instancia que se reciclara en cada producto, esto nos sirve para poder cambiar la info en nuestro adapter
 
@@ -122,28 +130,32 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
             final String productoConfirmado = jsonObject.getString("producto_confirmado");          //obtenemos en texto true or false dependiendo de si el producto fue confirmado
 
 
-            String precioDist = "0";
-            int ganancia = 0;
+
+            String ganancia = jsonObject.getString("ganancia");
+            String gananciaInversion = jsonObject.getString("ganancia_inversion");
 
 
             //obtenemos el precio de distribucion segun el grado o forma de pago del cliente y a su ves activamos los botones
             if(formaDePago.equals("CREDITO")){
 
                 holder.activarBotonCredito();
+                holder.tvGanancia.setText(ganancia);
 
                 if(gradoCliente.equals("VENDEDORA")){
-                    precioDist = jsonObject.getString("precio_vendedora");
+                    holder.tvPrecioDistribucion.setText(jsonObject.getString("precio_vendedora"));
 
                 }else if(gradoCliente.equals("SOCIA")){
-                    precioDist = jsonObject.getString("precio_socia");
+                    holder.tvPrecioDistribucion.setText(jsonObject.getString("precio_socia"));
 
                 }else if(gradoCliente.equals("EMPRESARIA")){
-                    precioDist = jsonObject.getString("precio_empresaria");
+                    holder.tvPrecioDistribucion.setText(jsonObject.getString("precio_empresaria"));
+
                 }
 
             }else if(formaDePago.equals("INVERSION")){
                 holder.activarBotonInversion();
-                precioDist = jsonObject.getString("precio_inversionista");
+                holder.tvPrecioDistribucion.setText(jsonObject.getString("precio_inversionista"));
+                holder.tvGanancia.setText(gananciaInversion);
 
             }else{
                 //si el producto esta como agotado
@@ -151,14 +163,9 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
             }
 
 
-            //calculamos la ganancia
-            ganancia = calgularGananciaDesdeString(jsonObject.getString("precio_etiqueta"),precioDist);
-            int gananciaInversion = calgularGananciaDesdeString(jsonObject.getString("precio_etiqueta"), jsonObject.getString("precio_inversionista"));     //obtenemos aun asi la ganancia de inversion solo para usarla en los mensajes de motivacion
 
 
-            holder.tvPrecioDistribucion.setText(precioDist);
 
-            holder.tvGanancia.setText(String.valueOf(ganancia));
 
 
             String comentarioCredito = holder.itemView.getResources().getString(R.string.aPrecioDe) + gradoCliente;
@@ -168,7 +175,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
             holder.tvComentarioInversion.setText(comentarioInversion);
 
 
-            holder.tvApurateConfirmar.setText("Ejemplo apurate a confirmar");
+            holder.tvApurateConfirmar.setText(jsonObject.getString("apurate_confirmar"));
             holder.tvEstatusDelProducto.setText(jsonObject.getString("seguimiento_producto"));
 
 
@@ -176,7 +183,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
                 //si el producto ya esta confirmado ocultamos los botones y datos inecesarios
                 holder.imageButtonEliminar.setVisibility(View.GONE);
                 holder.tvEliminalo.setVisibility(View.GONE);
-                holder.cardView.setCardBackgroundColor(activity.getResources().getColor(R.color.colorVisitado));
+                //holder.cardView.setCardBackgroundColor(activity.getResources().getColor(R.color.colorVisitado));
                 holder.tvApurateConfirmar.setVisibility(View.INVISIBLE);
 
 

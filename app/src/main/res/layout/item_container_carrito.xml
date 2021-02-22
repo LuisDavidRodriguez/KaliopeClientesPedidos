@@ -323,7 +323,8 @@
                 android:layout_height="wrap_content"
                 android:text="Quedan 33 piezas disponibles apúrate a confirmar tu producto!"
                 android:layout_below="@+id/linearLayout6"
-                android:gravity="center"
+                android:gravity="center_horizontal"
+                android:textSize="16sp"
                 android:layout_marginTop="20dp"/>
 
 
