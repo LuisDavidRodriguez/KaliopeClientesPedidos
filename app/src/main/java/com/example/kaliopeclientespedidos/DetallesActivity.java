@@ -12,14 +12,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
@@ -27,7 +23,6 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -66,7 +61,8 @@ public class DetallesActivity extends AppCompatActivity {
             nombreProductoTV,
             modeloTV,
             precioTV,
-            fechaEntregaTV;
+            fechaEntregaTV,
+            fechaCierreTV;
 
     Spinner spinerColores, spinnerTallas;
     RecyclerView cantidadRecyclerView;
@@ -574,26 +570,31 @@ public class DetallesActivity extends AppCompatActivity {
         modeloTV = (TextView) findViewById(R.id.detalles_modelo);
         precioTV = (TextView) findViewById(R.id.detalles_TV_precio);
         fechaEntregaTV = (TextView) findViewById(R.id.detalles_TV_instruccionesFechaEntrega);
+        fechaCierreTV = (TextView) findViewById(R.id.detalles_fechaCierrePedidoTV);
 
 
         String nombrePro = "";
         String modelo = "";
         String precio = "";
         String mensajeFechaEntrega = "";
+        String recursoFechaCierrePedido = "";
+        String mensajeFechaCierrePedido = "";
 
         Date auxiliar = new Date();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH); //EL FORMATO QUE VA A RECIBIR PARA CONVERTIRLO
         SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("EEE, d-MMM",Locale.ENGLISH); //EL FORMATO QUE VA A ENTREGAR LUN, 16-DIC
         try {
-            auxiliar = simpleDateFormat.parse(ConfiguracionesApp.getDatoClienteOffline(this,ConfiguracionesApp.CLAVE_FECHA));
-
+            auxiliar = simpleDateFormat.parse(ConfiguracionesApp.getDatoClienteOffline(this,ConfiguracionesApp.CLAVE_FECHA_FUTURA));
             mensajeFechaEntrega = getResources().getString(R.string.si_ordenas_ahora ) + simpleDateFormat1.format(auxiliar);
+
+            mensajeFechaCierrePedido = ConfiguracionesApp.getDatoClienteOffline(this, ConfiguracionesApp.CLAVE_MENSAJE_CIERRE_PEDIDO);
         } catch (ParseException e) {
             e.printStackTrace();
             mensajeFechaEntrega = getResources().getString(R.string.si_ordenas_ahora );
         }
 
         fechaEntregaTV.setText(mensajeFechaEntrega);
+        fechaCierreTV.setText(mensajeFechaCierrePedido);
 
         try {
             /*

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -63,7 +64,7 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
     public void onBindViewHolder(@NonNull ViewHolderCarrito holder, final int position) {
 
 
-        //D/totales: {"nombre":"MONICA HERNANDEZ GARCIA","cuenta":"4926","limite_credito":"1400","grado":"VENDEDORA","dias":"14","ruta":"EL PALMITO","numero_pedido":"1","fecha_entrega":"2021-02-09","suma_cantidad":5,"suma_credito":4,"suma_inversion":1,"suma_productos_etiqueta":2015,"suma_productos_inversion":360,"suma_productos_credito":1288,"suma_ganancia_cliente":367,"diferencia_credito":-112,"mensaje_diferencia_credito":"Aun dispones de $112 en tu credito Kaliope","mensaje_todo_inversion":"Si pagaras todo tu pedido en Inversion ganarias $367","mensaje_resumido_puntos":" + 300 puntos Kaliope","mensaje_completo_puntos":"Tambien has ganado 300 puntos Kaliope, recueda que estos puntos se validaran con tu agente Kaliope y seran solo si realizas los pagos completos de este pedido."}
+        //totales: {"nombre":"MONICA HERNANDEZ GARCIA","cuenta":"4926","limite_credito":"1400","grado":"VENDEDORA","dias":"14","ruta":"EL PALMITO","numero_pedido":"1","fecha_entrega":"2021-02-09","suma_cantidad":5,"suma_credito":4,"suma_inversion":1,"cantidad_sin_confirmar":3,"suma_productos_etiqueta":2015,"suma_productos_inversion":360,"suma_productos_credito":1288,"suma_ganancia_cliente":367,"diferencia_credito":-112,"mensaje_diferencia_credito":"Aun dispones de $112 en tu credito Kaliope","mensaje_todo_inversion":"Si pagaras tu pedido en Inversion ganarias $367","mensaje_resumido_puntos":" + 300 puntos Kaliope","mensaje_completo_puntos":"Tambien has ganado 300 puntos Kaliope, recueda que estos puntos se validaran con tu agente Kaliope y seran solo si realizas los pagos completos de este pedido.","mensaje_cantidad_sin_confirmar": "Confirmar y enviar 1 producto"}
         //no usamos la variable posicion porque aqui solo habra un item totales
         try {
 
@@ -85,6 +86,24 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
             holder.puntosCorto.setText(jsonObjectTotales.getString("mensaje_resumido_puntos"));
             holder.mensajeLimiteCredito.setText(jsonObjectTotales.getString("mensaje_diferencia_credito"));
             holder.mensajeTodoInversion.setText(jsonObjectTotales.getString("mensaje_todo_inversion"));
+
+
+
+            String mensajeCantidadSinConfirmar = jsonObjectTotales.getString("mensaje_cantidad_sin_confirmar");
+            if(!jsonObjectTotales.getString("cantidad_sin_confirmar").equals("0")){
+                //Si la cantidad de productos sin confirmar es diferente de 0 entonces mostramos el boton confirmarPedido
+                holder.confirmarEnviarPedido.setText(mensajeCantidadSinConfirmar);
+                holder.confirmarEnviarPedido.setEnabled(true);
+                holder.imageViewPalomita.setVisibility(View.INVISIBLE);
+
+
+            }else{
+                //Si es 0 la cantidad sin confirmar entonces mostramos el boton con palomita verde
+                holder.confirmarEnviarPedido.setText(mensajeCantidadSinConfirmar);
+                holder.confirmarEnviarPedido.setEnabled(false);
+                holder.imageViewPalomita.setVisibility(View.VISIBLE);
+
+            }
 
 
 
@@ -143,7 +162,7 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
                 Log.d("responseCode1", String.valueOf(response));
                 //D/responseCode1: {"resultado":"Exito","mensaje":"Hemos confirmado la totalidad de tu pedido, apartamos las existencias del almacen para tu pedido",
                 // "carritoCliente":[{"id":"35","no_pedido":"1","fecha_entrega_pedido":"2021-02-23","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","id_producto":"SM5898","descripcion":"Sudadera dama","talla":"UNT","cantidad":"1","color":"Rosa","no_color":"rgb(240, 74, 141)","precio_etiqueta":"339","precio_vendedora":"298","precio_socia":"295","precio_empresaria":"291","precio_inversionista":"280","imagen_permanente":"fotos\/SM5898-ROSA-1.jpg","producto_confirmado":"1","estado_producto":"CREDITO","seguimiento_producto":"Producto confirmado"}],
-                // "totales":{"nombre":"MONICA HERNANDEZ GARCIA","cuenta":"4926","limite_credito":"1400","grado":"VENDEDORA","dias":"14","ruta":"EL PALMITO","numero_pedido":"1","fecha_entrega":"2021-02-23","suma_cantidad":1,"suma_credito":1,"suma_inversion":0,"suma_productos_etiqueta":339,"suma_productos_inversion":0,"suma_productos_credito":298,"suma_ganancia_cliente":41,"diferencia_credito":-1102,"mensaje_diferencia_credito":"Aun dispones de $1102 en tu credito Kaliope","mensaje_todo_inversion":"","mensaje_resumido_puntos":"+0 puntos Kaliope","mensaje_completo_puntos":"No has ganado puntos Kaliope en este pedido, pedido minimo para puntos son $500"}}
+                // "totales: {"nombre":"MONICA HERNANDEZ GARCIA","cuenta":"4926","limite_credito":"1400","grado":"VENDEDORA","dias":"14","ruta":"EL PALMITO","numero_pedido":"1","fecha_entrega":"2021-02-09","suma_cantidad":5,"suma_credito":4,"suma_inversion":1,"cantidad_sin_confirmar":3,"suma_productos_etiqueta":2015,"suma_productos_inversion":360,"suma_productos_credito":1288,"suma_ganancia_cliente":367,"diferencia_credito":-112,"mensaje_diferencia_credito":"Aun dispones de $112 en tu credito Kaliope","mensaje_todo_inversion":"Si pagaras todo tu pedido en Inversion ganarias $367","mensaje_resumido_puntos":" + 300 puntos Kaliope","mensaje_completo_puntos":"Tambien has ganado 300 puntos Kaliope, recueda que estos puntos se validaran con tu agente Kaliope y seran solo si realizas los pagos completos de este pedido."}}
                 try {
                     String resultado = response.getString("resultado");
                     String mensaje = response.getString("mensaje");
@@ -282,6 +301,8 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
 
         Button confirmarEnviarPedido;
 
+        ImageView imageViewPalomita;
+
         ConstraintLayout constraintLayoutTotales;
         ConstraintLayout constraintLayoutCarritoVacio;
 
@@ -309,6 +330,7 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
            mensajeTodoInversion = (TextView) itemView.findViewById(R.id.item_container_carrito_totales_mensajeTodoInversionTV);
            constraintLayoutTotales = (ConstraintLayout) itemView.findViewById(R.id.item_container_carrito_totales_constrainLayoutTotales);
            constraintLayoutCarritoVacio = (ConstraintLayout) itemView.findViewById(R.id.item_container_carrito_totales_layout_vacio);
+           imageViewPalomita = (ImageView) itemView.findViewById(R.id.item_container_carrito_totales_palomitaIV);
 
         }
     }

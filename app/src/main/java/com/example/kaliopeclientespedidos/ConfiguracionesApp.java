@@ -1,7 +1,6 @@
 package com.example.kaliopeclientespedidos;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -52,11 +51,13 @@ public class ConfiguracionesApp {
 
 
     public static final int CLAVE_ZONA = 1;
-    public static final int CLAVE_FECHA = 2;
+    public static final int CLAVE_FECHA_FUTURA = 2;
     public static final int CLAVE_GRADO = 3;
     public static final int CLAVE_CREDITO = 4;
     public static final int CLAVE_DIAS = 5;
     public static final int CLAVE_PUNTOS_DISPONIBLES = 6;
+    public static final int CLAVE_FECHA_CIERRE_PEDIDO = 7;
+    public static final int CLAVE_MENSAJE_CIERRE_PEDIDO = 8;
 
 
 
@@ -469,7 +470,7 @@ public class ConfiguracionesApp {
      * @return String dato
      */
     public static String getDatoClienteOffline(Activity activity, int datoPorRecuperar){
-        //{"nombre":"MONICA HERNANDEZ GARCIA","zona":"EL PALMITO","fecha":"15-12-2020","grado":"VENDEDORA","credito":"1400","dias":"14","puntos_disponibles":"0"}
+        //{"nombre":"MONICA HERNANDEZ GARCIA","zona":"EL PALMITO","fecha":"15-12-2020","grado":"VENDEDORA","credito":"1400","dias":"14","puntos_disponibles":"0","fecha_cierre_pedido":22-03-2021, "mensaje_cierre_pedido":"tienes 6 dias para ingresar productos a tu carrito antes que tu pedido sea cerrado el 22-03-2021"}
 
         //obtendremos el json guardado y buscaremos la cadena del valor zona
         SharedPreferences sharedPreferences =
@@ -488,7 +489,7 @@ public class ConfiguracionesApp {
                 case CLAVE_ZONA:
                     return retorno.getString("zona");
 
-                case CLAVE_FECHA:
+                case CLAVE_FECHA_FUTURA:
                     return retorno.getString("fecha");
 
                 case CLAVE_GRADO:
@@ -502,6 +503,12 @@ public class ConfiguracionesApp {
 
                 case CLAVE_PUNTOS_DISPONIBLES:
                     return retorno.getString("puntos_disponibles");
+
+                case CLAVE_FECHA_CIERRE_PEDIDO:
+                    return retorno.getString("fecha_cierre_pedido");
+
+                case CLAVE_MENSAJE_CIERRE_PEDIDO:
+                    return retorno.getString("mensaje_cierre_pedido");
 
 
             }

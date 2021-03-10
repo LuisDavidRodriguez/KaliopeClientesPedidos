@@ -11,8 +11,7 @@
     android:layout_height="wrap_content"
     app:cardElevation="30dp"
     app:cardCornerRadius="10dp"
-    android:layout_marginTop="10dp"
-    android:layout_marginBottom="10dp">
+    android:layout_marginBottom="30dp">
 
 
 
@@ -425,7 +424,14 @@
                 android:gravity="center"
                 />
 
-
+            <ImageView
+                android:id="@+id/item_container_carrito_totales_palomitaIV"
+                android:layout_width="29dp"
+                android:layout_height="33dp"
+                android:layout_marginStart="8dp"
+                app:layout_constraintBottom_toBottomOf="@+id/item_container_carrito_totales_confirmarEnviarPedidoButton"
+                app:layout_constraintStart_toEndOf="@+id/item_container_carrito_totales_confirmarEnviarPedidoButton"
+                app:srcCompat="@drawable/palomita" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

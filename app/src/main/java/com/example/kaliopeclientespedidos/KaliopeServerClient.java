@@ -3,7 +3,7 @@ package com.example.kaliopeclientespedidos;
 import com.loopj.android.http.*;
 
 public class KaliopeServerClient {
-    public static final String BASE_URL = "http://www.kaliope.com.mx/";
+    public static final String BASE_URL = "https://www.kaliope.com.mx/";
     //public static final String BASE_URL = "http://192.168.1.80:8080/";
 
     private static AsyncHttpClient client = new AsyncHttpClient(true,80,443);

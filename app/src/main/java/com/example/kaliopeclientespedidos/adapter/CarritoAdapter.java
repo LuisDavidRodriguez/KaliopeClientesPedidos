@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -123,6 +124,8 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
             holder.tvPrecioPublico.setText(jsonObject.getString("precio_etiqueta"));
 
 
+
+
             final String gradoCliente = jsonObject.getString("grado_cliente");
             final String formaDePago = jsonObject.getString("estado_producto");                     //aqui recibimos CREDITO INVERSION AGOTADO jaja yo se el agotado rompe las normas pero hay que hacerlo
             final String limiteDeCretido = jsonObject.getString("credito_cliente");
@@ -163,6 +166,10 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
             }
 
 
+            if(productoConfirmado.equals("true")){
+                //si el producto ya esta confirmado ocultamos los botones y datos inecesarios
+                holder.marcarComoConfirmado(formaDePago);
+            }
 
 
 
@@ -179,33 +186,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
             holder.tvEstatusDelProducto.setText(jsonObject.getString("seguimiento_producto"));
 
 
-            if(jsonObject.getString("producto_confirmado").equals("true")){
-                //si el producto ya esta confirmado ocultamos los botones y datos inecesarios
-                holder.imageButtonEliminar.setVisibility(View.GONE);
-                holder.tvEliminalo.setVisibility(View.GONE);
-                //holder.cardView.setCardBackgroundColor(activity.getResources().getColor(R.color.colorVisitado));
-                holder.tvApurateConfirmar.setVisibility(View.INVISIBLE);
 
-
-                holder.tvSeleccionarFormaPago.setText(activity.getResources().getString(R.string.producto_confirmado));
-                holder.tvSeleccionarFormaPago.setTextColor(Color.GREEN);
-                holder.tvSeleccionarFormaPago.setTextSize(25);
-
-
-                if(formaDePago.equals("INVERSION")){
-                    holder.buttonInversion.setVisibility(View.VISIBLE);
-                    holder.tvComentarioInversion.setVisibility(View.VISIBLE);
-                    holder.buttonCreditoKaliope.setVisibility(View.INVISIBLE);
-                    holder.tvComentarioCredito.setVisibility(View.INVISIBLE);
-                }else{
-                    holder.buttonInversion.setVisibility(View.INVISIBLE);
-                    holder.tvComentarioInversion.setVisibility(View.INVISIBLE);
-
-                    holder.buttonCreditoKaliope.setVisibility(View.VISIBLE);
-                    holder.tvComentarioCredito.setVisibility(View.VISIBLE);
-
-                }
-            }
 
 
 
@@ -358,7 +339,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
                 progressDialog.dismiss();
                 Log.d("responseCode1", String.valueOf(response));
                //responseCode1: {"resultado":"Exito","mensaje":"Hemos cambiado tu pago a INVERSION",
-                // "totales":{"nombre":"MONICA HERNANDEZ GARCIA","cuenta":"4926","limite_credito":"1400","grado":"VENDEDORA","dias":"14","ruta":"EL PALMITO","numero_pedido":"1","fecha_entrega":"2021-02-23","suma_cantidad":2,"suma_credito":1,"suma_inversion":1,"suma_productos_etiqueta":678,"suma_productos_inversion":280,"suma_productos_credito":298,"suma_ganancia_cliente":100,"diferencia_credito":-1102,"mensaje_diferencia_credito":"Aun dispones de $1102 en tu credito Kaliope","mensaje_todo_inversion":"","mensaje_resumido_puntos":" + 100 puntos Kaliope","mensaje_completo_puntos":"Tambien has ganado 100 puntos Kaliope, recueda que estos puntos se validaran con tu agente Kaliope y seran solo si realizas los pagos completos de este pedido."}}
+                //totales: {"nombre":"MONICA HERNANDEZ GARCIA","cuenta":"4926","limite_credito":"1400","grado":"VENDEDORA","dias":"14","ruta":"EL PALMITO","numero_pedido":"1","fecha_entrega":"2021-02-09","suma_cantidad":5,"suma_credito":4,"suma_inversion":1,"cantidad_sin_confirmar":3,"suma_productos_etiqueta":2015,"suma_productos_inversion":360,"suma_productos_credito":1288,"suma_ganancia_cliente":367,"diferencia_credito":-112,"mensaje_diferencia_credito":"Aun dispones de $112 en tu credito Kaliope","mensaje_todo_inversion":"Si pagaras tu pedido en Inversion ganarias $367","mensaje_resumido_puntos":" + 300 puntos Kaliope","mensaje_completo_puntos":"Tambien has ganado 300 puntos Kaliope, recueda que estos puntos se validaran con tu agente Kaliope y seran solo si realizas los pagos completos de este pedido.","mensaje_cantidad_sin_confirmar": "Tienes 1 producto sin confirmar"}}
 
 
                 try {
@@ -478,7 +459,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 progressDialog.dismiss();
                 Log.d("responseCode1", String.valueOf(response));
-                //D/responseCode1: {"resultado":"Exito","mensaje":"Hemos eliminado el producto de tu carrito","totales":{"nombre":"MONICA HERNANDEZ GARCIA","cuenta":"4926","limite_credito":"1400","grado":"VENDEDORA","dias":"14","ruta":"EL PALMITO","numero_pedido":"1","fecha_entrega":"2021-02-23","suma_cantidad":1,"suma_credito":0,"suma_inversion":1,"suma_productos_etiqueta":339,"suma_productos_inversion":280,"suma_productos_credito":0,"suma_ganancia_cliente":59,"diferencia_credito":-1400,"mensaje_diferencia_credito":"Aun dispones de $1400 en tu credito Kaliope","mensaje_todo_inversion":"","mensaje_resumido_puntos":"+0 puntos Kaliope","mensaje_completo_puntos":"No has ganado puntos Kaliope en este pedido, pedido minimo para puntos son $500"}}
+                //D/responseCode1: {"resultado":"Exito","mensaje":"Hemos eliminado el producto de tu carrito",  totales: {"nombre":"MONICA HERNANDEZ GARCIA","cuenta":"4926","limite_credito":"1400","grado":"VENDEDORA","dias":"14","ruta":"EL PALMITO","numero_pedido":"1","fecha_entrega":"2021-02-09","suma_cantidad":5,"suma_credito":4,"suma_inversion":1,"cantidad_sin_confirmar":3,"suma_productos_etiqueta":2015,"suma_productos_inversion":360,"suma_productos_credito":1288,"suma_ganancia_cliente":367,"diferencia_credito":-112,"mensaje_diferencia_credito":"Aun dispones de $112 en tu credito Kaliope","mensaje_todo_inversion":"Si pagaras tu pedido en Inversion ganarias $367","mensaje_resumido_puntos":" + 300 puntos Kaliope","mensaje_completo_puntos":"Tambien has ganado 300 puntos Kaliope, recueda que estos puntos se validaran con tu agente Kaliope y seran solo si realizas los pagos completos de este pedido.","mensaje_cantidad_sin_confirmar": "Tienes 1 producto sin confirmar"}}
 
                 try {
                     String resultado = response.getString("resultado");
@@ -693,7 +674,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
             buttonInversion.setVisibility(View.GONE);
             tvComentarioCredito.setVisibility(View.GONE);
             tvComentarioInversion.setVisibility(View.GONE);
-            tvApurateConfirmar.setVisibility(View.INVISIBLE);
+            tvApurateConfirmar.setVisibility(View.GONE);
 
             tvSeleccionarFormaPago.setText(activity.getResources().getString(R.string.agotado));
             tvSeleccionarFormaPago.setTextColor(Color.RED);
@@ -701,6 +682,48 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
 
 
             imageButtonEliminar.startAnimation(animationLatido);
+        }
+
+
+        public void marcarComoConfirmado (String formaDePago){
+            imageButtonEliminar.setVisibility(View.GONE);
+            tvEliminalo.setVisibility(View.GONE);
+            cardView.setCardBackgroundColor(Color.WHITE);
+
+
+
+            tvId.setTextColor(Color.BLACK);
+            tvIdProducto.setTextColor(Color.BLACK);
+            tvDescripcion.setTextColor(Color.BLACK);
+            tvCantidad.setTextColor(Color.BLACK);
+            tvTalla.setTextColor(Color.BLACK);
+            tvColor.setTextColor(Color.BLACK);
+            tvPrecioPublico.setTextColor(Color.BLACK);
+            tvPrecioDistribucion.setVisibility(View.VISIBLE);
+            tvGanancia.setVisibility(View.VISIBLE);
+            tvComentarioCredito.setTextColor(Color.BLACK);
+            tvComentarioInversion.setTextColor(Color.BLACK);
+
+
+           tvApurateConfirmar.setVisibility(View.GONE);
+           tvSeleccionarFormaPago.setText(activity.getResources().getString(R.string.producto_confirmado));
+           tvSeleccionarFormaPago.setTextColor(Color.GREEN);
+           tvSeleccionarFormaPago.setTextSize(25);
+
+
+            if(formaDePago.equals("INVERSION")){
+                buttonInversion.setVisibility(View.VISIBLE);
+                tvComentarioInversion.setVisibility(View.VISIBLE);
+                buttonCreditoKaliope.setVisibility(View.INVISIBLE);
+                tvComentarioCredito.setVisibility(View.INVISIBLE);
+            }else{
+                buttonInversion.setVisibility(View.INVISIBLE);
+                tvComentarioInversion.setVisibility(View.INVISIBLE);
+
+                buttonCreditoKaliope.setVisibility(View.VISIBLE);
+                tvComentarioCredito.setVisibility(View.VISIBLE);
+
+            }
         }
 
 

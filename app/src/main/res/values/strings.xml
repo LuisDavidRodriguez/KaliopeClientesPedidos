@@ -81,4 +81,5 @@
     <string name="pago_seleccionado">Pagara con:</string>
     <string name="agotado">Agotado eliminalo de tu carrito</string>
     <string name="producto_confirmado">Producto Confirmado</string>
+    <string name="tienes_hasta_el_para_cerrar_pedido">Tienes hasta el %1s para ingresar productos a tu carrito</string>
 </resources>

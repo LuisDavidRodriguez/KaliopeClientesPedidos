@@ -5,8 +5,10 @@
     android:layout_height="wrap_content"
     android:elevation="30dp"
     app:cardCornerRadius="10dp"
-    android:layout_marginTop="10dp"
-    android:layout_marginBottom="10dp"
+    android:layout_marginTop="20dp"
+    android:layout_marginBottom="20dp"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
     android:id="@+id/item_container_carrito_cardView"
     >
 
