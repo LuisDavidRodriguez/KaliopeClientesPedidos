@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.kaliopeclientespedidos.R;
 import com.example.kaliopeclientespedidos.models.Producto;
 
@@ -82,6 +83,8 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
 
         Glide.with(holder.itemView)
                 .load(url_image_producto)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .error(R.drawable.error_image)
                 .into(holder.imageProducto);
 
     }

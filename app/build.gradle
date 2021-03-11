@@ -45,7 +45,7 @@ dependencies {
     //animaciones Lottie
     implementation 'com.airbnb.android:lottie:2.7.0'
 
-
+//https://futurestud.io/tutorials/glide-placeholders-fade-animations      Tutorial glide es impresionante
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     // Glide v4 uses this new annotation processor -- see https://bumptech.github.io/glide/doc/generatedapi.html
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'

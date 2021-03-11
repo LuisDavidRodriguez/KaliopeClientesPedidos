@@ -53,6 +53,7 @@ public class CarritoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_carrito);
+        getSupportActionBar().setTitle(R.string.mi_carrito);
 
         recyclerViewLista = (RecyclerView) findViewById(R.id.carrito_recyclerViewLista);
         layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);

@@ -17,6 +17,7 @@ import androidx.annotation.Size;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.kaliopeclientespedidos.Constantes;
 import com.example.kaliopeclientespedidos.R;
@@ -138,7 +139,12 @@ public class SpinnerColoresAdapter extends BaseAdapter {
         }else{
             //si estamos en online mostramos los colores con la imagen del producto
             Log.d(Constantes.TAG_ONLINE,"Mostrando y descargando imagenes de colores del producto");
-            Glide.with(parent).load(urlImagenColor).apply(RequestOptions.centerCropTransform()).into(imageView);
+            Glide.with(parent)
+                    .load(urlImagenColor)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .error(R.drawable.error_image)
+                    .apply(RequestOptions.centerCropTransform())
+                    .into(imageView);
         }
 
         return viewFila;

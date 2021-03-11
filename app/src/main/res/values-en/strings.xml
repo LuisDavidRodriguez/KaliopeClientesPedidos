@@ -54,5 +54,6 @@
     <string name="agotado">Out of Order delete it from your car</string>
     <string name="producto_confirmado">Confirmed</string>
     <string name="tienes_hasta_el_para_cerrar_pedido">Tienes hasta el %1s para ingresar productos a tu carrito</string>
+    <string name="mi_carrito">My Car</string>
 
 </resources>

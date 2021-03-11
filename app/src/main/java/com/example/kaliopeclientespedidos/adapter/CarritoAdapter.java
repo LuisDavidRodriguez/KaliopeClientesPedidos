@@ -113,6 +113,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
 
             Glide.with(holder.itemView)
                     .load(urlImagenPermanente)
+                    .thumbnail(.1f)                                     //Mostramos la imagen al 10% de su resolucion en el carrito hasta que la imagen este lista
                     .into(holder.imagenPermanente);
 
             holder.tvId.setText(jsonObject.getString("id"));

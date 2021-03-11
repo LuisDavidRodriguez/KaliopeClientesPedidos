@@ -223,11 +223,12 @@ public class DetallesActivity extends AppCompatActivity {
         RequestParams params = new RequestParams();
         params.put("ID_PRODUCTO",id_producto);
 
+        showProgresDialog(this);
         KaliopeServerClient.post(URL_DETALLES_PRODUCTO, params, new JsonHttpResponseHandler() {
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                //progressDialog.dismiss();
+                progressDialog.dismiss();
 
                 Log.d ("detalles1",String.valueOf(response));
                 //{"id_producto":"SM5898","descripcion":"Sudadera dama","estado":"ACTIVO","precio_etiqueta":"339","precio_vendedora":"298","precio_empresaria":"291","imagen1":"fotos\/SM5898-VERDE-1.jpg","imagen2":"fotos\/SM5898-VERDE-2.jpg","imagen3":"fotos\/SM5898-VERDE-3.jpg","categoria":"sudadera","existencias":120,
@@ -284,8 +285,8 @@ public class DetallesActivity extends AppCompatActivity {
                 String info = "Status Code: " + String.valueOf(statusCode) +"  responseString: " + responseString;
                 Log.d("onFauile 1" , info);
                 //Toast.makeText(MainActivity.this,responseString + "  Status Code: " + String.valueOf(statusCode) , Toast.LENGTH_LONG).show();
-                //progressDialog.dismiss();
-                //dialogoDeConexion("Fallo de inicio de sesion", responseString + "\nStatus Code: " + String.valueOf(statusCode));
+                progressDialog.dismiss();
+                utilidadesApp.dialogoResultadoConexion(activity,"Fallo de conexion", responseString + "\nStatus Code: " + String.valueOf(statusCode));
 
 
             }
@@ -315,14 +316,14 @@ public class DetallesActivity extends AppCompatActivity {
                 String info = "StatusCode" + String.valueOf(statusCode) +"  Twhowable:   "+  throwable.toString();
                 Log.d("onFauile 2" , info);
                 //Toast.makeText(MainActivity.this,info, Toast.LENGTH_LONG).show();
-                //progressDialog.dismiss();
-                //dialogoDeConexion("Fallo de conexion", info);
+                progressDialog.dismiss();
+                utilidadesApp.dialogoResultadoConexion(activity,"Fallo de conexion", errorResponse + "\nStatus Code: " + String.valueOf(statusCode));
             }
 
 
             @Override
             public void onRetry(int retryNo) {
-                //progressDialog.setMessage("Reintentando conexion No: " + String.valueOf(retryNo));
+                progressDialog.setMessage("Reintentando conexion No: " + String.valueOf(retryNo));
             }
 
 

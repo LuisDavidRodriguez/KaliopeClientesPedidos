@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.example.kaliopeclientespedidos.R;
 
 import java.util.ArrayList;
@@ -47,6 +48,8 @@ public class DetallesImagenAdapter extends RecyclerView.Adapter<DetallesImagenAd
 
         Glide.with(holder.imageView.getContext())
                 .load(url)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .error(R.drawable.error_image)
                 .into(holder.imageView);
     }
 

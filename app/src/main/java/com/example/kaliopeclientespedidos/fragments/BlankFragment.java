@@ -1,5 +1,7 @@
 package com.example.kaliopeclientespedidos.fragments;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -29,6 +31,7 @@ import com.example.kaliopeclientespedidos.KaliopeServerClient;
 import com.example.kaliopeclientespedidos.R;
 import com.example.kaliopeclientespedidos.adapter.ProductoAdapter;
 import com.example.kaliopeclientespedidos.models.Producto;
+import com.example.kaliopeclientespedidos.utilidadesApp;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -60,6 +63,7 @@ public class BlankFragment extends Fragment implements ProductoAdapter.OnProduct
     List<Producto> listProducto;
 
 
+    ProgressDialog progressDialog;
 
 
 
@@ -304,10 +308,12 @@ public class BlankFragment extends Fragment implements ProductoAdapter.OnProduct
         RequestParams params = new RequestParams();
         params.put("CUENTA_CLIENTE", ConfiguracionesApp.getCuentaCliente(getActivity()) );
 
+        showProgresDialog(getActivity());
+
         KaliopeServerClient.get(URL_IMAGEN_PRINCIPAL,params,new JsonHttpResponseHandler(){
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                //progressDialog.dismiss();
+                progressDialog.dismiss();
 
                 Log.d ("datosRecibidos",String.valueOf(response));
                 /*
@@ -385,8 +391,8 @@ public class BlankFragment extends Fragment implements ProductoAdapter.OnProduct
                 String info = "Status Code: " + String.valueOf(statusCode) +"  responseString: " + responseString;
                 Log.d("onFauile 1" , info);
                 //Toast.makeText(MainActivity.this,responseString + "  Status Code: " + String.valueOf(statusCode) , Toast.LENGTH_LONG).show();
-                //progressDialog.dismiss();
-                //dialogoDeConexion("Fallo de inicio de sesion", responseString + "\nStatus Code: " + String.valueOf(statusCode));
+                progressDialog.dismiss();
+                utilidadesApp.dialogoResultadoConexion(getActivity(),"Fallo de conexion", responseString + "\nStatus Code: " + String.valueOf(statusCode));
 
 
             }
@@ -416,14 +422,14 @@ public class BlankFragment extends Fragment implements ProductoAdapter.OnProduct
                 String info = "StatusCode" + String.valueOf(statusCode) +"  Twhowable:   "+  throwable.toString();
                 Log.d("onFauile 2" , info);
                 //Toast.makeText(MainActivity.this,info, Toast.LENGTH_LONG).show();
-                //progressDialog.dismiss();
-                //dialogoDeConexion("Fallo de conexion", info);
+                progressDialog.dismiss();
+                utilidadesApp.dialogoResultadoConexion(getActivity(),"Fallo de conexion", errorResponse + "\nStatus Code: " + String.valueOf(statusCode));
             }
 
 
             @Override
             public void onRetry(int retryNo) {
-                //progressDialog.setMessage("Reintentando conexion No: " + String.valueOf(retryNo));
+                progressDialog.setMessage("Reintentando conexion No: " + String.valueOf(retryNo));
             }
         });
 
@@ -432,6 +438,15 @@ public class BlankFragment extends Fragment implements ProductoAdapter.OnProduct
     }
 
 
+    private void showProgresDialog(Activity activity){
+
+        progressDialog = new ProgressDialog(activity);
+        progressDialog.setMessage("Conectando al Servidor");
+        progressDialog.setIndeterminate(true);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+    }
 
 
 
