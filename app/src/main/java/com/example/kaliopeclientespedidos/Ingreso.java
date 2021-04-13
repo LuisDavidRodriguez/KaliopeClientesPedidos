@@ -35,6 +35,7 @@ import android.widget.Toast;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.ResponseHandlerInterface;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,6 +69,8 @@ public class Ingreso extends AppCompatActivity {
 
 
     boolean continuarHiloHacerPing = true;
+    private static volatile boolean thState;    //se declara como volatile para que mientras se este leyendo o escribiendo, no se pueda modificar su valor. esto evita errores https://es.stackoverflow.com/questions/41453/c%C3%B3mo-terminar-o-eliminar-un-hilo-por-completo-en-java
+
 
     //public static final String URL_PING = "PhpProject_clientes_pedidos/ping_servidor.php";
     public static final String URL_PING = "app_movil/ping_servidor.php";
@@ -144,6 +147,7 @@ public class Ingreso extends AppCompatActivity {
 
 @SuppressWarnings("uncheked")
     private void nextActivity(){
+        /*
         transition = new Slide(Gravity.LEFT);
 
         transition.setDuration(1000);
@@ -153,6 +157,10 @@ public class Ingreso extends AppCompatActivity {
 
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle());
+
+         */
+
+        startActivity(new Intent(this, MainActivity.class));
     }
 
 
@@ -449,6 +457,7 @@ public class Ingreso extends AppCompatActivity {
                     Log.d("Main","conectado");
 
                     hacerPingAlServidor(tvEstadoConexion);
+                    comprobarMantenerSesion();
                     tvEstadoConexion.setText("Intentando Conexion");
                     tvEstadoConexion.setBackgroundColor(Color.CYAN);
 
@@ -563,65 +572,114 @@ public class Ingreso extends AppCompatActivity {
      * un acceso para saltar el inicio de sesion
      */
     private void comprobarMantenerSesion(){
+
+        thState = true;
+        Log.d("comprobarMantener", "inicio");
+
+
         new Thread(new Runnable() {
             @Override
             public void run() {
 
-                while(continuarHiloHacerPing){
-                    RequestParams params = new RequestParams();
-                    params.put("usuario" , ConfiguracionesApp.getUsuarioIniciado(activity));
-                    params.put("UUID" , ConfiguracionesApp.getCodigoUnicoDispositivo(activity));
-                    params.put("identificador", 2);
-                    KaliopeServerClient.post(URL_INICIO_SESION, params, new JsonHttpResponseHandler(){
-                        @Override
-                        public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                Log.d("mantenerSesion", "Fueraloop");
 
-                            try {
-                                String estado = response.getString("estado");
+                while(continuarHiloHacerPing && thState){
 
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
+                    runOnUiThread(new Runnable() {
 
                         @Override
-                        public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-
-                            //cuando no se ha podido conectar con el servidor el statusCode=0 cz.msebera.android.httpclient.conn.ConnectTimeoutException: Connect to /192.168.1.10:8080 timed out
-                            //para simular esto estoy en un servidor local, obiamente el celular debe estar a la misma red, lo desconecte y lo movi a la red movil
-
-                            //cuando no hay coneccion a internet apagados datos y wifi se llama al metodo retry 5 veces y arroja la excepcion:
-                            // java.net.ConnectException: failed to connect to /192.168.1.10 (port 8080) from /:: (port 0) after 10000ms: connect failed: ENETUNREACH (Network is unreachable)
-
-
-                            //Si la url principal del servidor esta mal para simularlo cambiamos estamos a un servidor local con:
-                            //"http://192.168.1.10:8080/KALIOPE/" cambiamos la ip a "http://192.168.1.1:8080/KALIOPE/";
-                            //se llama al onRetry 5 veces y se arroja la excepcion en el log:
-                            //estatus code: 0 java.net.ConnectException: failed to connect to /192.168.1.1 (port 8080) from /192.168.1.71 (port 36134) after 10000ms: isConnected failed: EHOSTUNREACH (No route to host)
-                            //no hay ruta al Host
-
-                            //Si desconectamos el servidor de la ip antes la ip en el servidor de la computadora era 192.168.1.10, lo movimos a 192.168.1.1
-                            //genera lo mismo como si cambiaramos la ip en el programa android la opcion dew arriba. No
-                            //StatusCode0  Twhowable:   java.net.ConnectException: failed to connect to /192.168.1.10 (port 8080) from /192.168.1.71 (port 37786) after 10000ms: isConnected failed: EHOSTUNREACH (No route to host)
-                            //Llamo a reatry 5 veces
+                        public void run() {
+                            RequestParams params = new RequestParams();
+                            params.put("usuario" , ConfiguracionesApp.getUsuarioIniciado(activity));
+                            params.put("UUID" , ConfiguracionesApp.getCodigoUnicoDispositivo(activity));
+                            params.put("modeloDispositivo" , Build.MODEL);
+                            params.put("identificador", 2);
 
 
+                            KaliopeServerClient.post(URL_INICIO_SESION, params, new JsonHttpResponseHandler(){
+                                @Override
+                                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
 
-                            String info = "StatusCode" + String.valueOf(statusCode) + "  Twhowable:   " + throwable.toString();
-                            Log.d("onFauile 2", info);
-                            //Toast.makeText(getApplicationContext(), "Falla en Ping Status Code: " + String.valueOf(statusCode) , Toast.LENGTH_LONG).show();
+                                    try {
+                                        Log.d("mantenerSesionConsulta", String.valueOf(response));
+                                        String estatus = response.getJSONObject("informacion").getString("estatus");
 
 
+                                        if(estatus.equalsIgnoreCase("EXITO")){
+                                            //singifica que se encontro un inicio de sesion mantenido en este dispositivo
+                                            thState = false;
+                                            Log.d("mantenerSesionConsulta", "Exito se encontro sesion mantenida, ingresando...");
+                                            nextActivity();
+
+                                        }else{
+                                            //si retorna algo que no sea exito como fail, entonces salimos del while infinito y se finaliza el hilo para no volver a preguntar por los inicios de sesion mantenidos
+                                            thState = false;
+                                            Log.d("mantenerSesionConsulta", "FAIL no se encontro sesion mantenida, Ingresar Credenciales");
+                                        }
+
+
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+
+                                    //cuando no se ha podido conectar con el servidor el statusCode=0 cz.msebera.android.httpclient.conn.ConnectTimeoutException: Connect to /192.168.1.10:8080 timed out
+                                    //para simular esto estoy en un servidor local, obiamente el celular debe estar a la misma red, lo desconecte y lo movi a la red movil
+
+                                    //cuando no hay coneccion a internet apagados datos y wifi se llama al metodo retry 5 veces y arroja la excepcion:
+                                    // java.net.ConnectException: failed to connect to /192.168.1.10 (port 8080) from /:: (port 0) after 10000ms: connect failed: ENETUNREACH (Network is unreachable)
+
+
+                                    //Si la url principal del servidor esta mal para simularlo cambiamos estamos a un servidor local con:
+                                    //"http://192.168.1.10:8080/KALIOPE/" cambiamos la ip a "http://192.168.1.1:8080/KALIOPE/";
+                                    //se llama al onRetry 5 veces y se arroja la excepcion en el log:
+                                    //estatus code: 0 java.net.ConnectException: failed to connect to /192.168.1.1 (port 8080) from /192.168.1.71 (port 36134) after 10000ms: isConnected failed: EHOSTUNREACH (No route to host)
+                                    //no hay ruta al Host
+
+                                    //Si desconectamos el servidor de la ip antes la ip en el servidor de la computadora era 192.168.1.10, lo movimos a 192.168.1.1
+                                    //genera lo mismo como si cambiaramos la ip en el programa android la opcion dew arriba. No
+                                    //StatusCode0  Twhowable:   java.net.ConnectException: failed to connect to /192.168.1.10 (port 8080) from /192.168.1.71 (port 37786) after 10000ms: isConnected failed: EHOSTUNREACH (No route to host)
+                                    //Llamo a reatry 5 veces
+
+
+
+                                    String info = "StatusCode" + String.valueOf(statusCode) + "  Twhowable:   " + throwable.toString();
+                                    Log.d("onFauileMantenerSesion", info);
+
+
+                                }
+
+                                @Override
+                                public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+                                    Log.d("onFauileMantenerSesion", responseString);
+                                }
+                            });
                         }
-
                     });
+
+
+                    Log.d("mantenerSesion", "loop");
+
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+
                 }
 
 
             }
         }).start();
     }
+
 
 
 
