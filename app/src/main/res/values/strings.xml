@@ -29,7 +29,7 @@
     <string name="TituloHome">Todos los productos</string>
     <string name="Empresa" translatable="false">Kaliope Mexico S.A de C.V</string>
     <string name="Cuenta">Cuenta:</string>
-    <string name="Offline_carrito">La aplicacion no tiene conexion a internet, recomendamos que apuntes el codigo de producto en una libreta con las tallas y colores que solicito tu cliente para que lo agreges al carrito en cuanto estes en un lugar con conexion a internet</string>
+    <string name="Offline_carrito">La aplicacion no tiene conexion a internet, recomendamos que apuntes el codigo de producto  %1s en una libreta con las tallas y colores que solicito tu cliente para que lo agreges al carrito en cuanto estes en un lugar con conexion a internet</string>
     <string name="sin_internet">Sin conexion a Internet</string>
     <string name="entiendo">Entiendo</string>
     <string name="si_ordenas_ahora">Si ordenas ahora tu pedido llegara el:</string>

@@ -156,27 +156,7 @@ public class DetallesActivity extends AppCompatActivity {
 
         if(offline){
 
-            try {
-                Log.d(Constantes.TAG_OFFLINE ,"mostrando datos almacenados en shared preferences");
-                informacionProductoInicial = ConfiguracionesApp.getInformacionOfflineProducto(this, id_producto);
-                llenarListaParaRecycler(informacionProductoInicial);
-                llenarRecycler();
-                llenarVistas();
-                llenarSpinnerColor();
-                /*
-                    {"id_producto":"SM5898","descripcion":"Sudadera dama","estado":"ACTIVO","precio_etiqueta":"339","precio_vendedora":"298","precio_empresaria":"291","imagen1":"fotos\/SM5898-VERDE-1.jpg","imagen2":"fotos\/SM5898-VERDE-2.jpg","imagen3":"fotos\/SM5898-VERDE-3.jpg","categoria":"sudadera","existencias":120,
-                     "tallas":[{"talla":"UNT","existencias":55},{"talla":"G","existencias":50},{"talla":"M","existencias":15}],
-                     "colores":[{"color":"Gris","noColor":"rgb(142, 142, 142)","imagen1":"fotos\/SM5898-VERDE-1.jpg","existencias":45,"tallas":[{"talla":"UNT","existencias":5},{"talla":"G","existencias":40}]}
-                     ,{"color":"Rosa","noColor":"rgb(240, 74, 141)","imagen1":"fotos\/SM5898-ROSA-1.jpg","existencias":55,"tallas":[{"talla":"UNT","existencias":40},{"talla":"M","existencias":15}]}
-                     ,{"color":"Negro","noColor":"rgb(13, 13, 13)","imagen1":"fotos\/SM5898-NEGRO-1.jpg","existencias":10,"tallas":[{"talla":"UNT","existencias":10}]}
-                     ,{"color":"Azul","noColor":"rgb(135, 182, 205)","imagen1":"fotos\/SM5898-AZUL-1.jpg","existencias":10,"tallas":[{"talla":"G","existencias":10}]}]}
-
-                 */
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Error al obtener la cadena en modo offline " + e.getMessage(), Toast.LENGTH_LONG).show();
-            }
+            recargarModoOffline();
 
         }else{
             consultaInicial();
@@ -317,7 +297,21 @@ public class DetallesActivity extends AppCompatActivity {
                 Log.d("onFauile 2" , info);
                 //Toast.makeText(MainActivity.this,info, Toast.LENGTH_LONG).show();
                 progressDialog.dismiss();
-                utilidadesApp.dialogoResultadoConexion(activity,"Fallo de conexion", errorResponse + "\nStatus Code: " + String.valueOf(statusCode));
+                //utilidadesApp.dialogoResultadoConexion(activity,"Fallo de conexion", "No hemos podido conectar con el servidor "+errorResponse + "\nStatus Code: " + String.valueOf(statusCode));
+
+                new AlertDialog.Builder(activity)
+                        .setTitle("No hay conexion a internet")
+                        .setMessage("No hemos podido conectar con el servidor. Mostraremos los datos en modo Offline")
+                        .setPositiveButton("Continuar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                offline = true;
+                                recargarModoOffline();
+                            }
+                        })
+                        .create()
+                        .show();
+
             }
 
 
@@ -1017,7 +1011,32 @@ public class DetallesActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Este metodo llama a los metodos necesarios para refrescar la vista en caso de llamar al modo offline
+     */
+    private void recargarModoOffline(){
+        try {
+            Log.d(Constantes.TAG_OFFLINE ,"mostrando datos almacenados en shared preferences");
+            informacionProductoInicial = ConfiguracionesApp.getInformacionOfflineProducto(this, id_producto);
+            llenarListaParaRecycler(informacionProductoInicial);
+            llenarRecycler();
+            llenarVistas();
+            llenarSpinnerColor();
+                /*
+                    {"id_producto":"SM5898","descripcion":"Sudadera dama","estado":"ACTIVO","precio_etiqueta":"339","precio_vendedora":"298","precio_empresaria":"291","imagen1":"fotos\/SM5898-VERDE-1.jpg","imagen2":"fotos\/SM5898-VERDE-2.jpg","imagen3":"fotos\/SM5898-VERDE-3.jpg","categoria":"sudadera","existencias":120,
+                     "tallas":[{"talla":"UNT","existencias":55},{"talla":"G","existencias":50},{"talla":"M","existencias":15}],
+                     "colores":[{"color":"Gris","noColor":"rgb(142, 142, 142)","imagen1":"fotos\/SM5898-VERDE-1.jpg","existencias":45,"tallas":[{"talla":"UNT","existencias":5},{"talla":"G","existencias":40}]}
+                     ,{"color":"Rosa","noColor":"rgb(240, 74, 141)","imagen1":"fotos\/SM5898-ROSA-1.jpg","existencias":55,"tallas":[{"talla":"UNT","existencias":40},{"talla":"M","existencias":15}]}
+                     ,{"color":"Negro","noColor":"rgb(13, 13, 13)","imagen1":"fotos\/SM5898-NEGRO-1.jpg","existencias":10,"tallas":[{"talla":"UNT","existencias":10}]}
+                     ,{"color":"Azul","noColor":"rgb(135, 182, 205)","imagen1":"fotos\/SM5898-AZUL-1.jpg","existencias":10,"tallas":[{"talla":"G","existencias":10}]}]}
 
+                 */
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(this, "Error al obtener la cadena en modo offline " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
 
 
     private void dialogoOffline(){
@@ -1025,9 +1044,16 @@ public class DetallesActivity extends AppCompatActivity {
 
 
 
+        String recursoMensaje = getResources().getString(R.string.Offline_carrito);
+        String mensaje = "";
+        try {
+            mensaje = String.format(recursoMensaje,informacionProductoInicial.getString("id_producto"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         builder.setTitle(R.string.sin_internet);
-        builder.setMessage(R.string.Offline_carrito);
+        builder.setMessage(mensaje);
         builder.setPositiveButton(R.string.entiendo, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

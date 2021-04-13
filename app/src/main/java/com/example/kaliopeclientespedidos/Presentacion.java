@@ -45,6 +45,7 @@ public class Presentacion extends AppCompatActivity {
 
     @SuppressWarnings("uncheked")
     private void nextActivity(){
+        /*
         transition = new Slide(Gravity.RIGHT);
 
         transition.setDuration(TRANSITION_DURATION);
@@ -54,6 +55,12 @@ public class Presentacion extends AppCompatActivity {
         getWindow().setReenterTransition(transition);
 
         Intent intent = new Intent(this, Ingreso.class);
-        startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle());
+        startActivity(intent, ActivityOptionsCompat.makeSceneTransitionAnimation(this).toBundle());*/
+
+        startActivity(new Intent(this, Ingreso.class));
+
     }
+
+
+
 }

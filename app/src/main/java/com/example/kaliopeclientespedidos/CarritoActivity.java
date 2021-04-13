@@ -175,7 +175,7 @@ public class CarritoActivity extends AppCompatActivity {
                 Log.d("onFauile 2", info);
                 //Toast.makeText(MainActivity.this,info, Toast.LENGTH_LONG).show();
                 progressDialog.dismiss();
-                //dialogoDeConexion("Fallo de conexion", info);
+                utilidadesApp.dialogoResultadoConexion(getParent(),getResources().getString(R.string.sin_internet),"No podemos conectarnos al servidor Kaliope, para ver tu carrito necesitamos conexion a internet");
             }
 
 

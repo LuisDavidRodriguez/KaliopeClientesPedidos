@@ -34,6 +34,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Toolbar toolbar;
     NavigationView navigationView;
 
+    TextView textViewToolModoFuncionamiento;
+    TextView textViewToolTitulo;
+    TextView textViewToolSubtitulo;
+
 
 
     NavController navController;
@@ -42,10 +46,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = findViewById(R.id.toolBarLuisda);
-        //TextView textViewTituloPersonalizado = findViewById(R.id.toolbarLuisda_tituloPersonalizado);
+        textViewToolModoFuncionamiento = findViewById(R.id.toolBarLuisdaModoFuncionamiento);
+        textViewToolTitulo = findViewById(R.id.toolBarLuisdaTitulo);
+        textViewToolSubtitulo = findViewById(R.id.toolBarLuisdaSubtitulo);
         //primero se tiene que remover el titulo que venga pro defecto en la barra de tareas esto porque puse textView personalizados en la toolbar se que se puede poner titulo y subtitulo sin necesidad de definirlo en el Layout de  la toolbar pero quice probar asi para ver que otros items poner
-        toolbar.setTitle("Kaliope Pedidos");
-        //textViewTituloPersonalizado.setText("Kaliope Pedidos");
+        textViewToolTitulo.setText("Kaliope Pedidos");
+
         setSupportActionBar(toolbar);
 
         drawerLayout = findViewById(R.id.drawerLayoutMainActivity);
@@ -66,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         mostrarDatosCliente(activity);
 
+        checarModoOffline(textViewToolModoFuncionamiento);          //se encarga de actualizar el texto que indica si esta en modo offline la app o online
 
 
     }
@@ -88,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         usuarioDrawerTV.setText(usuario);
 
 
-        toolbar.setSubtitle(nombreCompleto);
+        textViewToolSubtitulo.setText(nombreCompleto);
 
 
 
@@ -148,5 +155,48 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
 
+
+
+    private void checarModoOffline(final TextView modo){
+        //creamos un hilo que estara actualizando constantemente el estado del textView modoOffline dependiendo de la variable en la constante
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                while (true){
+
+
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(Constantes.offline){
+                                modo.setText("App en modo sin Internet");
+                                modo.setBackgroundColor(Color.YELLOW);
+                                modo.setTextColor(Color.BLACK);
+                                modo.setTextSize(12);
+                            }else{
+                                modo.setText("App con conexion a internet");
+                                modo.setBackgroundColor(Color.GREEN);
+                                modo.setTextColor(Color.BLACK);
+                                modo.setTextSize(12);
+                            }
+
+                        }
+                    });
+
+
+
+
+
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+    }
 
 }

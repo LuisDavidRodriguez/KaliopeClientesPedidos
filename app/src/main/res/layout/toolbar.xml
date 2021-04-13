@@ -19,6 +19,47 @@
             app:menu="@menu/action_bar_menu"
             android:elevation="12dp"
             >
+
+
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/toolBarLuisdaTitulo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentTop="true"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:text="Kaliope Pedidos"
+                            />
+                        <TextView
+                            android:id="@+id/toolBarLuisdaSubtitulo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:textSize="12sp"
+                            android:text="Maria Guadalupe Ramires"
+                            android:layout_below="@+id/toolBarLuisdaTitulo"
+
+                            />
+
+
+                        <TextView
+                            android:id="@+id/toolBarLuisdaModoFuncionamiento"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="offline"
+                            android:layout_alignParentEnd="true"
+                            android:layout_below="@+id/toolBarLuisdaSubtitulo"
+                            />
+                </RelativeLayout>
+
+
+
                 <!--Hasta arriba es lo basico aqui abajo quiero probar el seguir personalizando mi barra
                 el video que lo saque https://www.youtube.com/watch?v=fp1ds4-Qn2E
                 <ImageView
