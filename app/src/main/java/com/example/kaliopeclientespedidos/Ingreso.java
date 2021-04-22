@@ -219,7 +219,8 @@ public class Ingreso extends AppCompatActivity {
         buttonContinuar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //ConfiguracionesApp.setEntradaComoInvitado(activity,true);
+                ConfiguracionesApp.setEntradaComoInvitado(activity,true);
+                ConfiguracionesApp.iniciarSesion(activity,Constantes.NOMBRE_INVITADO, Constantes.NOMBRE_INVITADO, Constantes.CUENTA_INVITADO);
 
                 if(checkBoxNoMostrarOtraVez.isChecked()){
                     //si el usuario marco el mensaje como no volver a mostrar

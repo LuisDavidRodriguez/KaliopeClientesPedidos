@@ -12,17 +12,28 @@
             android:id="@+id/home"
             android:icon="@drawable/ic_home"
             android:title="home"
+            android:checkable="true"
             >
             <!--Cheked Inicia seleccionado el item de home-->
         </item>
 
 
+            <item
+                android:id="@+id/carrito"
+                android:icon="@drawable/ic_baseline_shopping_cart_24"
+                android:title="Carrito"
+                android:checkable="false"
+                >
+            </item>
+
+        <!--
         <item
             android:id="@+id/personas"
             android:icon="@drawable/ic_group"
             android:title="Cuenta">
 
         </item>
+        -->
 
         </group>
 
@@ -37,18 +48,15 @@
         <menu>
 
             <group android:checkableBehavior="single">
-            <item
-                android:id="@+id/carrito"
-                android:icon="@drawable/ic_baseline_shopping_cart_24"
-                android:title="Carrito"
-                >
-            </item>
+
 
 
             <item
-                android:id="@+id/personas2"
+                android:id="@+id/cerrarSesion"
                 android:icon="@drawable/ic_group"
-                android:title="personas">
+                android:title="Cerrar Sesion"
+                android:checkable="false"
+                >
 
             </item>
             </group>

@@ -105,7 +105,8 @@ public class ConfiguracionesApp {
      *
      * @param activity la actividad donde se esta llamando al shared prefernces
      *
-     * @return true si se entro como invitado o no se encuentra la configuracion
+     * @return true si se entro como invitado
+     *          false si no se encontro la configuracion o no se entro como invitado
      *
      *
      * */
@@ -118,7 +119,7 @@ public class ConfiguracionesApp {
 
         //si no encontramos la preferencia guardada devolveremos por default true indicando
         //que deberemos mostrar el aviso de invitado
-        return sharedPreferences.getBoolean(ENTRADA_COMO_INVITADO,true);
+        return sharedPreferences.getBoolean(ENTRADA_COMO_INVITADO,false);
 
 
     }
@@ -129,7 +130,7 @@ public class ConfiguracionesApp {
      *              <p>false si no
      *
      * */
-    private static void setEntradaComoInvitado(Activity activity, boolean valor){
+    public static void setEntradaComoInvitado(Activity activity, boolean valor){
 
         SharedPreferences preferences =
                 activity.getSharedPreferences(NOMBRE_ARCHIVO_CONFIGURACIONES, Context.MODE_PRIVATE);//para que solo la app kaliope pueda leer o escribir sobre el archivo
@@ -140,6 +141,10 @@ public class ConfiguracionesApp {
         //editor.commit();//guardamos nuestro fichero
         editor.apply();
 
+    }
+    private static void deleteEntradaComoInvitado(Activity activity){
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(NOMBRE_ARCHIVO_CONFIGURACIONES, Context.MODE_PRIVATE);
+        sharedPreferences.edit().remove(ENTRADA_COMO_INVITADO).apply();
     }
 
     /**
@@ -215,6 +220,10 @@ public class ConfiguracionesApp {
 
     }
 
+    public static void deleteCodigoDispositivoUnico(Activity activity){
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(NOMBRE_ARCHIVO_CONFIGURACIONES, Context.MODE_PRIVATE);
+        sharedPreferences.edit().remove(NOMBRE_CODIGO_DISPOSITIVO_UNICO_UUID).apply();
+    }
 
 
 
@@ -520,6 +529,11 @@ public class ConfiguracionesApp {
         return "";
     }
 
+    private static void deleteInformacionClienteOffline(Activity activity){
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(NOMBRE_ARCHIVO_CONFIGURACIONES, Context.MODE_PRIVATE);
+        sharedPreferences.edit().remove(JSON_DATOS_CLIENTE_OFFLINE).apply();
+    }
+
 
 
 
@@ -562,7 +576,9 @@ public class ConfiguracionesApp {
         deleteUsuarioIniciado(activity);
         deleteEstadoSesion(activity);
         deleteCuentaCliente(activity);
-
+        deleteInformacionClienteOffline(activity);
+        //deleteCodigoDispositivoUnico(activity);       //no borramos el codigo de dispositivo unico porque se supone que es el que se usara siempre hasta que se reinstale la app
+        deleteEntradaComoInvitado(activity);
     }
 
 
