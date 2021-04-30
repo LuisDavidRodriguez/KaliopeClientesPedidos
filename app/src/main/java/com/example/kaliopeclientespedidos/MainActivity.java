@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if(!ConfiguracionesApp.getEntradaComoInvitado(activity)){
                 startActivity(new Intent(this, CarritoActivity.class));
             }else{
-                Snackbar.make(drawerLayout.getRootView(), "No puedes acceder al carrito como INVITADO", Snackbar.LENGTH_SHORT).setAction("accion",null).show();
+                Snackbar.make(drawerLayout.getRootView(), "No puedes acceder al carrito si entraste como INVITADO", Snackbar.LENGTH_SHORT).setAction("accion",null).show();
 
             }
 
@@ -332,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if(!ConfiguracionesApp.getEntradaComoInvitado(activity)){
                 startActivity(new Intent(this, CarritoActivity.class));
             }else{
-                Snackbar.make(drawerLayout.getRootView(), "No puedes acceder al carrito como INVITADO", Snackbar.LENGTH_SHORT).setAction("accion",null).show();
+                Snackbar.make(drawerLayout.getRootView(), "No puedes acceder al carrito si entraste como INVITADO", Snackbar.LENGTH_SHORT).setAction("accion",null).show();
 
             }
 

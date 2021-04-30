@@ -173,7 +173,9 @@ public class DetallesActivity extends AppCompatActivity {
                 if(offline){
                     dialogoOffline();
                 }else{
-                    enviarProductoAlServidor();
+
+                        enviarProductoAlServidor();
+
                 }
 
             }
@@ -1089,8 +1091,9 @@ public class DetallesActivity extends AppCompatActivity {
                 try {
                     String responseString = response.getString("mensaje");
 
-                    new AlertDialog.Builder(activity)
-                            .setTitle("Exito")
+                    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+                    builder.setTitle("Exito")
                             .setMessage(responseString + "\n\n Status Code" + statusCode)
                             .setIcon(R.drawable.logo_kaliope_burbuja)
                             .setPositiveButton(R.string.continuar_eligiendo, new DialogInterface.OnClickListener() {
@@ -1098,13 +1101,23 @@ public class DetallesActivity extends AppCompatActivity {
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     dialogInterface.dismiss();
                                 }
-                            })
-                            .setNegativeButton(R.string.ver_carrito, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    startActivity(new Intent(activity, CarritoActivity.class));
-                                }
-                            }).create().show();
+                            });
+
+                    if(!ConfiguracionesApp.getEntradaComoInvitado(activity)){
+                        //si no se entro como invitado mostramos la opcion de ver carrito
+                        builder.setNegativeButton(R.string.ver_carrito, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                startActivity(new Intent(activity, CarritoActivity.class));
+                            }
+                        });
+
+                    }
+
+                    builder.create();
+                    builder.show();
+
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();

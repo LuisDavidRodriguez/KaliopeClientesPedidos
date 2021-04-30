@@ -30,15 +30,18 @@ import cz.msebera.android.httpclient.Header;
 public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCarrito> {
 
    JSONObject jsonObjectTotales;
-   Activity activity;
+   JSONObject jsonObjectInformacion;                      //"info":{"estatus":"FAIL","MENSAJE":"Tu carrito esta vacio"}---info":{"estatus":"FAIL","MENSAJE":"Tu ultimo pedido ha sido finalizado el dia 24-08-2021, agrega a tu carrito para crear un nuevo pedido!"}---"info":{"estatus":"EXITO","MENSAJE":"Carrito encotrado"}
+
+    Activity activity;
 
    CarritoAdapter carritoAdapter;                   //necesitamos una referencia del adaptador que lista los productos del carrito para poder enviarle desde auqi la nueva lista de productos confirmados y notificarle el cambio al adaptador
 
    ProgressDialog progressDialog;
 
 
-    public TotalAdapter(JSONObject jsonObjectTotales, Activity activity) {
+    public TotalAdapter(JSONObject jsonObjectTotales,JSONObject jsonObjectInformacion, Activity activity) {
         this.jsonObjectTotales = jsonObjectTotales;
+        this.jsonObjectInformacion = jsonObjectInformacion;
         this.activity = activity;
     }
 
@@ -107,9 +110,10 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
 
 
 
-            //Dependiendo de si la cantidad es 0 entonces mostramos la imagen de la bolsita triste y si no mostramos los totales
-            if(jsonObjectTotales.getString("suma_cantidad").equals("0")){
+            //Dependiendo de si la cantidad es 0 entonces mostramos la imagen de la bolsita triste y mandamos el mensaje que nos muestra el server si no mostramos los totales
+            if(jsonObjectInformacion.getString("estatus").equals("FAIL")){
                 holder.constraintLayoutCarritoVacio.setVisibility(View.VISIBLE);
+                holder.mensajeBolsaVacia.setText(jsonObjectInformacion.getString("MENSAJE"));           //ponemos el mensaje que el servidor nos envia
                 holder.constraintLayoutTotales.setVisibility(View.GONE);
             }else{
                 holder.constraintLayoutCarritoVacio.setVisibility(View.GONE);
@@ -299,6 +303,8 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
         mensajeLimiteCredito,
         mensajeTodoInversion;
 
+        TextView mensajeBolsaVacia;
+
         Button confirmarEnviarPedido;
 
         ImageView imageViewPalomita;
@@ -330,6 +336,7 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
            mensajeTodoInversion = (TextView) itemView.findViewById(R.id.item_container_carrito_totales_mensajeTodoInversionTV);
            constraintLayoutTotales = (ConstraintLayout) itemView.findViewById(R.id.item_container_carrito_totales_constrainLayoutTotales);
            constraintLayoutCarritoVacio = (ConstraintLayout) itemView.findViewById(R.id.item_container_carrito_totales_layout_vacio);
+           mensajeBolsaVacia = (TextView) itemView.findViewById(R.id.textView11);
            imageViewPalomita = (ImageView) itemView.findViewById(R.id.item_container_carrito_totales_palomitaIV);
 
         }

@@ -39,6 +39,7 @@ public class CarritoActivity extends AppCompatActivity {
 
     private JSONArray datosCarrito = new JSONArray();
     private JSONObject totalesCarrito = new JSONObject();
+    private JSONObject informacion = new JSONObject();
 
 
     RecyclerView recyclerViewLista;
@@ -95,6 +96,13 @@ public class CarritoActivity extends AppCompatActivity {
 
                  totales: {"nombre":"MONICA HERNANDEZ GARCIA","cuenta":"4926","limite_credito":"1400","grado":"VENDEDORA","dias":"14","ruta":"EL PALMITO","numero_pedido":"1","fecha_entrega":"2021-02-09","suma_cantidad":5,"suma_credito":4,"suma_inversion":1,"cantidad_sin_confirmar":3,"suma_productos_etiqueta":2015,"suma_productos_inversion":360,"suma_productos_credito":1288,"suma_ganancia_cliente":367,"diferencia_credito":-112,"mensaje_diferencia_credito":"Aun dispones de $112 en tu credito Kaliope","mensaje_todo_inversion":"Si pagaras tu pedido en Inversion ganarias $367","mensaje_resumido_puntos":" + 300 puntos Kaliope","mensaje_completo_puntos":"Tambien has ganado 300 puntos Kaliope, recueda que estos puntos se validaran con tu agente Kaliope y seran solo si realizas los pagos completos de este pedido.","mensaje_cantidad_sin_confirmar": "Tienes 1 producto sin confirmar"}}
 
+                 Hicimos una modificacion se agrega otro json info, este contiene los datos de la consulta del carrito
+                 debido a que pueden ser 3 casos 1
+                 "info":{"estatus":"FAIL","MENSAJE":"Tu carrito esta vacio"}
+                 "info":{"estatus":"FAIL","MENSAJE":"Tu ultimo pedido ha sido finalizado el dia 24-08-2021, agrega a tu carrito para crear un nuevo pedido!"}
+                 "info":{"estatus":"EXITO","MENSAJE":"Carrito encotrado"}
+
+
 
 
                 obtendremos de vuelta todos los productos que el cliente tiene en su carrito,
@@ -102,6 +110,7 @@ public class CarritoActivity extends AppCompatActivity {
                 entonces retornamos el carrito pero un texto diciendo "El producto a añadir no pudo ser agregado correctamente al carrito"
                  */
                 try {
+                    informacion = response.getJSONObject("info");
                     datosCarrito = response.getJSONArray("carritoCliente");
                     totalesCarrito = response.getJSONObject("totales");
                     Log.d("totales", String.valueOf(totalesCarrito));
@@ -140,7 +149,7 @@ public class CarritoActivity extends AppCompatActivity {
                 //te dice la linea del error etc.
 
 
-                String info = "Status Code: " + String.valueOf(statusCode) + "  responseString: " + responseString;
+                String info = "Status Code: " + headers.toString() + statusCode + "  responseString: " + responseString + throwable.getMessage();
                 Log.d("onFauile 1", info);
                 //Toast.makeText(MainActivity.this,responseString + "  Status Code: " + String.valueOf(statusCode) , Toast.LENGTH_LONG).show();
                progressDialog.dismiss();
@@ -171,7 +180,7 @@ public class CarritoActivity extends AppCompatActivity {
                 //Llamo a reatry 5 veces
 
 
-                String info = "StatusCode" + String.valueOf(statusCode) + "  Twhowable:   " + throwable.toString();
+                String info = "StatusCode" + String.valueOf(statusCode) + "  Twhowable:   " + throwable.getMessage();
                 Log.d("onFauile 2", info);
                 //Toast.makeText(MainActivity.this,info, Toast.LENGTH_LONG).show();
                 progressDialog.dismiss();
@@ -194,7 +203,7 @@ public class CarritoActivity extends AppCompatActivity {
 
 
 
-        TotalAdapter totalAdapter = new TotalAdapter(totalesCarrito, this);
+        TotalAdapter totalAdapter = new TotalAdapter(totalesCarrito,informacion, this);
         CarritoAdapter carritoAdapter = new CarritoAdapter(datosCarrito,this, totalAdapter);
         totalAdapter.setCarritoAdapterReferencia(carritoAdapter);                                           //le enviamos la referencia para poder notificar al adaptador
         ConcatAdapter concatAdapter = new ConcatAdapter(totalAdapter,carritoAdapter);
