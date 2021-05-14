@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/textView23"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$"
+        android:textColor="@color/colorBlack"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="@+id/dialogo_confirmacion_pedido_5_pagoInversion"
+        app:layout_constraintEnd_toStartOf="@+id/dialogo_confirmacion_pedido_5_pagoInversion"
+        app:layout_constraintTop_toTopOf="@+id/dialogo_confirmacion_pedido_5_pagoInversion"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/dialogo_confirmacion_pedido_5_pagoInversion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        android:paddingEnd="15dp"
+        android:textColor="@color/colorBlack"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialogo_confirmacion_pedido_5_pagoCredito" />
+
+    <TextView
+        android:id="@+id/textView20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$"
+        android:textColor="@color/colorBlack"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="@+id/dialogo_confirmacion_pedido_5_pagoCredito"
+        app:layout_constraintEnd_toStartOf="@+id/dialogo_confirmacion_pedido_5_pagoCredito"
+        app:layout_constraintTop_toTopOf="@+id/dialogo_confirmacion_pedido_5_pagoCredito"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/dialogo_confirmacion_pedido_5_titulo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        android:textColor="@color/colorBlack"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/dialogo_confirmacion_pedido_5_difCredito"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:paddingEnd="15dp"
+        android:text="TextView"
+        android:textColor="@color/colorBlack"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialogo_confirmacion_pedido_5_titulo" />
+
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$"
+        android:textColor="@color/colorBlack"
+        android:textSize="22sp"
+        app:layout_constraintBottom_toBottomOf="@+id/dialogo_confirmacion_pedido_5_difCredito"
+        app:layout_constraintEnd_toStartOf="@+id/dialogo_confirmacion_pedido_5_difCredito"
+        app:layout_constraintTop_toTopOf="@+id/dialogo_confirmacion_pedido_5_difCredito" />
+
+    <TextView
+        android:id="@+id/dialogo_confirmacion_pedido_5_pagoCredito"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        android:paddingEnd="15dp"
+        android:textColor="@color/colorBlack"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialogo_confirmacion_pedido_5_difCredito" />
+
+    <TextView
+        android:id="@+id/textView25"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="18dp"
+        android:text="+"
+        android:textColor="@color/colorAccent"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/textView31"
+        app:layout_constraintEnd_toEndOf="@+id/textView23" />
+
+    <TextView
+        android:id="@+id/dialogo_confirmacion_pedido_5_difCreditoMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/dialogo_confirmacion_pedido_5_difCredito"
+        app:layout_constraintTop_toTopOf="@+id/dialogo_confirmacion_pedido_5_difCredito" />
+
+    <TextView
+        android:id="@+id/dialogo_confirmacion_pedido_5_pagoCreditoMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/dialogo_confirmacion_pedido_5_pagoCredito"
+        app:layout_constraintTop_toTopOf="@+id/dialogo_confirmacion_pedido_5_pagoCredito" />
+
+    <TextView
+        android:id="@+id/dialogo_confirmacion_pedido_5_pagoInversionMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/dialogo_confirmacion_pedido_5_pagoInversion"
+        app:layout_constraintTop_toTopOf="@+id/dialogo_confirmacion_pedido_5_pagoInversion" />
+
+    <TextView
+        android:id="@+id/cantidadFinanciada"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="@+id/textView33"
+        app:layout_constraintHorizontal_bias="0.2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialogo_confirmacion_pedido_5_pagoTotal" />
+
+    <TextView
+        android:id="@+id/cantidadFinanciadaMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="TextView"
+        app:layout_constraintStart_toEndOf="@+id/cantidadFinanciada"
+        app:layout_constraintTop_toTopOf="@+id/cantidadFinanciada" />
+
+    <TextView
+        android:id="@+id/textView31"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="-10dp"
+        android:background="@color/colorAccent"
+        android:text=""
+        app:layout_constraintEnd_toEndOf="@+id/dialogo_confirmacion_pedido_5_pagoInversion"
+        app:layout_constraintStart_toEndOf="@+id/textView25"
+        app:layout_constraintTop_toBottomOf="@+id/dialogo_confirmacion_pedido_5_pagoInversion" />
+
+    <TextView
+        android:id="@+id/dialogo_confirmacion_pedido_5_pagoTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        android:textColor="@color/colorBlack"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView31" />
+
+    <TextView
+        android:id="@+id/textView33"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$"
+        android:textColor="@color/colorBlack"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="@+id/dialogo_confirmacion_pedido_5_pagoTotal"
+        app:layout_constraintEnd_toStartOf="@+id/dialogo_confirmacion_pedido_5_pagoTotal"
+        app:layout_constraintTop_toTopOf="@+id/dialogo_confirmacion_pedido_5_pagoTotal" />
+
+    <TextView
+        android:id="@+id/dialogo_confirmacion_pedido_5_pagoTotalMessage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/dialogo_confirmacion_pedido_5_pagoTotal"
+        app:layout_constraintTop_toTopOf="@+id/dialogo_confirmacion_pedido_5_pagoTotal" />
+
+    <TextView
+        android:id="@+id/textView35"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$"
+        app:layout_constraintBottom_toBottomOf="@+id/cantidadFinanciada"
+        app:layout_constraintEnd_toStartOf="@+id/cantidadFinanciada"
+        app:layout_constraintTop_toTopOf="@+id/cantidadFinanciada"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

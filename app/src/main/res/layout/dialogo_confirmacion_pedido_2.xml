@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp"
+    >
+
+    <TextView
+        android:id="@+id/dialogo_confirmacion_pedido__2_TVcantidadCredito"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="1400"
+        android:textSize="25sp"
+        android:textColor="@color/colorBlack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialogo_confirmacion_pedido__2_TV1" />
+
+    <TextView
+        android:id="@+id/dialogo_confirmacion_pedido__2_TV1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="TextView"
+        android:textSize="18sp"
+        android:textColor="@color/colorBlack"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$"
+        android:textColor="@color/colorAccent"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toStartOf="@+id/dialogo_confirmacion_pedido__2_TVcantidadCredito"
+        app:layout_constraintTop_toTopOf="@+id/dialogo_confirmacion_pedido__2_TVcantidadCredito" />
+
+    <TextView
+        android:id="@+id/dialogo_confirmacion_pedido__2_TV3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:text="en productos a credito"
+        app:layout_constraintBottom_toBottomOf="@+id/dialogo_confirmacion_pedido__2_TVcantidadCredito"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/dialogo_confirmacion_pedido__2_TVcantidadCredito"
+        app:layout_constraintTop_toTopOf="@+id/dialogo_confirmacion_pedido__2_TVcantidadCredito" />
+
+    <TextView
+        android:id="@+id/dialogo_confirmacion_pedido__2_TV4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Tendras que pagar al recibir:"
+        android:textColor="@color/colorBlack"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialogo_confirmacion_pedido__2_TVcantidadCredito" />
+
+    <TextView
+        android:id="@+id/dialogo_confirmacion_pedido__2_TVpagarCliente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="700"
+        android:textColor="@color/colorBlack"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialogo_confirmacion_pedido__2_TV4" />
+
+    <TextView
+        android:id="@+id/textView18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$"
+        android:textSize="25sp"
+        android:textColor="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="@+id/dialogo_confirmacion_pedido__2_TVpagarCliente"
+        app:layout_constraintEnd_toStartOf="@+id/dialogo_confirmacion_pedido__2_TVpagarCliente"
+        app:layout_constraintTop_toTopOf="@+id/dialogo_confirmacion_pedido__2_TVpagarCliente" />
+
+    <TextView
+        android:id="@+id/dialogo_confirmacion_pedido__2_TV5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="50% del credito"
+        app:layout_constraintBottom_toBottomOf="@+id/dialogo_confirmacion_pedido__2_TVpagarCliente"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/dialogo_confirmacion_pedido__2_TVpagarCliente"
+        app:layout_constraintTop_toTopOf="@+id/dialogo_confirmacion_pedido__2_TVpagarCliente" />
+
+    <TextView
+        android:id="@+id/dialogo_confirmacion_pedido__2_TV6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="TextView"
+        android:gravity="center"
+        android:textColor="@color/colorPrimary"
+        android:textAppearance="@style/AppTheme.AppBarOverlay"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialogo_confirmacion_pedido__2_TVpagarCliente" />
+
+    <TextView
+        android:id="@+id/dialogo_confirmacion_pedido__2_TV7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:gravity="center"
+        android:text="Quedan Pendientes:"
+        app:layout_constraintEnd_toEndOf="@+id/dialogo_confirmacion_pedido__2_TVpagarCliente"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dialogo_confirmacion_pedido__2_TV6" />
+
+    <TextView
+        android:id="@+id/textView22"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="$"
+        app:layout_constraintBottom_toBottomOf="@+id/dialogo_confirmacion_pedido__2_TVcantidadPendiente"
+        app:layout_constraintEnd_toStartOf="@+id/dialogo_confirmacion_pedido__2_TVcantidadPendiente"
+        app:layout_constraintTop_toTopOf="@+id/dialogo_confirmacion_pedido__2_TVcantidadPendiente" />
+
+    <TextView
+        android:id="@+id/dialogo_confirmacion_pedido__2_TVcantidadPendiente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="700"
+        app:layout_constraintEnd_toEndOf="@+id/dialogo_confirmacion_pedido__2_TV7"
+        app:layout_constraintStart_toStartOf="@+id/dialogo_confirmacion_pedido__2_TV7"
+        app:layout_constraintTop_toBottomOf="@+id/dialogo_confirmacion_pedido__2_TV7" />
+
+    <TextView
+        android:id="@+id/dialogo_confirmacion_pedido__2_TV8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="TextView"
+        app:layout_constraintBottom_toBottomOf="@+id/dialogo_confirmacion_pedido__2_TVcantidadPendiente"
+        app:layout_constraintStart_toEndOf="@+id/dialogo_confirmacion_pedido__2_TVcantidadPendiente"
+        app:layout_constraintTop_toTopOf="@+id/dialogo_confirmacion_pedido__2_TVcantidadPendiente" />
+</androidx.constraintlayout.widget.ConstraintLayout>

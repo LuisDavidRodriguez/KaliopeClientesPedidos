@@ -1,13 +1,16 @@
 package com.example.kaliopeclientespedidos.adapter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -31,12 +34,14 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
 
    JSONObject jsonObjectTotales;
    JSONObject jsonObjectInformacion;                      //"info":{"estatus":"FAIL","MENSAJE":"Tu carrito esta vacio"}---info":{"estatus":"FAIL","MENSAJE":"Tu ultimo pedido ha sido finalizado el dia 24-08-2021, agrega a tu carrito para crear un nuevo pedido!"}---"info":{"estatus":"EXITO","MENSAJE":"Carrito encotrado"}
+   private JSONObject mensajesPreConfirmacion;              // los mesajes que mostraran los dialogos al preconfirmar"mensajes":{"0":"Confirmaras estos productos","1":"Esto apartara las existencias de los almacenes Kaliope","2":"Recuerda confirmar lo mas pronto posible estas piezas para garantizar las existencias del producto.","3":"Al recibir tu a crédito tú pagaras el 50% y Kaliope te financia 28 días el 50% restante","4":"Tu pedido actual tiene:","5":"en productos a crédito","6":"Tendras que pagar al recibir:","7":"50% del pedido","8":"Con forme aumente tu historial Kaliope aumentaremos tu financiamiento","9":"Quedaran pendientes:","10":"para el14-06-2021","11":"Recomendamos el modo de pago “Inversión” para que obtengas los mejores precios","12":"","13":"","14":"Recomendamos que cambies el método de pago a “Inversión” en algún producto para que obtengas el costo mas bajo.","15":"Tu pago por Inversión al recibir tu pedido será de:","16":"Felicidades has obtenido el precio mas bajo por producto.","17":"Al recibir tu pedido deberás liquidar al agente Kaliope:","18":"Exceso de credito","19":"50% credito","20":"Inversion","21":"por liquidar al recibir el pedido","22":"En crédito Kaliope fecha de pago 14-06-2021"}}
 
     Activity activity;
 
    CarritoAdapter carritoAdapter;                   //necesitamos una referencia del adaptador que lista los productos del carrito para poder enviarle desde auqi la nueva lista de productos confirmados y notificarle el cambio al adaptador
 
    ProgressDialog progressDialog;
+
 
 
     public TotalAdapter(JSONObject jsonObjectTotales,JSONObject jsonObjectInformacion, Activity activity) {
@@ -133,7 +138,7 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
         holder.confirmarEnviarPedido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                conectarServerConfirmarPedido(position);
+                conectarServerPreConfirmarPedido();
             }
         });
 
@@ -268,6 +273,116 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
     }
 
 
+    private void conectarServerPreConfirmarPedido(){
+        RequestParams params = new RequestParams();
+        params.put("OPERACION",4);      //para PRE confirmar el pedido
+        params.put("CUENTA_CLIENTE", ConfiguracionesApp.getCuentaCliente(activity));
+
+        showProgresDialog(activity);
+
+        KaliopeServerClient.post(CarritoAdapter.URL_EDICION_CARRITO,params, new JsonHttpResponseHandler(){
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                progressDialog.dismiss();
+                Log.d("responseCode1", String.valueOf(response));
+                //D/responseCode1: {"productos":[{"cantidad":"1","id_producto":"BR1008","descripcion":"BRASSIER DAMA","color":"AZULMARINO","precio_etiqueta":"189","imagen_permanente":"fotos\/BR1008-AZULMARINO-1.jpg","estado_producto":"CREDITO"},
+                // {"cantidad":"2","id_producto":"PT1001","descripcion":"Pantaleta Dama","color":"CIELO","precio_etiqueta":"79","imagen_permanente":"fotos\/PT1001-CIELO-1.jpg","estado_producto":"INVERSION"},
+                // {"cantidad":"1","id_producto":"BD1002","descripcion":"BLUSA DAMA","color":"ROSA","precio_etiqueta":"329","imagen_permanente":"fotos\/BD1002-ROSA-1.jpg","estado_producto":"INVERSION"}],
+                //"mensajes":{"0":"Confirmaras estos productos","1":"Esto apartara las existencias de los almacenes Kaliope","2":"Recuerda confirmar lo mas pronto posible estas piezas para garantizar las existencias del producto.","3":"Al recibir tu a crédito tú pagaras el 50% y Kaliope te financia 28 días el 50% restante","4":"Tu pedido actual tiene:","5":"en productos a crédito","6":"Tendras que pagar al recibir:","7":"50% del pedido","8":"Con forme aumente tu historial Kaliope aumentaremos tu financiamiento","9":"Quedaran pendientes:","10":"para el14-06-2021","11":"Recomendamos el modo de pago “Inversión” para que obtengas los mejores precios","12":"Tu crédito Kaliope de $1500 será sobre pasado por:","13":"Tendrás que dar esta diferencia en efectivo al recibir tu pedido.","14":"Recomendamos que cambies el método de pago a “Inversión” en algún producto para que obtengas el costo mas bajo.","15":"Tu pago por Inversión al recibir tu pedido será de:","16":"Felicidades has obtenido el precio mas bajo por producto.","17":"Al recibir tu pedido deberás liquidar al agente Kaliope:","18":"Exceso de credito","19":"50% credito","20":"Inversion","21":"por liquidar al recibir el pedido","22":"En crédito Kaliope fecha de pago 14-06-2021"}}
+
+                try {
+                    JSONArray productoPorConfirmar = response.getJSONArray("productos");
+                    //JSONObject totales = response.getJSONObject("totales");                               //no volvemos a recibir totales porque ya los tenemos desde la primera vez que se conecta la app al carrito
+                    mensajesPreConfirmacion = response.getJSONObject("mensajes");
+
+                    dialogoConfirmacion1(productoPorConfirmar);
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+
+            }
+
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                //cuando por se recibe como respuesta un objeto que no puede ser convertido a jsonData
+                //es decir si se conecta al servidor, pero desde el retornamos un echo de error
+                //con un simple String lo recibimos en este metodo, crei que lo recibiria en el metodo onSUcces que tiene como parametro el responseString
+                //pero parese que no, lo envia a este onFaiulure con Status Code
+
+                //Si el nombre del archivo php esta mal para el ejemplo el correcto es: comprobar_usuario_app_kaliope.php
+                // y el incorrecto es :comprobar_usuario_app_kaliop.php se llama a este metodo y entrega el codigo 404
+                //lo que imprime en el log es un codigo http donde dice que <h1>Object not found!</h1>
+                //            <p>
+                //
+                //
+                //                The requested URL was not found on this server.
+                //
+                //
+                //
+                //                If you entered the URL manually please check your
+                //                spelling and try again.
+                //es decir si se encontro conexion al servidor y este respondio con ese mensaje
+                //tambien si hay errores con alguna variable o algo asi, en este medio retorna el error como si lo viernas en el navegador
+                //te dice la linea del error etc.
+
+
+                String info = "Status Code: " + String.valueOf(statusCode) + "  responseString: " + responseString;
+                Log.d("onFauile 1", info);
+                //Toast.makeText(MainActivity.this,responseString + "  Status Code: " + String.valueOf(statusCode) , Toast.LENGTH_LONG).show();
+                progressDialog.dismiss();
+                utilidadesApp.dialogoResultadoConexion(activity,"Fallo de conexion", responseString + "\nStatus Code: " + String.valueOf(statusCode));
+
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+
+                //cuando no se ha podido conectar con el servidor el statusCode=0 cz.msebera.android.httpclient.conn.ConnectTimeoutException: Connect to /192.168.1.10:8080 timed out
+                //para simular esto estoy en un servidor local, obiamente el celular debe estar a la misma red, lo desconecte y lo movi a la red movil
+
+                //cuando no hay coneccion a internet apagados datos y wifi se llama al metodo retry 5 veces y arroja la excepcion:
+                // java.net.ConnectException: failed to connect to /192.168.1.10 (port 8080) from /:: (port 0) after 10000ms: connect failed: ENETUNREACH (Network is unreachable)
+
+
+                //Si la url principal del servidor esta mal para simularlo cambiamos estamos a un servidor local con:
+                //"http://192.168.1.10:8080/KALIOPE/" cambiamos la ip a "http://192.168.1.1:8080/KALIOPE/";
+                //se llama al onRetry 5 veces y se arroja la excepcion en el log:
+                //estatus code: 0 java.net.ConnectException: failed to connect to /192.168.1.1 (port 8080) from /192.168.1.71 (port 36134) after 10000ms: isConnected failed: EHOSTUNREACH (No route to host)
+                //no hay ruta al Host
+
+                //Si desconectamos el servidor de la ip antes la ip en el servidor de la computadora era 192.168.1.10, lo movimos a 192.168.1.1
+                //genera lo mismo como si cambiaramos la ip en el programa android la opcion dew arriba. No
+                //StatusCode0  Twhowable:   java.net.ConnectException: failed to connect to /192.168.1.10 (port 8080) from /192.168.1.71 (port 37786) after 10000ms: isConnected failed: EHOSTUNREACH (No route to host)
+                //Llamo a reatry 5 veces
+
+
+                String info = "StatusCode" + String.valueOf(statusCode) + "  Twhowable:   " + throwable.toString();
+                Log.d("onFauile 2", info);
+                //Toast.makeText(MainActivity.this,info, Toast.LENGTH_LONG).show();
+                progressDialog.dismiss();
+                utilidadesApp.dialogoResultadoConexion(activity,"Fallo de conexion", info);
+
+            }
+
+
+            @Override
+            public void onRetry(int retryNo) {
+                progressDialog.setMessage("Reintentando conexion No: " + String.valueOf(retryNo));
+            }
+
+
+
+        });
+    }
+
 
     private void showProgresDialog(Activity activity){
 
@@ -340,5 +455,320 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
            imageViewPalomita = (ImageView) itemView.findViewById(R.id.item_container_carrito_totales_palomitaIV);
 
         }
+    }
+
+
+
+    private void dialogoConfirmacion1(JSONArray productosPorConfirmar){
+        //inflamos la vista de nuestro dialogo personalizado
+        //"mensajes":{"0":"Confirmaras estos productos","1":"Esto apartara las existencias de los almacenes Kaliope",
+        // "2":"Recuerda confirmar lo mas pronto posible estas piezas para garantizar las existencias del producto.",
+        // "3":"Al recibir tu a crédito tú pagaras el 50% y Kaliope te financia 28 días el 50% restante",
+        // "4":"Tu pedido actual tiene:",
+        // "5":"en productos a crédito",
+        // "6":"Tendras que pagar al recibir:",
+        // "7":"50% del pedido",
+        // "8":"Con forme aumente tu historial Kaliope aumentaremos tu financiamiento",
+        // "9":"Quedaran pendientes:",
+        // "10":"para el14-06-2021",
+        // "11":"Recomendamos el modo de pago “Inversión” para que obtengas los mejores precios",
+        // "12":"Tu crédito Kaliope de $1500 será sobre pasado por:",
+        // "13":"Tendrás que dar esta diferencia en efectivo al recibir tu pedido.",
+        // "14":"Recomendamos que cambies el método de pago a “Inversión” en algún producto para que obtengas el costo mas bajo.",
+        // "15":"Tu pago por Inversión al recibir tu pedido será de:",
+        // "16":"Felicidades has obtenido el precio mas bajo por producto.",
+        // "17":"Al recibir tu pedido deberás liquidar al agente Kaliope:",
+        // "18":"Exceso de credito",
+        // "19":"50% credito",
+        // "20":"Inversion",
+        // "21":"por liquidar al recibir el pedido",
+        // "22":"En crédito Kaliope fecha de pago 14-06-2021"}}
+        LayoutInflater layoutInflater = activity.getLayoutInflater();
+        View view = layoutInflater.inflate(R.layout.dialogo_confirmacion_pedido_1,null);
+
+        TextView mensaje1 = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_TVtitulo);
+        TextView mensaje2 = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_TV1);
+        TextView mensaje3 = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_TV2);
+        ListView listaPorConfirmar = (ListView) view.findViewById(R.id.dialogo_confirmacion_pedido_LV);
+        ListAdapterPreConfirmacion listAdapterPreConfirmacion = new ListAdapterPreConfirmacion(productosPorConfirmar);
+        listaPorConfirmar.setAdapter(listAdapterPreConfirmacion);
+
+
+
+        try {
+            mensaje1.setText(mensajesPreConfirmacion.getString("1"));
+            mensaje2.setText(mensajesPreConfirmacion.getString("2"));
+            mensaje3.setText(mensajesPreConfirmacion.getString("3"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setView(view)
+                .setPositiveButton("Continuar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogoConfirmacion2();
+                    }
+                })
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                })
+                .create()
+                .show();
+
+    }
+
+    private void dialogoConfirmacion2(){
+        //D/totales: {"nombre":"EVA MONDRAGON RIVAS","cuenta":"2070","limite_credito":"2400","grado":"SOCIA","dias":"28","ruta":"ACAMBAY","porcentaje_apoyo_empresa":"0.5","porcentaje_pago_cliente":"0.5","numero_pedido":"1","fecha_entrega":"2021-05-17","fecha_pago_del_credito":"14-06-2021","suma_cantidad":8,"suma_credito":8,"suma_inversion":0,"cantidad_sin_confirmar":7,"suma_productos_etiqueta":1622,"suma_productos_inversion":0,"suma_productos_credito":1179,"suma_ganancia_cliente":443,"diferencia_credito":-1221,"cantidad_pagar_cliente_credito":589.5,"pago_al_recibir":589.5,"mensaje_diferencia_credito":"Aun dispones de $1221 en tu credito Kaliope","mensaje_todo_inversion":"Si pagaras todo tu pedido en Inversion ganarias $560","mensaje_resumido_puntos":" + 200 puntos Kaliope","mensaje_completo_puntos":"Tambien has ganado 200 puntos Kaliope, recueda que estos puntos se validaran con tu agente Kaliope y seran solo si realizas los pagos completos de este pedido.","mensaje_cantidad_sin_confirmar":"Tienes 7 productos sin confirmar, envialos!"}
+        //"mensajes":{"1":"Confirmaras estos productos",
+        // "2":"Esto apartara las existencias de los almacenes Kaliope",
+        // "3":"Recuerda confirmar lo mas pronto posible estas piezas para garantizar las existencias del producto.",
+        // "4":"Al recibir tu a crédito tú pagaras el 50% y Kaliope te financia 28 días el 50% restante",
+        // "5":"Tu pedido actual tiene:",
+        // "6":"en productos a crédito",
+        // "7":"Tendras que pagar al recibir:",
+        // "8":"50% del pedido",
+        // "9":"Con forme aumente tu historial Kaliope aumentaremos tu financiamiento",
+        // "10":"Quedaran pendientes:",
+        // "11":"para el14-06-2021",
+        // "12":"Recomendamos el modo de pago “Inversión” para que obtengas los mejores precios",
+        // "13":"Tu crédito Kaliope de $1500 será sobre pasado por:",
+        // "14":"Tendrás que dar esta diferencia en efectivo al recibir tu pedido.",
+        // "15":"Recomendamos que cambies el método de pago a “Inversión” en algún producto para que obtengas el costo mas bajo.",
+        // "16":"Tu pago por Inversión al recibir tu pedido será de:",
+        // "17":"Felicidades has obtenido el precio mas bajo por producto.",
+        // "18":"Al recibir tu pedido deberás liquidar al agente Kaliope:",
+        // "19":"Exceso de credito",
+        // "20":"50% credito",
+        // "21":"Inversion",
+        // "22":"por liquidar al recibir el pedido",
+        // "23":"En crédito Kaliope fecha de pago 14-06-2021"}}
+        LayoutInflater layoutInflater = activity.getLayoutInflater();
+        View view = layoutInflater.inflate(R.layout.dialogo_confirmacion_pedido_2,null);
+
+        TextView mensaje1 = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido__2_TV1);
+        TextView cantidadCredito = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido__2_TVcantidadCredito);
+        TextView mensaje2 = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido__2_TV3);
+        TextView mensaje3 = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido__2_TV4);
+        TextView cantidadPagoCliente = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido__2_TVpagarCliente);
+        TextView mensaje4 = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido__2_TV5);
+        TextView mensaje5 = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido__2_TV6);
+        TextView mensaje6 = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido__2_TV7);
+        TextView cantidadPendiente = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido__2_TVcantidadPendiente);
+        TextView mensaje7 = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido__2_TV8);
+
+
+
+        try {
+            mensaje1.setText(mensajesPreConfirmacion.getString("5"));
+            cantidadCredito.setText(jsonObjectTotales.getString("suma_productos_credito"));
+            mensaje2.setText(mensajesPreConfirmacion.getString("6"));
+            mensaje3.setText(mensajesPreConfirmacion.getString("7"));
+            cantidadPagoCliente.setText(jsonObjectTotales.getString("cantidad_pagar_cliente_credito"));
+            mensaje4.setText(mensajesPreConfirmacion.getString("8"));
+            mensaje5.setText(mensajesPreConfirmacion.getString("9"));
+            mensaje6.setText(mensajesPreConfirmacion.getString("10"));
+            cantidadPendiente.setText(jsonObjectTotales.getString("cantidad_pagar_cliente_credito"));
+            mensaje7.setText(mensajesPreConfirmacion.getString("11"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setView(view)
+                .setPositiveButton("continuar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        try {
+                            int diferenciaCredito = Integer.parseInt(jsonObjectTotales.getString("diferencia_credito"));
+                            if(diferenciaCredito>0){
+                                //significa que se sobrepaso el credito
+                                dialogoConfirmacion3();
+                            }else{
+                                dialogoConfirmacion4();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            dialogoConfirmacion4();
+                        }
+
+
+
+                    }
+                })
+                .setNegativeButton("cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .create().show();
+
+
+    }
+
+    /**
+     * Este mensaje solo debera mostrarse si el campo diferencia_credito del json totales es positivo o mayor a 0
+     * si es negativo significa que aun le queda credito disponible por lo tanto no debera mostrarse el mensaje
+     * de exceso de credito
+     */
+    private void dialogoConfirmacion3(){
+        //D/totales: {"nombre":"EVA MONDRAGON RIVAS","cuenta":"2070","limite_credito":"2400","grado":"SOCIA","dias":"28","ruta":"ACAMBAY","porcentaje_apoyo_empresa":"0.5","porcentaje_pago_cliente":"0.5","numero_pedido":"1","fecha_entrega":"2021-05-17","fecha_pago_del_credito":"14-06-2021","suma_cantidad":8,"suma_credito":8,"suma_inversion":0,"cantidad_sin_confirmar":7,"suma_productos_etiqueta":1622,"suma_productos_inversion":0,"suma_productos_credito":1179,"suma_ganancia_cliente":443,"diferencia_credito":-1221,"cantidad_pagar_cliente_credito":589.5,"pago_al_recibir":589.5,"mensaje_diferencia_credito":"Aun dispones de $1221 en tu credito Kaliope","mensaje_todo_inversion":"Si pagaras todo tu pedido en Inversion ganarias $560","mensaje_resumido_puntos":" + 200 puntos Kaliope","mensaje_completo_puntos":"Tambien has ganado 200 puntos Kaliope, recueda que estos puntos se validaran con tu agente Kaliope y seran solo si realizas los pagos completos de este pedido.","mensaje_cantidad_sin_confirmar":"Tienes 7 productos sin confirmar, envialos!"}
+        //"mensajes":{"1":"Confirmaras estos productos",
+        // "2":"Esto apartara las existencias de los almacenes Kaliope",
+        // "3":"Recuerda confirmar lo mas pronto posible estas piezas para garantizar las existencias del producto.",
+        // "4":"Al recibir tu a crédito tú pagaras el 50% y Kaliope te financia 28 días el 50% restante",
+        // "5":"Tu pedido actual tiene:",
+        // "6":"en productos a crédito",
+        // "7":"Tendras que pagar al recibir:",
+        // "8":"50% del pedido",
+        // "9":"Con forme aumente tu historial Kaliope aumentaremos tu financiamiento",
+        // "10":"Quedaran pendientes:",
+        // "11":"para el14-06-2021",
+        // "12":"Recomendamos el modo de pago “Inversión” para que obtengas los mejores precios",
+        // "13":"Tu crédito Kaliope de $1500 será sobre pasado por:",
+        // "14":"Tendrás que dar esta diferencia en efectivo al recibir tu pedido.",
+        // "15":"Recomendamos que cambies el método de pago a “Inversión” en algún producto para que obtengas el costo mas bajo.",
+        // "16":"Tu pago por Inversión al recibir tu pedido será de:",
+        // "17":"Felicidades has obtenido el precio mas bajo por producto.",
+        // "18":"Al recibir tu pedido deberás liquidar al agente Kaliope:",
+        // "19":"Exceso de credito",
+        // "20":"50% credito",
+        // "21":"Inversion",
+        // "22":"por liquidar al recibir el pedido",
+        // "23":"En crédito Kaliope fecha de pago 14-06-2021"}}
+
+        LayoutInflater layoutInflater = activity.getLayoutInflater();
+        View view = layoutInflater.inflate(R.layout.dialogo_confirmacion_pedido_3,null);
+
+        TextView mensaje1 = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_3_TV1);
+        TextView mensajeExesoCredito = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_3_TVexcesoCredito);
+        TextView mensaje2 = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_3_TV3);
+        TextView mensaje3 = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_3_TV4);
+
+        try {
+            mensaje1.setText(mensajesPreConfirmacion.getString("13"));
+            mensajeExesoCredito.setText(jsonObjectTotales.getString("diferencia_credito"));
+            mensaje2.setText(mensajesPreConfirmacion.getString("14"));
+            mensaje3.setText(mensajesPreConfirmacion.getString("15"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        new AlertDialog.Builder(activity)
+                .setView(view)
+                .setPositiveButton("continuar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogoConfirmacion4();
+                    }
+                })
+                .setNegativeButton("cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .create().show();
+
+
+    }
+
+
+    private void dialogoConfirmacion4(){
+        LayoutInflater layoutInflater = activity.getLayoutInflater();
+        View view = layoutInflater.inflate(R.layout.dialogo_confirmacion_pedido_4,null);
+
+        TextView mensaje1 = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_4_TV1);
+        TextView mensajePagoInversion = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_4_TVpagoInversion);
+        TextView mensaje2 = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_4_TV2);
+        TextView signoPesos = (TextView) view.findViewById(R.id.textView16);
+
+
+        try {
+            String sumaProductosInversion = jsonObjectTotales.getString("suma_productos_inversion");
+            int totalInversion = Integer.parseInt(sumaProductosInversion);
+
+            if(totalInversion>0){
+                //si hay campos en inversion entonces mostramos el mensaje 1 acorde con la documentacion
+                mensaje1.setText(mensajesPreConfirmacion.getString("16"));
+                mensajePagoInversion.setText(sumaProductosInversion);
+                mensaje2.setText(mensajesPreConfirmacion.getString("17"));
+
+                signoPesos.setVisibility(View.VISIBLE);
+                mensajePagoInversion.setVisibility(View.VISIBLE);
+            }else{
+                //si no ay productos en inversion entonces ocultamos solo el signo de pesos debido a que el servidor ya mandara lso emsnajes correspondientes
+                mensaje1.setText(mensajesPreConfirmacion.getString("16"));
+                mensaje2.setText(mensajesPreConfirmacion.getString("17"));
+                signoPesos.setVisibility(View.INVISIBLE);
+                mensajePagoInversion.setVisibility(View.INVISIBLE);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        new AlertDialog.Builder(activity)
+                .setView(view)
+                .setPositiveButton("continuar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .setNegativeButton("cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .create().show();
+
+
+    }
+
+    private void dialogoConfirmacion5(){
+            LayoutInflater layoutInflater = activity.getLayoutInflater();
+            View view = layoutInflater.inflate(R.layout.dialogo_confirmacion_pedido_5,null);
+
+        TextView titulo = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_titulo);
+        TextView difCredito = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_difCredito);
+        TextView difCreditoMessage = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_difCreditoMessage);
+        TextView pedidoPagoCredito = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoCredito);
+        TextView pagoCreditoMessage = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoCreditoMessage);
+        TextView pagoInversion = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoInversion);
+        TextView pagoInversionMessage = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoInversionMessage);
+        TextView pagoTotal = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoTotal);
+        TextView pagoTotalMessage = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoTotalMessage);
+        TextView cantidadFinanciada = (TextView) view.findViewById(R.id.cantidadFinanciada);
+        TextView cantidadFinanciadaMessage = (TextView) view.findViewById(R.id.cantidadFinanciadaMessage);
+
+        titulo.setText(mensajesPreConfirmacion.getString("18"));
+        difCredito.setText(jsonObjectTotales.getString("diferencia_credito"));
+        difCreditoMessage.setText(mensajesPreConfirmacion.getString("19"));
+
+        pedidoPagoCredito.setText(jsonObjectTotales.getString("cantidad_pagar_cliente_credito"));
+        pagoCreditoMessage.setText(mensajesPreConfirmacion.getString("20"));
+
+        pagoInversion.setText(jsonObjectTotales.getString("suma_productos_inversion"));
+        pagoInversionMessage.setText(mensajesPreConfirmacion.getString("21"));
+
+        pagoTotal.setText(jsonObjectTotales.getString("pago_al_recibir"));
+        pagoTotalMessage.setText(mensajesPreConfirmacion.getString("22"));
+
+        cantidadFinanciada.setText(jsonObjectTotales.getString("pago_al_recibir"));
+        pagoTotalMessage.setText(mensajesPreConfirmacion.getString("22"));
+
+
+
     }
 }
