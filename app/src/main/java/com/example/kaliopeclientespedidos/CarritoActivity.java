@@ -28,10 +28,7 @@ import cz.msebera.android.httpclient.Header;
 
 public class CarritoActivity extends AppCompatActivity {
 
-    String id_producto = "";
-    String colorSeleccionado = "";
-    String tallaSeleccionada = "";
-    int cantidadSeleccionada = 1;
+
 
 
     public static final String URL_CONSULTAR_PEDIDO = "app_movil/consultar_pedido.php";
@@ -40,6 +37,7 @@ public class CarritoActivity extends AppCompatActivity {
     private JSONArray datosCarrito = new JSONArray();
     private JSONObject totalesCarrito = new JSONObject();
     private JSONObject informacion = new JSONObject();
+    private JSONObject mensajesTotalesFinal = new JSONObject(); //contiene lo que debe mostrar el recuadrito que indica lo que el cliente debe pagar al recibir "mensajesFinalTotales":{"18":"Al recibir tu pedido deberás liquidar al agente Kaliope:","19":"Exceso de credito","20":"0% credito","21":"Inversion","22":"por liquidar al recibir el pedido","23":"En crédito Kaliope fecha de pago "}}
 
 
     RecyclerView recyclerViewLista;
@@ -64,7 +62,7 @@ public class CarritoActivity extends AppCompatActivity {
 
 
 
-        Toast.makeText(this, id_producto + " " + colorSeleccionado + " " + tallaSeleccionada + " " + cantidadSeleccionada, Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, id_producto + " " + colorSeleccionado + " " + tallaSeleccionada + " " + cantidadSeleccionada, Toast.LENGTH_LONG).show();
 
 
         consultarCarrito();
@@ -102,6 +100,9 @@ public class CarritoActivity extends AppCompatActivity {
                  "info":{"estatus":"FAIL","MENSAJE":"Tu ultimo pedido ha sido finalizado el dia 24-08-2021, agrega a tu carrito para crear un nuevo pedido!"}
                  "info":{"estatus":"EXITO","MENSAJE":"Carrito encotrado"}
 
+                 añadimos tambien los datos que le muestran al cliente lo que debe pagar al recibir el producto
+                 "mensajesFinalTotales":{"18":"Al recibir tu pedido deberás liquidar al agente Kaliope:","19":"Exceso de credito","20":"0% credito","21":"Inversion","22":"por liquidar al recibir el pedido","23":"En crédito Kaliope fecha de pago "}}
+
 
 
 
@@ -113,6 +114,7 @@ public class CarritoActivity extends AppCompatActivity {
                     informacion = response.getJSONObject("info");
                     datosCarrito = response.getJSONArray("carritoCliente");
                     totalesCarrito = response.getJSONObject("totales");
+                    mensajesTotalesFinal = response.getJSONObject("mensajesFinalTotales");
                     Log.d("totales", String.valueOf(totalesCarrito));
                     llenarRecyclerLista();
                 } catch (JSONException e) {
@@ -203,7 +205,7 @@ public class CarritoActivity extends AppCompatActivity {
 
 
 
-        TotalAdapter totalAdapter = new TotalAdapter(totalesCarrito,informacion, this);
+        TotalAdapter totalAdapter = new TotalAdapter(totalesCarrito,informacion, mensajesTotalesFinal, this);
         CarritoAdapter carritoAdapter = new CarritoAdapter(datosCarrito,this, totalAdapter);
         totalAdapter.setCarritoAdapterReferencia(carritoAdapter);                                           //le enviamos la referencia para poder notificar al adaptador
         ConcatAdapter concatAdapter = new ConcatAdapter(totalAdapter,carritoAdapter);

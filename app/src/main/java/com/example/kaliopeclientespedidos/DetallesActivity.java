@@ -958,7 +958,7 @@ public class DetallesActivity extends AppCompatActivity {
         seleccionarCantidadAdapter = new SeleccionarCantidadAdapter(cantidadesSeleccionables);
         seleccionarCantidadAdapter.notifyDataSetChanged();
         cantidadRecyclerView.setAdapter(seleccionarCantidadAdapter);
-        cantidadRecyclerView.setPadding(0,45,0,45);         //Creamos al recycler view un padding solo al primer y ultimo item, esto nos ayuda a que aparesca centrado el primer item y ultimo a la atura de nuestro recyclerView lo voy centrando al tanteo a ver que pasa xD
+        cantidadRecyclerView.setPadding(0,120,0,120);         //Creamos al recycler view un padding solo al primer y ultimo item, esto nos ayuda a que aparesca centrado el primer item y ultimo a la atura de nuestro recyclerView lo voy centrando al tanteo a ver que pasa xD
 
 
 

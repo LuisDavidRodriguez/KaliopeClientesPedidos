@@ -455,6 +455,8 @@ public class utilidadesApp extends AppCompatActivity {
 
 
     public static void dialogoResultadoConexion (Activity activity, String title,String mensaje){
+
+
         new android.app.AlertDialog.Builder(activity)
                 .setTitle(title)
                 .setMessage(mensaje)

@@ -34,7 +34,14 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
 
    JSONObject jsonObjectTotales;
    JSONObject jsonObjectInformacion;                      //"info":{"estatus":"FAIL","MENSAJE":"Tu carrito esta vacio"}---info":{"estatus":"FAIL","MENSAJE":"Tu ultimo pedido ha sido finalizado el dia 24-08-2021, agrega a tu carrito para crear un nuevo pedido!"}---"info":{"estatus":"EXITO","MENSAJE":"Carrito encotrado"}
-   private JSONObject mensajesPreConfirmacion;              // los mesajes que mostraran los dialogos al preconfirmar"mensajes":{"0":"Confirmaras estos productos","1":"Esto apartara las existencias de los almacenes Kaliope","2":"Recuerda confirmar lo mas pronto posible estas piezas para garantizar las existencias del producto.","3":"Al recibir tu a crédito tú pagaras el 50% y Kaliope te financia 28 días el 50% restante","4":"Tu pedido actual tiene:","5":"en productos a crédito","6":"Tendras que pagar al recibir:","7":"50% del pedido","8":"Con forme aumente tu historial Kaliope aumentaremos tu financiamiento","9":"Quedaran pendientes:","10":"para el14-06-2021","11":"Recomendamos el modo de pago “Inversión” para que obtengas los mejores precios","12":"","13":"","14":"Recomendamos que cambies el método de pago a “Inversión” en algún producto para que obtengas el costo mas bajo.","15":"Tu pago por Inversión al recibir tu pedido será de:","16":"Felicidades has obtenido el precio mas bajo por producto.","17":"Al recibir tu pedido deberás liquidar al agente Kaliope:","18":"Exceso de credito","19":"50% credito","20":"Inversion","21":"por liquidar al recibir el pedido","22":"En crédito Kaliope fecha de pago 14-06-2021"}}
+
+    private JSONObject mensajesPreConfirmacion;              // los mesajes que mostraran los dialogos al preconfirmar"mensajes":{"0":"Confirmaras estos productos","1":"Esto apartara las existencias de los almacenes Kaliope","2":"Recuerda confirmar lo mas pronto posible estas piezas para garantizar las existencias del producto.","3":"Al recibir tu a crédito tú pagaras el 50% y Kaliope te financia 28 días el 50% restante","4":"Tu pedido actual tiene:","5":"en productos a crédito","6":"Tendras que pagar al recibir:","7":"50% del pedido","8":"Con forme aumente tu historial Kaliope aumentaremos tu financiamiento","9":"Quedaran pendientes:","10":"para el14-06-2021","11":"Recomendamos el modo de pago “Inversión” para que obtengas los mejores precios","12":"","13":"","14":"Recomendamos que cambies el método de pago a “Inversión” en algún producto para que obtengas el costo mas bajo.","15":"Tu pago por Inversión al recibir tu pedido será de:","16":"Felicidades has obtenido el precio mas bajo por producto.","17":"Al recibir tu pedido deberás liquidar al agente Kaliope:","18":"Exceso de credito","19":"50% credito","20":"Inversion","21":"por liquidar al recibir el pedido","22":"En crédito Kaliope fecha de pago 14-06-2021"}}
+    private JSONObject mensajesFinalTotalesBreves;          //lo usaremos solo para guardar los mensajes del ultimo balance total que se mostrara "mensajesFinalTotales":{"18":"Al recibir tu pedido deberás liquidar al agente Kaliope:","19":"Exceso de credito","20":"0% credito","21":"Inversion","22":"por liquidar al recibir el pedido","23":"En crédito Kaliope fecha de pago "}}
+    //aunque esos 2 de arriba almacenan casi lo mismo y se pudo haber hecho con una sola variable, queria que estuviera un poco mas ordenado,
+    //porque una de ellas solo contiene los mensajes que se necesitan para mostrar el balance final, y la otra contiene
+    //todos los mensajes que necesitan las preconfirmaciones los dialogos
+    //como ya cada que se elimina o modifica un producto se debe mostrar el balance final no queria enviar tanta informacion
+    //enviando la cadena larga
 
     Activity activity;
 
@@ -44,9 +51,10 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
 
 
 
-    public TotalAdapter(JSONObject jsonObjectTotales,JSONObject jsonObjectInformacion, Activity activity) {
+    public TotalAdapter(JSONObject jsonObjectTotales,JSONObject jsonObjectInformacion,JSONObject mensajesBalanceFinal, Activity activity) {
         this.jsonObjectTotales = jsonObjectTotales;
         this.jsonObjectInformacion = jsonObjectInformacion;
+        this.mensajesFinalTotalesBreves = mensajesBalanceFinal;
         this.activity = activity;
     }
 
@@ -63,8 +71,9 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
         return new ViewHolderCarrito(view);
     }
 
-    public void cambiarJsonObject(JSONObject totales){
+    public void cambiarJsonObject(JSONObject totales, JSONObject mensajesFinalTotales){
         jsonObjectTotales = totales;
+        this.mensajesFinalTotalesBreves = mensajesFinalTotales;
         notifyDataSetChanged();
     }
 
@@ -72,8 +81,31 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
     public void onBindViewHolder(@NonNull ViewHolderCarrito holder, final int position) {
 
 
-        //totales: {"nombre":"MONICA HERNANDEZ GARCIA","cuenta":"4926","limite_credito":"1400","grado":"VENDEDORA","dias":"14","ruta":"EL PALMITO","numero_pedido":"1","fecha_entrega":"2021-02-09","suma_cantidad":5,"suma_credito":4,"suma_inversion":1,"cantidad_sin_confirmar":3,"suma_productos_etiqueta":2015,"suma_productos_inversion":360,"suma_productos_credito":1288,"suma_ganancia_cliente":367,"diferencia_credito":-112,"mensaje_diferencia_credito":"Aun dispones de $112 en tu credito Kaliope","mensaje_todo_inversion":"Si pagaras tu pedido en Inversion ganarias $367","mensaje_resumido_puntos":" + 300 puntos Kaliope","mensaje_completo_puntos":"Tambien has ganado 300 puntos Kaliope, recueda que estos puntos se validaran con tu agente Kaliope y seran solo si realizas los pagos completos de este pedido.","mensaje_cantidad_sin_confirmar": "Confirmar y enviar 1 producto"}
-        //no usamos la variable posicion porque aqui solo habra un item totales
+//         //D/totales: {"nombre":"EVA MONDRAGON RIVAS",
+//         "cuenta":"2070",
+//         "limite_credito":"2400",
+//         "grado":"SOCIA",
+//         "dias":"28",
+//         "ruta":"ACAMBAY",
+//         "porcentaje_apoyo_empresa":"0.5",
+//         "porcentaje_pago_cliente":"0.5",
+//         "numero_pedido":"1",
+//         "fecha_entrega":"2021-05-17",
+//         "fecha_pago_del_credito":"14-06-2021",
+//         "suma_cantidad":8,
+//         "suma_credito":8,
+//         "suma_inversion":0,
+//         "cantidad_sin_confirmar":7,
+//         "suma_productos_etiqueta":1622,
+//         "suma_productos_inversion":0,
+//         "suma_productos_credito":1179,
+//         "suma_ganancia_cliente":443,
+//         "diferencia_credito":-1221,
+//         "cantidad_pagar_cliente_credito":589.5,
+//         "cantidad_financiar_empresa":589.5,
+//         "pago_al_recibir":589.5,
+//         "mensaje_diferencia_credito":"Aun dispones de $1221 en tu credito Kaliope","mensaje_todo_inversion":"Si pagaras todo tu pedido en Inversion ganarias $560","mensaje_resumido_puntos":" + 200 puntos Kaliope","mensaje_completo_puntos":"Tambien has ganado 200 puntos Kaliope, recueda que estos puntos se validaran con tu agente Kaliope y seran solo si realizas los pagos completos de este pedido.","mensaje_cantidad_sin_confirmar":"Tienes 7 productos sin confirmar, envialos!"}
+// no usamos la variable posicion porque aqui solo habra un item totales
         try {
 
 
@@ -128,7 +160,61 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
 
 
 
-        } catch (JSONException e) {
+
+
+
+
+
+            //-----------------------Añadimos el llenado de la vista de dialogoFinalesTotales es una copia de ese metodo colo hay que añadir holder.
+                holder.titulo.setText(mensajesFinalTotalesBreves.getString("18"));
+                holder.difCredito.setText(jsonObjectTotales.getString("diferencia_credito"));
+                holder.difCreditoMessage.setText(mensajesFinalTotalesBreves.getString("19"));
+                holder.pedidoPagoCredito.setText(jsonObjectTotales.getString("cantidad_pagar_cliente_credito"));
+                holder.pagoCreditoMessage.setText(mensajesFinalTotalesBreves.getString("20"));
+                holder.pagoInversion.setText(jsonObjectTotales.getString("suma_productos_inversion"));
+                holder.pagoInversionMessage.setText(mensajesFinalTotalesBreves.getString("21"));
+                holder.pagoTotal.setText(jsonObjectTotales.getString("pago_al_recibir"));
+                holder.pagoTotalMessage.setText(mensajesFinalTotalesBreves.getString("22"));
+                holder.cantidadFinanciada.setText(jsonObjectTotales.getString("cantidad_financiar_empresa"));
+                holder.cantidadFinanciadaMessage.setText(mensajesFinalTotalesBreves.getString("23"));
+
+                //VAMOS A CONTROLAR SI DEBEN SER VISIBLES CIERTAS SUMAS
+                //recordar que diferencia puede venir en negativo significando que aun tiene credito disponible
+                float diferencia = Float.parseFloat(jsonObjectTotales.getString("diferencia_credito"));
+                if(diferencia<0){
+                    holder.difCredito.setText("0");
+                    holder.difCreditoSignoPesos.setVisibility(View.GONE);
+                    holder.difCredito.setVisibility(View.GONE);
+                    holder.difCreditoMessage.setVisibility(View.GONE);
+                }else{
+                    holder.difCreditoSignoPesos.setVisibility(View.VISIBLE);
+                    holder.difCredito.setVisibility(View.VISIBLE);
+                    holder.difCreditoMessage.setVisibility(View.VISIBLE);
+                }
+
+                //si hay una cantidad por financiar de la emrpesa, o si el cliente no tiene prendas a credito no mostramos este mensaje
+                float financiarEmpresa = Float.parseFloat(jsonObjectTotales.getString("cantidad_financiar_empresa"));
+                if(financiarEmpresa>0){
+                    holder.cantidadFinaSignoPesos.setVisibility(View.VISIBLE);
+                    holder.cantidadFinanciada.setVisibility(View.VISIBLE);
+                    holder.cantidadFinanciadaMessage.setVisibility(View.VISIBLE);
+                }else{
+                    holder.cantidadFinaSignoPesos.setVisibility(View.INVISIBLE);
+                    holder.cantidadFinanciada.setVisibility(View.INVISIBLE);
+                    holder.cantidadFinanciadaMessage.setVisibility(View.INVISIBLE);
+                }
+             //---------------------- fin
+
+
+
+
+
+
+
+
+
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -177,7 +263,8 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
                     String mensaje = response.getString("mensaje");
                     JSONArray carritoCliente = response.getJSONArray("carritoCliente");
                     JSONObject totalesJsonObjet = response.getJSONObject("totales");
-                    cambiarJsonObject(totalesJsonObjet);                                            //cambiamos los totales con lo que nos envia el servidor y notificamos al adapter totaels
+                    JSONObject mensajesTotales = response.getJSONObject("mensajesFinalTotales");
+                    cambiarJsonObject(totalesJsonObjet, mensajesTotales);                                            //cambiamos los totales con lo que nos envia el servidor y notificamos al adapter totaels
                     carritoAdapter.cambiarJsonArray(carritoCliente);                                //se envia el nuevo carrito al adaptador que lista los carritos y se le notifica
                     utilidadesApp.dialogoResultadoConexion(activity, resultado, mensaje);
 
@@ -428,6 +515,37 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
         ConstraintLayout constraintLayoutCarritoVacio;
 
 
+
+
+
+
+
+
+        //------------------------------------Con el include de la vista del dialogo totales al entregar pedido tenemos que poner los campos aqui
+        TextView titulo;
+
+        TextView difCreditoSignoPesos;
+        TextView difCredito;
+        TextView difCreditoMessage;
+
+        TextView pagoCreditoSignoPesos;
+        TextView pedidoPagoCredito;
+        TextView pagoCreditoMessage;
+
+        TextView pagoInversionSignoPesos;
+        TextView pagoInversion;
+        TextView pagoInversionMessage;
+
+        TextView pagoTotalSignoPesos;
+        TextView pagoTotal;
+        TextView pagoTotalMessage;
+
+        TextView cantidadFinaSignoPesos;
+        TextView cantidadFinanciada;
+        TextView cantidadFinanciadaMessage;
+        //-------------------------- basicamente se copio y pego del metodo dialogo confirmacion totales
+
+
         public ViewHolderCarrito(@NonNull View itemView) {
             super(itemView);
 
@@ -454,11 +572,44 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
            mensajeBolsaVacia = (TextView) itemView.findViewById(R.id.textView11);
            imageViewPalomita = (ImageView) itemView.findViewById(R.id.item_container_carrito_totales_palomitaIV);
 
+
+
+
+
+
+
+           //----------------------------agregar imagen de totales finales
+            titulo = (TextView) itemView.findViewById(R.id.dialogo_confirmacion_pedido_5_titulo);
+
+            difCreditoSignoPesos = (TextView) itemView.findViewById(R.id.textView15);
+            difCredito = (TextView) itemView.findViewById(R.id.dialogo_confirmacion_pedido_5_difCredito);
+            difCreditoMessage = (TextView) itemView.findViewById(R.id.dialogo_confirmacion_pedido_5_difCreditoMessage);
+
+            pagoCreditoSignoPesos = (TextView) itemView.findViewById(R.id.textView20);
+            pedidoPagoCredito = (TextView) itemView.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoCredito);
+            pagoCreditoMessage = (TextView) itemView.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoCreditoMessage);
+
+            pagoInversionSignoPesos = (TextView) itemView.findViewById(R.id.textView23);
+            pagoInversion = (TextView) itemView.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoInversion);
+            pagoInversionMessage = (TextView) itemView.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoInversionMessage);
+
+            pagoTotalSignoPesos = (TextView) itemView.findViewById(R.id.textView33);
+            pagoTotal = (TextView) itemView.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoTotal);
+            pagoTotalMessage = (TextView) itemView.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoTotalMessage);
+
+            cantidadFinaSignoPesos = (TextView) itemView.findViewById(R.id.textView35);
+            cantidadFinanciada = (TextView) itemView.findViewById(R.id.cantidadFinanciada);
+            cantidadFinanciadaMessage = (TextView) itemView.findViewById(R.id.cantidadFinanciadaMessage);
+
+
         }
     }
 
 
-
+    /**
+     * Mostramos el primer dialogo que muestra la lista de productos por confirmar
+     * @param productosPorConfirmar
+     */
     private void dialogoConfirmacion1(JSONArray productosPorConfirmar){
         //inflamos la vista de nuestro dialogo personalizado
         //"mensajes":{"0":"Confirmaras estos productos","1":"Esto apartara las existencias de los almacenes Kaliope",
@@ -506,10 +657,37 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setView(view)
-                .setPositiveButton("Continuar", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Siguiente", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogoConfirmacion2();
+
+
+
+                        float diferenciaCredito = 0;
+                        float cargoCredito = 0;
+                        try {
+                            diferenciaCredito = Float.parseFloat(jsonObjectTotales.getString("diferencia_credito"));
+                            cargoCredito = Float.parseFloat(jsonObjectTotales.getString("suma_productos_credito"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                        if(diferenciaCredito>0){
+                            //si se sobre paso el credito mostramos el mensaje de credito sobrepasado
+                            dialogoConfirmacionExcesoCredito();
+                        }else if (cargoCredito>0){
+                            //si no se sobrepaso el credito checamos si hay mercancia a credito para mostrar el mensaje de totales de credito
+                            dialogoConfirmacionTotalesCredito();
+                        }else{
+                            //si no hay ni diferencia de credito ni productos a credito mostramos solo el mensaje de inversion
+                            dialogoConfirmacionInversion();
+                        }
+
+
+
+
+
                     }
                 })
                 .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -522,8 +700,11 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
 
     }
 
-    private void dialogoConfirmacion2(){
-        //D/totales: {"nombre":"EVA MONDRAGON RIVAS","cuenta":"2070","limite_credito":"2400","grado":"SOCIA","dias":"28","ruta":"ACAMBAY","porcentaje_apoyo_empresa":"0.5","porcentaje_pago_cliente":"0.5","numero_pedido":"1","fecha_entrega":"2021-05-17","fecha_pago_del_credito":"14-06-2021","suma_cantidad":8,"suma_credito":8,"suma_inversion":0,"cantidad_sin_confirmar":7,"suma_productos_etiqueta":1622,"suma_productos_inversion":0,"suma_productos_credito":1179,"suma_ganancia_cliente":443,"diferencia_credito":-1221,"cantidad_pagar_cliente_credito":589.5,"pago_al_recibir":589.5,"mensaje_diferencia_credito":"Aun dispones de $1221 en tu credito Kaliope","mensaje_todo_inversion":"Si pagaras todo tu pedido en Inversion ganarias $560","mensaje_resumido_puntos":" + 200 puntos Kaliope","mensaje_completo_puntos":"Tambien has ganado 200 puntos Kaliope, recueda que estos puntos se validaran con tu agente Kaliope y seran solo si realizas los pagos completos de este pedido.","mensaje_cantidad_sin_confirmar":"Tienes 7 productos sin confirmar, envialos!"}
+    /**
+     * Mostramos el dialogo que muestra el total a credito y lo que el cliente debera pagar con financiamiento
+     */
+    private void dialogoConfirmacionTotalesCredito(){
+        //D/totales: {"nombre":"EVA MONDRAGON RIVAS","cuenta":"2070","limite_credito":"2400","grado":"SOCIA","dias":"28","ruta":"ACAMBAY","porcentaje_apoyo_empresa":"0.5","porcentaje_pago_cliente":"0.5","numero_pedido":"1","fecha_entrega":"2021-05-17","fecha_pago_del_credito":"14-06-2021","suma_cantidad":8,"suma_credito":8,"suma_inversion":0,"cantidad_sin_confirmar":7,"suma_productos_etiqueta":1622,"suma_productos_inversion":0,"suma_productos_credito":1179,"suma_ganancia_cliente":443,"diferencia_credito":-1221,"cantidad_pagar_cliente_credito":589.5,"cantidad_financiar_empresa":589.5,"pago_al_recibir":589.5,"mensaje_diferencia_credito":"Aun dispones de $1221 en tu credito Kaliope","mensaje_todo_inversion":"Si pagaras todo tu pedido en Inversion ganarias $560","mensaje_resumido_puntos":" + 200 puntos Kaliope","mensaje_completo_puntos":"Tambien has ganado 200 puntos Kaliope, recueda que estos puntos se validaran con tu agente Kaliope y seran solo si realizas los pagos completos de este pedido.","mensaje_cantidad_sin_confirmar":"Tienes 7 productos sin confirmar, envialos!"}
         //"mensajes":{"1":"Confirmaras estos productos",
         // "2":"Esto apartara las existencias de los almacenes Kaliope",
         // "3":"Recuerda confirmar lo mas pronto posible estas piezas para garantizar las existencias del producto.",
@@ -548,7 +729,7 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
         // "22":"por liquidar al recibir el pedido",
         // "23":"En crédito Kaliope fecha de pago 14-06-2021"}}
         LayoutInflater layoutInflater = activity.getLayoutInflater();
-        View view = layoutInflater.inflate(R.layout.dialogo_confirmacion_pedido_2,null);
+        View view = layoutInflater.inflate(R.layout.dialogo_confirmacion_pedido_totales_credito,null);
 
         TextView mensaje1 = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido__2_TV1);
         TextView cantidadCredito = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido__2_TVcantidadCredito);
@@ -572,7 +753,7 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
             mensaje4.setText(mensajesPreConfirmacion.getString("8"));
             mensaje5.setText(mensajesPreConfirmacion.getString("9"));
             mensaje6.setText(mensajesPreConfirmacion.getString("10"));
-            cantidadPendiente.setText(jsonObjectTotales.getString("cantidad_pagar_cliente_credito"));
+            cantidadPendiente.setText(jsonObjectTotales.getString("cantidad_financiar_empresa"));
             mensaje7.setText(mensajesPreConfirmacion.getString("11"));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -581,23 +762,11 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setView(view)
-                .setPositiveButton("continuar", new DialogInterface.OnClickListener() {
+                .setPositiveButton("siguiente", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
-                        try {
-                            int diferenciaCredito = Integer.parseInt(jsonObjectTotales.getString("diferencia_credito"));
-                            if(diferenciaCredito>0){
-                                //significa que se sobrepaso el credito
-                                dialogoConfirmacion3();
-                            }else{
-                                dialogoConfirmacion4();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            dialogoConfirmacion4();
-                        }
-
+                            dialogoConfirmacionInversion();
 
 
                     }
@@ -614,11 +783,12 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
     }
 
     /**
+     * Muestra si hay diferencias a credito
      * Este mensaje solo debera mostrarse si el campo diferencia_credito del json totales es positivo o mayor a 0
      * si es negativo significa que aun le queda credito disponible por lo tanto no debera mostrarse el mensaje
      * de exceso de credito
      */
-    private void dialogoConfirmacion3(){
+    private void dialogoConfirmacionExcesoCredito(){
         //D/totales: {"nombre":"EVA MONDRAGON RIVAS","cuenta":"2070","limite_credito":"2400","grado":"SOCIA","dias":"28","ruta":"ACAMBAY","porcentaje_apoyo_empresa":"0.5","porcentaje_pago_cliente":"0.5","numero_pedido":"1","fecha_entrega":"2021-05-17","fecha_pago_del_credito":"14-06-2021","suma_cantidad":8,"suma_credito":8,"suma_inversion":0,"cantidad_sin_confirmar":7,"suma_productos_etiqueta":1622,"suma_productos_inversion":0,"suma_productos_credito":1179,"suma_ganancia_cliente":443,"diferencia_credito":-1221,"cantidad_pagar_cliente_credito":589.5,"pago_al_recibir":589.5,"mensaje_diferencia_credito":"Aun dispones de $1221 en tu credito Kaliope","mensaje_todo_inversion":"Si pagaras todo tu pedido en Inversion ganarias $560","mensaje_resumido_puntos":" + 200 puntos Kaliope","mensaje_completo_puntos":"Tambien has ganado 200 puntos Kaliope, recueda que estos puntos se validaran con tu agente Kaliope y seran solo si realizas los pagos completos de este pedido.","mensaje_cantidad_sin_confirmar":"Tienes 7 productos sin confirmar, envialos!"}
         //"mensajes":{"1":"Confirmaras estos productos",
         // "2":"Esto apartara las existencias de los almacenes Kaliope",
@@ -645,7 +815,7 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
         // "23":"En crédito Kaliope fecha de pago 14-06-2021"}}
 
         LayoutInflater layoutInflater = activity.getLayoutInflater();
-        View view = layoutInflater.inflate(R.layout.dialogo_confirmacion_pedido_3,null);
+        View view = layoutInflater.inflate(R.layout.dialogo_confirmacion_pedido_diferencia_credito,null);
 
         TextView mensaje1 = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_3_TV1);
         TextView mensajeExesoCredito = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_3_TVexcesoCredito);
@@ -664,10 +834,10 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
 
         new AlertDialog.Builder(activity)
                 .setView(view)
-                .setPositiveButton("continuar", new DialogInterface.OnClickListener() {
+                .setPositiveButton("siguiente", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogoConfirmacion4();
+                        dialogoConfirmacionTotalesCredito();
                     }
                 })
                 .setNegativeButton("cancelar", new DialogInterface.OnClickListener() {
@@ -681,10 +851,12 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
 
     }
 
-
-    private void dialogoConfirmacion4(){
+    /**
+     * Dialogo muestra el pago por inversion
+     */
+    private void dialogoConfirmacionInversion(){
         LayoutInflater layoutInflater = activity.getLayoutInflater();
-        View view = layoutInflater.inflate(R.layout.dialogo_confirmacion_pedido_4,null);
+        View view = layoutInflater.inflate(R.layout.dialogo_confirmacion_pedido_inversion,null);
 
         TextView mensaje1 = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_4_TV1);
         TextView mensajePagoInversion = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_4_TVpagoInversion);
@@ -694,7 +866,7 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
 
         try {
             String sumaProductosInversion = jsonObjectTotales.getString("suma_productos_inversion");
-            int totalInversion = Integer.parseInt(sumaProductosInversion);
+            float totalInversion = Float.parseFloat(sumaProductosInversion);
 
             if(totalInversion>0){
                 //si hay campos en inversion entonces mostramos el mensaje 1 acorde con la documentacion
@@ -719,10 +891,10 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
 
         new AlertDialog.Builder(activity)
                 .setView(view)
-                .setPositiveButton("continuar", new DialogInterface.OnClickListener() {
+                .setPositiveButton("siguiente", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
+                        dialogoConfirmacionFinalTotales();
                     }
                 })
                 .setNegativeButton("cancelar", new DialogInterface.OnClickListener() {
@@ -736,39 +908,121 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
 
     }
 
-    private void dialogoConfirmacion5(){
+    /**
+     * ultimo mensaje mostrando los totales a pagar al recibir el pedido
+     */
+    private void dialogoConfirmacionFinalTotales(){
             LayoutInflater layoutInflater = activity.getLayoutInflater();
-            View view = layoutInflater.inflate(R.layout.dialogo_confirmacion_pedido_5,null);
+            View view = layoutInflater.inflate(R.layout.dialogo_confirmacion_pedido_final_totales,null);
 
-        TextView titulo = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_titulo);
-        TextView difCredito = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_difCredito);
-        TextView difCreditoMessage = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_difCreditoMessage);
-        TextView pedidoPagoCredito = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoCredito);
-        TextView pagoCreditoMessage = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoCreditoMessage);
-        TextView pagoInversion = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoInversion);
-        TextView pagoInversionMessage = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoInversionMessage);
-        TextView pagoTotal = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoTotal);
-        TextView pagoTotalMessage = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoTotalMessage);
-        TextView cantidadFinanciada = (TextView) view.findViewById(R.id.cantidadFinanciada);
-        TextView cantidadFinanciadaMessage = (TextView) view.findViewById(R.id.cantidadFinanciadaMessage);
+        TextView titulo;
 
-        titulo.setText(mensajesPreConfirmacion.getString("18"));
-        difCredito.setText(jsonObjectTotales.getString("diferencia_credito"));
-        difCreditoMessage.setText(mensajesPreConfirmacion.getString("19"));
+        TextView difCreditoSignoPesos;
+        TextView difCredito;
+        TextView difCreditoMessage;
 
-        pedidoPagoCredito.setText(jsonObjectTotales.getString("cantidad_pagar_cliente_credito"));
-        pagoCreditoMessage.setText(mensajesPreConfirmacion.getString("20"));
+        TextView pagoCreditoSignoPesos;
+        TextView pedidoPagoCredito;
+        TextView pagoCreditoMessage;
 
-        pagoInversion.setText(jsonObjectTotales.getString("suma_productos_inversion"));
-        pagoInversionMessage.setText(mensajesPreConfirmacion.getString("21"));
+        TextView pagoInversionSignoPesos;
+        TextView pagoInversion;
+        TextView pagoInversionMessage;
 
-        pagoTotal.setText(jsonObjectTotales.getString("pago_al_recibir"));
-        pagoTotalMessage.setText(mensajesPreConfirmacion.getString("22"));
+        TextView pagoTotalSignoPesos;
+        TextView pagoTotal;
+        TextView pagoTotalMessage;
 
-        cantidadFinanciada.setText(jsonObjectTotales.getString("pago_al_recibir"));
-        pagoTotalMessage.setText(mensajesPreConfirmacion.getString("22"));
+        TextView cantidadFinaSignoPesos;
+        TextView cantidadFinanciada;
+        TextView cantidadFinanciadaMessage;
+
+        titulo = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_titulo);
+
+        difCreditoSignoPesos = (TextView) view.findViewById(R.id.textView15);
+        difCredito = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_difCredito);
+        difCreditoMessage = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_difCreditoMessage);
+
+        pagoCreditoSignoPesos = (TextView) view.findViewById(R.id.textView20);
+        pedidoPagoCredito = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoCredito);
+        pagoCreditoMessage = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoCreditoMessage);
+
+        pagoInversionSignoPesos = (TextView) view.findViewById(R.id.textView23);
+        pagoInversion = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoInversion);
+        pagoInversionMessage = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoInversionMessage);
+
+        pagoTotalSignoPesos = (TextView) view.findViewById(R.id.textView33);
+        pagoTotal = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoTotal);
+        pagoTotalMessage = (TextView) view.findViewById(R.id.dialogo_confirmacion_pedido_5_pagoTotalMessage);
+
+        cantidadFinaSignoPesos = (TextView) view.findViewById(R.id.textView35);
+        cantidadFinanciada = (TextView) view.findViewById(R.id.cantidadFinanciada);
+        cantidadFinanciadaMessage = (TextView) view.findViewById(R.id.cantidadFinanciadaMessage);
+
+        try {
 
 
+
+            titulo.setText(mensajesPreConfirmacion.getString("18"));
+            difCredito.setText(jsonObjectTotales.getString("diferencia_credito"));
+            difCreditoMessage.setText(mensajesPreConfirmacion.getString("19"));
+            pedidoPagoCredito.setText(jsonObjectTotales.getString("cantidad_pagar_cliente_credito"));
+            pagoCreditoMessage.setText(mensajesPreConfirmacion.getString("20"));
+            pagoInversion.setText(jsonObjectTotales.getString("suma_productos_inversion"));
+            pagoInversionMessage.setText(mensajesPreConfirmacion.getString("21"));
+            pagoTotal.setText(jsonObjectTotales.getString("pago_al_recibir"));
+            pagoTotalMessage.setText(mensajesPreConfirmacion.getString("22"));
+            cantidadFinanciada.setText(jsonObjectTotales.getString("cantidad_financiar_empresa"));
+            cantidadFinanciadaMessage.setText(mensajesPreConfirmacion.getString("23"));
+
+
+            //VAMOS A CONTROLAR SI DEBEN SER VISIBLES CIERTAS SUMAS
+            //recordar que diferencia puede venir en negativo significando que aun tiene credito disponible
+            float diferencia = Float.parseFloat(jsonObjectTotales.getString("diferencia_credito"));
+            if(diferencia<0){
+                difCredito.setText("0");
+                difCreditoSignoPesos.setVisibility(View.INVISIBLE);
+                difCredito.setVisibility(View.INVISIBLE);
+                difCreditoMessage.setVisibility(View.INVISIBLE);
+            }else{
+                difCreditoSignoPesos.setVisibility(View.VISIBLE);
+                difCredito.setVisibility(View.VISIBLE);
+                difCreditoMessage.setVisibility(View.VISIBLE);
+            }
+
+            //si hay una cantidad por financiar de la emrpesa, o si el cliente no tiene prendas a credito no mostramos este mensaje
+            float financiarEmpresa = Float.parseFloat(jsonObjectTotales.getString("cantidad_financiar_empresa"));
+            if(financiarEmpresa>0){
+                cantidadFinaSignoPesos.setVisibility(View.VISIBLE);
+                cantidadFinanciada.setVisibility(View.VISIBLE);
+                cantidadFinanciadaMessage.setVisibility(View.VISIBLE);
+            }else{
+                cantidadFinaSignoPesos.setVisibility(View.INVISIBLE);
+                cantidadFinanciada.setVisibility(View.INVISIBLE);
+                cantidadFinanciadaMessage.setVisibility(View.INVISIBLE);
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        new AlertDialog.Builder(activity)
+                .setView(view)
+                .setPositiveButton("CONFIRMAR", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        conectarServerConfirmarPedido(1);
+                    }
+                })
+                .setNegativeButton("cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .create().show();
 
     }
 }

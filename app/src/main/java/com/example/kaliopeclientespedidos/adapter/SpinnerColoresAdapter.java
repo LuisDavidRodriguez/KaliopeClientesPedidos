@@ -123,11 +123,11 @@ public class SpinnerColoresAdapter extends BaseAdapter {
         textViewDisponibilidad.setText(mensaje);
 
         if(nombre.length()>=8){                      //dependiendo del largo del nombre del color definimos el tamaño de la letra
-            textViewColor.setTextSize(18);
-        }else if(nombre.length()>=6){
-            textViewColor.setTextSize(20);
+            textViewColor.setTextSize(14);
+        }else if(nombre.length()>=5){
+            textViewColor.setTextSize(16);
         }else{
-            textViewColor.setTextSize(24);
+            textViewColor.setTextSize(18);
         }
 
 

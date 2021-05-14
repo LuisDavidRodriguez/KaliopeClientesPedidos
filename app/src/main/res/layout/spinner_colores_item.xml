@@ -19,7 +19,7 @@
         android:layout_alignParentBottom="true"
         android:text="Agotado!"
         android:textColor="@color/colorBlack"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:gravity="center"
         />
 

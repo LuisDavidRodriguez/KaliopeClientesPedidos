@@ -19,7 +19,7 @@
         android:layout_toStartOf="@+id/relativeLayout1"
         android:text="G"
         android:textColor="@color/colorBlack"
-        android:textSize="25sp"
+        android:textSize="18sp"
         android:paddingTop="7dp"
         android:paddingBottom="7dp"
         android:paddingStart="15dp"
@@ -42,7 +42,7 @@
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:text="Agotado en este color"
-            android:textSize="15sp"/>
+            android:textSize="14sp"/>
 
     </LinearLayout>
 

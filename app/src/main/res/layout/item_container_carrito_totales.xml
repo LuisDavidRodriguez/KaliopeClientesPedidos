@@ -147,6 +147,32 @@
                 app:layout_constraintTop_toBottomOf="@+id/item_container_carrito_totales_numeroPedidoTV" />
 
 
+            <View
+                android:id="@+id/view2"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="5dp"
+                android:background="@color/colorAccent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/item_container_carrito_totales_gananciaTotalTV" />
+
+            <View
+                android:id="@+id/view3"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="5dp"
+                android:background="@color/colorAccent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/include3" />
+
             <TextView
                 android:id="@+id/textView8"
                 android:layout_width="wrap_content"
@@ -289,6 +315,7 @@
 
 
             <LinearLayout
+                android:id="@+id/linearLayout10"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -348,7 +375,6 @@
                 </LinearLayout>
 
 
-
             </LinearLayout>
 
 
@@ -403,35 +429,45 @@
                 android:id="@+id/item_container_carrito_totales_confirmarEnviarPedidoButton"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
-                android:layout_marginTop="8dp"
                 android:background="@drawable/boton_redondo_regalo"
                 android:padding="5dp"
                 android:text="@string/confirmar_enviar_pedido"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.516"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/item_container_carrito_totales_gananciaTotalTV" />
+                app:layout_constraintTop_toBottomOf="@+id/item_container_carrito_totales_palomitaIV" />
 
             <TextView
                 android:id="@+id/item_container_carrito_totales_mensajeLimiteCreditoTV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:gravity="center"
                 android:text="Mensaje de Limite de Credito"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/item_container_carrito_totales_confirmarEnviarPedidoButton"
-                android:gravity="center"
-                />
+                app:layout_constraintTop_toBottomOf="@+id/item_container_carrito_totales_confirmarEnviarPedidoButton" />
 
+            <!--Le incluimos la vista que diseñamos para mostrar los totales en el dialogo-->
             <ImageView
                 android:id="@+id/item_container_carrito_totales_palomitaIV"
                 android:layout_width="29dp"
                 android:layout_height="33dp"
-                android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="@+id/item_container_carrito_totales_confirmarEnviarPedidoButton"
-                app:layout_constraintStart_toEndOf="@+id/item_container_carrito_totales_confirmarEnviarPedidoButton"
+                android:layout_marginTop="32dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/include3"
                 app:srcCompat="@drawable/palomita" />
+
+            <include
+                android:id="@+id/include3"
+                layout="@layout/dialogo_confirmacion_pedido_final_totales"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/item_container_carrito_totales_gananciaTotalTV" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -443,6 +479,11 @@
         layout="@layout/item_carrito_totales_vacio"
         android:visibility="invisible"
         />
+
+
+
+
+
 
 
 

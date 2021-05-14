@@ -148,7 +148,7 @@ public class ConexionService extends Service {
 
                                 try {
                                     String estado = response.getString("estado");
-                                    Toast.makeText(getApplicationContext(),estado, Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(getApplicationContext(),estado, Toast.LENGTH_SHORT).show();//con este podemos saber la respuesta del server
                                     Constantes.offline = false;
                                 } catch (JSONException e) {
                                     e.printStackTrace();

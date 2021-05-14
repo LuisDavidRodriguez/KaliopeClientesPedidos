@@ -341,12 +341,14 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
                 Log.d("responseCode1", String.valueOf(response));
                //responseCode1: {"resultado":"Exito","mensaje":"Hemos cambiado tu pago a INVERSION",
                 //totales: {"nombre":"MONICA HERNANDEZ GARCIA","cuenta":"4926","limite_credito":"1400","grado":"VENDEDORA","dias":"14","ruta":"EL PALMITO","numero_pedido":"1","fecha_entrega":"2021-02-09","suma_cantidad":5,"suma_credito":4,"suma_inversion":1,"cantidad_sin_confirmar":3,"suma_productos_etiqueta":2015,"suma_productos_inversion":360,"suma_productos_credito":1288,"suma_ganancia_cliente":367,"diferencia_credito":-112,"mensaje_diferencia_credito":"Aun dispones de $112 en tu credito Kaliope","mensaje_todo_inversion":"Si pagaras tu pedido en Inversion ganarias $367","mensaje_resumido_puntos":" + 300 puntos Kaliope","mensaje_completo_puntos":"Tambien has ganado 300 puntos Kaliope, recueda que estos puntos se validaran con tu agente Kaliope y seran solo si realizas los pagos completos de este pedido.","mensaje_cantidad_sin_confirmar": "Tienes 1 producto sin confirmar"}}
+                //"mensajesFinalTotales":{"18":"Al recibir tu pedido deberás liquidar al agente Kaliope:","19":"Exceso de credito","20":"0% credito","21":"Inversion","22":"por liquidar al recibir el pedido","23":"En crédito Kaliope fecha de pago "}}
 
 
                 try {
                     String resultado = response.getString("resultado");
                     String mensaje = response.getString("mensaje");
                     JSONObject totalesJsonObject = response.getJSONObject("totales");
+                    JSONObject mensajesTotales = response.getJSONObject("mensajesFinalTotales");
                     utilidadesApp.dialogoResultadoConexion(activity, resultado, mensaje);
 
 
@@ -357,7 +359,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
                         //notifyDataSetChanged();                                                 //notificamos al adaptador que se cambiaron elementos de la lista, para que los actualice y los muestre al usuario
                         notifyItemChanged(position);                                            //notificamos al adaptadro que cambiamos solo un elementod de la lista para que solo actualice ese
 
-                        totalAdapter.cambiarJsonObject(totalesJsonObject);                      //actualizara nuestro adapter totales
+                        totalAdapter.cambiarJsonObject(totalesJsonObject, mensajesTotales);                      //actualizara nuestro adapter totales
 
 
                     }
@@ -461,11 +463,12 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
                 progressDialog.dismiss();
                 Log.d("responseCode1", String.valueOf(response));
                 //D/responseCode1: {"resultado":"Exito","mensaje":"Hemos eliminado el producto de tu carrito",  totales: {"nombre":"MONICA HERNANDEZ GARCIA","cuenta":"4926","limite_credito":"1400","grado":"VENDEDORA","dias":"14","ruta":"EL PALMITO","numero_pedido":"1","fecha_entrega":"2021-02-09","suma_cantidad":5,"suma_credito":4,"suma_inversion":1,"cantidad_sin_confirmar":3,"suma_productos_etiqueta":2015,"suma_productos_inversion":360,"suma_productos_credito":1288,"suma_ganancia_cliente":367,"diferencia_credito":-112,"mensaje_diferencia_credito":"Aun dispones de $112 en tu credito Kaliope","mensaje_todo_inversion":"Si pagaras tu pedido en Inversion ganarias $367","mensaje_resumido_puntos":" + 300 puntos Kaliope","mensaje_completo_puntos":"Tambien has ganado 300 puntos Kaliope, recueda que estos puntos se validaran con tu agente Kaliope y seran solo si realizas los pagos completos de este pedido.","mensaje_cantidad_sin_confirmar": "Tienes 1 producto sin confirmar"}}
-
+                //"mensajesFinalTotales":{"18":"Al recibir tu pedido deberás liquidar al agente Kaliope:","19":"Exceso de credito","20":"0% credito","21":"Inversion","22":"por liquidar al recibir el pedido","23":"En crédito Kaliope fecha de pago "}}
                 try {
                     String resultado = response.getString("resultado");
                     String mensaje = response.getString("mensaje");
                     JSONObject totalesJsonObjet = response.getJSONObject("totales");
+                    JSONObject mensajesTotales = response.getJSONObject("mensajesFinalTotales");
                     utilidadesApp.dialogoResultadoConexion(activity, resultado, mensaje);
 
 
@@ -478,7 +481,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
                         listaCarrito.remove(position);                                         // Eliminamos de la lista ese item
                         notifyItemRemoved(position);                                           //notificamos al adaptador que eliminamos ese elemento para que lo deje de mostrar al usuario
 
-                        totalAdapter.cambiarJsonObject(totalesJsonObjet);                       //notificamos a nuestro adaptador totales que le enviamos un nuevo jsonobhjet con los totales acutalizados por el servidor y que actualice las vistas
+                        totalAdapter.cambiarJsonObject(totalesJsonObjet,mensajesTotales);                       //notificamos a nuestro adaptador totales que le enviamos un nuevo jsonobhjet con los totales acutalizados por el servidor y que actualice las vistas
 
                         Log.d("lista Despues", String.valueOf(listaCarrito.length()));
                     }
@@ -683,6 +686,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
 
 
             imageButtonEliminar.startAnimation(animationLatido);
+            imageButtonEliminar.setVisibility(View.VISIBLE);
         }
 
 

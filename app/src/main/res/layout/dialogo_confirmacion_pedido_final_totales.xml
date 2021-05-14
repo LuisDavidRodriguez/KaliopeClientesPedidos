@@ -20,15 +20,16 @@
 
     <TextView
         android:id="@+id/dialogo_confirmacion_pedido_5_pagoInversion"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="TextView"
         android:paddingEnd="15dp"
+        android:text="TextVie"
+        android:textAlignment="center"
         android:textColor="@color/colorBlack"
         android:textSize="22sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/textView31"
+        app:layout_constraintStart_toStartOf="@+id/textView31"
         app:layout_constraintTop_toBottomOf="@+id/dialogo_confirmacion_pedido_5_pagoCredito" />
 
     <TextView
@@ -57,15 +58,16 @@
 
     <TextView
         android:id="@+id/dialogo_confirmacion_pedido_5_difCredito"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="8dp"
         android:paddingEnd="15dp"
-        android:text="TextView"
+        android:text="TextVie"
+        android:textAlignment="center"
         android:textColor="@color/colorBlack"
         android:textSize="22sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/dialogo_confirmacion_pedido_5_pagoCredito"
+        app:layout_constraintStart_toStartOf="@+id/textView31"
         app:layout_constraintTop_toBottomOf="@+id/dialogo_confirmacion_pedido_5_titulo" />
 
     <TextView
@@ -81,28 +83,29 @@
 
     <TextView
         android:id="@+id/dialogo_confirmacion_pedido_5_pagoCredito"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="TextView"
         android:paddingEnd="15dp"
+        android:text="TextVie"
+        android:textAlignment="center"
         android:textColor="@color/colorBlack"
         android:textSize="22sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/dialogo_confirmacion_pedido_5_pagoInversion"
+        app:layout_constraintStart_toStartOf="@+id/textView31"
         app:layout_constraintTop_toBottomOf="@+id/dialogo_confirmacion_pedido_5_difCredito" />
 
     <TextView
         android:id="@+id/textView25"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="18dp"
+        android:layout_marginEnd="24dp"
         android:text="+"
         android:textColor="@color/colorAccent"
         android:textSize="40sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/textView31"
-        app:layout_constraintEnd_toEndOf="@+id/textView23" />
+        app:layout_constraintEnd_toStartOf="@+id/textView31" />
 
     <TextView
         android:id="@+id/dialogo_confirmacion_pedido_5_difCreditoMessage"
@@ -147,23 +150,24 @@
 
     <TextView
         android:id="@+id/cantidadFinanciadaMessage"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:text="TextView"
+        android:text="TextVie"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/cantidadFinanciada"
         app:layout_constraintTop_toTopOf="@+id/cantidadFinanciada" />
 
     <TextView
         android:id="@+id/textView31"
-        android:layout_width="0dp"
+        android:layout_width="105dp"
         android:layout_height="2dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="-10dp"
         android:background="@color/colorAccent"
         android:text=""
-        app:layout_constraintEnd_toEndOf="@+id/dialogo_confirmacion_pedido_5_pagoInversion"
-        app:layout_constraintStart_toEndOf="@+id/textView25"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/dialogo_confirmacion_pedido_5_pagoInversion" />
 
     <TextView
@@ -193,6 +197,7 @@
         android:id="@+id/dialogo_confirmacion_pedido_5_pagoTotalMessage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
