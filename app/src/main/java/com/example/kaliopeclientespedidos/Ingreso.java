@@ -106,13 +106,21 @@ public class Ingreso extends AppCompatActivity {
         botonInvitado.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ConfiguracionesApp.getMostrarAvisoComoInvitado(activity)){
+                //if (ConfiguracionesApp.getMostrarAvisoComoInvitado(activity)){
+
+                if(continuarHiloHacerPing){
                     dialogoAvisoInvitado();
+                }else{
+                    dialogoDeConexion("Sin Conexion", "El WI-FI o los Datos moviles estan desactivados, por favor activelos para establecer la conexion a internet");
+                }
+
+
+                    /*
                 }else{
                     Log.i("Ingreso.Dialogo","Entramos sin mostrar dialogo de informacion invitado");
                     //ConfiguracionesApp.setEntradaComoInvitado(activity,true);
                     nextActivity();
-                }
+                }*/
             }
         });
 
@@ -138,6 +146,10 @@ public class Ingreso extends AppCompatActivity {
 
             }
         });
+
+
+
+
 
 
     }
@@ -348,7 +360,8 @@ public class Ingreso extends AppCompatActivity {
 
                     Log.d("DatosInicioSesion", usuario + "-" + nombreCompleto + "-" + numeroCuenta);
 
-
+                    ConfiguracionesApp.setEntradaComoInvitado(activity,false);
+                    ConfiguracionesApp.setMantenerSesionIniciada(activity,checkBoxMantenerSesionIniciada.isChecked());                  //guardamos en el dispositivo si se desea mantener la sesion iniciada esto para uniocamente los casos que no se tenga internet
                     ConfiguracionesApp.iniciarSesion(activity, nombreCompleto, usuario, numeroCuenta);
 
                     nextActivity();
@@ -426,7 +439,32 @@ public class Ingreso extends AppCompatActivity {
                 Log.d("onFauile 2" , info);
                 //Toast.makeText(MainActivity.this,info, Toast.LENGTH_LONG).show();
                 progressDialog.dismiss();
-                dialogoDeConexion("Fallo de conexion", info);
+
+
+                //COMPROBAMOS QUE HAYA UNA SESION MANTENIDA, SI LA HAY ENTONCES LE MOSTRAMOS EL MENSAJE AL CLIENTE
+                if(ConfiguracionesApp.getMantenerSesionIniciada(activity)){
+                    String usuario = ConfiguracionesApp.getUsuarioIniciado(activity);
+                    new AlertDialog.Builder(activity).setTitle("No hay conexion a internet pero:")
+                            .setMessage("Encontramos una sesion mantenida en este dispositivo\n\nUsuario:" + usuario + "\nla app funcionara en modo \"sin internet\"\n\n ¿Deseas acceder con ella?")
+                            .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    ConfiguracionesApp.setEntradaComoInvitado(activity,false);
+                                    nextActivity();
+                                }
+                            })
+                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+
+                                }
+                            }).create().show();
+                }
+
+
+
+
+                //dialogoDeConexion("Fallo de conexion","No hay conexion a internet\n" + info);
             }
 
 
@@ -534,11 +572,11 @@ public class Ingreso extends AppCompatActivity {
                                     //genera lo mismo como si cambiaramos la ip en el programa android la opcion dew arriba. No
                                     //StatusCode0  Twhowable:   java.net.ConnectException: failed to connect to /192.168.1.10 (port 8080) from /192.168.1.71 (port 37786) after 10000ms: isConnected failed: EHOSTUNREACH (No route to host)
                                     //Llamo a reatry 5 veces
-                                    if (textView.getText().toString().equals("Sin Conexion al servidor\nRevisa WiFi")){
+                                    if (textView.getText().toString().equals("Sin Conexion al servidor\nRevisa WiFi o datos")){
                                         textView.setText("Sin Conexion al servidor\nRevisa WiFi.");
                                         textView.setBackgroundColor(Color.CYAN);
                                     }else{
-                                        textView.setText("Sin Conexion al servidor\nRevisa WiFi");
+                                        textView.setText("Sin Conexion al servidor\nRevisa WiFi o datos");
                                         textView.setBackgroundColor(Color.YELLOW);
                                     }
                                     String info = "StatusCode" + String.valueOf(statusCode) + "  Twhowable:   " + throwable.toString();

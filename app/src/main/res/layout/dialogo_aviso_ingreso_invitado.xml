@@ -36,7 +36,7 @@
         android:layout_marginTop="30dp"
         android:layout_marginStart="20dp"
         style="@style/AppTheme"
-
+        android:visibility="invisible"
         />
 
 

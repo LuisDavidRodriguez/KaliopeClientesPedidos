@@ -1,5 +1,6 @@
 package com.example.kaliopeclientespedidos;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.SnapHelper;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -25,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import cz.msebera.android.httpclient.Header;
+
+import static com.example.kaliopeclientespedidos.Constantes.offline;
 
 public class CarritoActivity extends AppCompatActivity {
 
@@ -48,6 +52,8 @@ public class CarritoActivity extends AppCompatActivity {
 
     ProgressDialog progressDialog;
 
+    Activity activity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +65,7 @@ public class CarritoActivity extends AppCompatActivity {
         recyclerViewLista.setLayoutManager(layoutManager);
 
 
+        activity = this;
 
 
 
@@ -186,13 +193,27 @@ public class CarritoActivity extends AppCompatActivity {
                 Log.d("onFauile 2", info);
                 //Toast.makeText(MainActivity.this,info, Toast.LENGTH_LONG).show();
                 progressDialog.dismiss();
-                utilidadesApp.dialogoResultadoConexion(getParent(),getResources().getString(R.string.sin_internet),"No podemos conectarnos al servidor Kaliope, para ver tu carrito necesitamos conexion a internet");
+
+
+                new AlertDialog.Builder(activity)
+                        .setTitle("No hay conexion a internet")
+                        .setMessage("No hemos podido conectar con el servidor.Para mostrar tu carrito es necesaria una conexion a internet")
+                        .setPositiveButton("Continuar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                finish();           //finalizamos esta actividad para que nos devuelva a la anterior
+                            }
+                        })
+                        .create()
+                        .show();
+
+
             }
 
 
             @Override
             public void onRetry(int retryNo) {
-                //progressDialog.setMessage("Reintentando conexion No: " + String.valueOf(retryNo));
+                progressDialog.setMessage("Reintentando conexion No: " + String.valueOf(retryNo));
             }
 
 

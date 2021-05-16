@@ -154,7 +154,9 @@ public class SpinnerColoresAdapter extends BaseAdapter {
 
 
     public int obtenerColorDesdeRGB(@Size(min = 1) String colorRGB){
+        Log.d("colorRecibido", colorRGB);
         //rgb(142, 142, 142)
+
         int posicionPrimerParentesis = colorRGB.indexOf('(');
         int posicionPrimeraComa = colorRGB.indexOf(',');
         int posicionSegundaComa = colorRGB.indexOf(',',posicionPrimeraComa+1);
@@ -175,7 +177,26 @@ public class SpinnerColoresAdapter extends BaseAdapter {
 
 
 
-        return Color.rgb(Integer.parseInt(rojo),Integer.parseInt(verde),Integer.parseInt(azul));
+        //en 1 solo producto de un monton se recibio la cadena rgb( 142, 142, 142)
+        //con 1 espacio a inicio del primer color deberia ser rgb(142, 142, 142)
+        //proboco un error en Integer.parseInt().
+        //protejemos con un try catch
+        int resultadorojo = 0;
+        int resultadoVerde = 0;
+        int resultadoAzul = 0;
+
+        try {
+            resultadorojo = Integer.parseInt(rojo);
+            resultadoVerde = Integer.parseInt(verde);
+            resultadoAzul = Integer.parseInt(azul);
+
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            Log.d("Error conversion color", "Cadena color recibida " + colorRGB);
+        }
+
+
+        return Color.rgb(resultadorojo,resultadoVerde,resultadoAzul);
 
 
     }

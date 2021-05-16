@@ -177,6 +177,10 @@ public class ConfiguracionesApp {
         editor.apply();
 
     }
+    private static void deleteMantenerSesionIniciada(Activity activity){
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(NOMBRE_ARCHIVO_CONFIGURACIONES, Context.MODE_PRIVATE);
+        sharedPreferences.edit().remove(MANTENER_SESION_INICIADA).apply();
+    }
 
 
 
@@ -579,6 +583,8 @@ public class ConfiguracionesApp {
         deleteInformacionClienteOffline(activity);
         //deleteCodigoDispositivoUnico(activity);       //no borramos el codigo de dispositivo unico porque se supone que es el que se usara siempre hasta que se reinstale la app
         deleteEntradaComoInvitado(activity);
+        deleteMantenerSesionIniciada(activity);
+
     }
 
 

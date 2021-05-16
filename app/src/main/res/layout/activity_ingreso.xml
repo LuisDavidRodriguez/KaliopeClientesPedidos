@@ -49,6 +49,7 @@
         android:background="@drawable/cuadro_redondeado"
         android:gravity="center"
         android:orientation="vertical"
+        android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.52"
@@ -62,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_margin="10dp"
+            android:layout_marginBottom="10dp"
             android:text="@string/Instrucciones_ingresa_socio"
             android:textColor="@color/colorBlack"
             android:textSize="18sp" />
@@ -71,17 +72,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="10dp"
             android:orientation="horizontal">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
                 android:text="@string/Usuario"
                 android:textColor="@color/colorBlack"
                 android:textSize="20sp"
-
                 />
 
             <EditText
@@ -102,14 +100,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_margin="10dp"
             android:orientation="horizontal">
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
                 android:text="@string/Contraseña"
                 android:textColor="@color/colorBlack"
                 android:textSize="20sp" />
@@ -128,31 +124,30 @@
         </LinearLayout>
 
 
-        <LinearLayout
+
+                <CheckBox
+                    android:id="@+id/ingreso_checkBox_mantenerSesion"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/MantenerSesion" />
+                <TextView
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:textSize="12sp"
+                    android:text="-Podras ingresar aunque no tengas conexion a internet.\n-Haslo solo si confias es este dispositivo."/>
+
+
+        <Button
+            android:id="@+id/ingreso_boton_ingreso"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="10dp"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/ingreso_checkBox_mantenerSesion"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/MantenerSesion" />
-
-            <Button
-                android:id="@+id/ingreso_boton_ingreso"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:background="@drawable/boton_redondo"
-                android:padding="5dp"
-                android:text="@string/Ingresa"
-                android:textSize="14sp" />
-
-
-        </LinearLayout>
+            android:layout_marginTop="20dp"
+            android:background="@drawable/boton_redondo"
+            android:padding="5dp"
+            android:text="@string/Ingresa"
+            android:textSize="14sp" />
 
 
     </LinearLayout>

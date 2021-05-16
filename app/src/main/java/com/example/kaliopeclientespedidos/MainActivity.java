@@ -90,6 +90,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         checarModoOffline(textViewToolModoFuncionamiento);          //se encarga de actualizar el texto que indica si esta en modo offline la app o online
 
+        Intent intent = new Intent(this, ConexionService.class);
+        startService(intent);
+
 
     }
 

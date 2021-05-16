@@ -303,7 +303,7 @@ public class DetallesActivity extends AppCompatActivity {
 
                 new AlertDialog.Builder(activity)
                         .setTitle("No hay conexion a internet")
-                        .setMessage("No hemos podido conectar con el servidor. Mostraremos los datos en modo Offline")
+                        .setMessage("No hemos podido conectar con el servidor. Mostraremos los datos en modo \"sin internet\"")
                         .setPositiveButton("Continuar", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {

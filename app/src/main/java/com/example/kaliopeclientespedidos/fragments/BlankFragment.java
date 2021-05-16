@@ -2,11 +2,13 @@ package com.example.kaliopeclientespedidos.fragments;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -148,22 +150,8 @@ public class BlankFragment extends Fragment implements ProductoAdapter.OnProduct
 
 
 
+        controlarModoOfflineOnline();           //este metodo maneja si se conecta al servidor o si mejor muestra los datos del shared preferences de la memoria previamente guardados
 
-        if (offline){
-            //si no tenemos coneccion con el servidor trabajamos con el array guardado en sharedPreferences
-            try {
-                Log.d(Constantes.TAG_OFFLINE, "mostrando datos de shared preferences");
-                imagenDeInicio = ConfiguracionesApp.getInformacionOffline(getActivity());
-                enaviarArecycler();
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText( getActivity(),"No se puede trabajar con la cadena guardada conectece al servidor " + e.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        }else{
-            Log.d(Constantes.TAG_ONLINE,"Conectando con el servidor para descargar la imagen de los productos principales");
-            consultarImagenPrincipal();
-            //si tenemos conexion al servidor nos conectamos para descargar la informacion actualizada
-        }
 
 
 
@@ -423,13 +411,26 @@ public class BlankFragment extends Fragment implements ProductoAdapter.OnProduct
                 Log.d("onFauile 2" , info);
                 //Toast.makeText(MainActivity.this,info, Toast.LENGTH_LONG).show();
                 progressDialog.dismiss();
-                utilidadesApp.dialogoResultadoConexion(getActivity(),"Fallo de conexion", errorResponse + "\nStatus Code: " + String.valueOf(statusCode));
+
+                new AlertDialog.Builder(getContext())
+                        .setTitle("No hay conexion a internet")
+                        .setMessage("No hemos podido conectar con el servidor. Mostraremos los datos en modo Offline")
+                        .setPositiveButton("Continuar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                offline = true;
+                                controlarModoOfflineOnline();
+                            }
+                        })
+                        .create()
+                        .show();
+
             }
 
 
             @Override
             public void onRetry(int retryNo) {
-                progressDialog.setMessage("Reintentando conexion No: " + String.valueOf(retryNo));
+                progressDialog.setMessage("Reintentando conexion No: " + retryNo);
             }
         });
 
@@ -445,6 +446,26 @@ public class BlankFragment extends Fragment implements ProductoAdapter.OnProduct
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
         progressDialog.show();
+
+    }
+
+    private void controlarModoOfflineOnline(){
+
+        if (offline){
+            //si no tenemos coneccion con el servidor trabajamos con el array guardado en sharedPreferences
+            try {
+                Log.d(Constantes.TAG_OFFLINE, "mostrando datos de shared preferences");
+                imagenDeInicio = ConfiguracionesApp.getInformacionOffline(getActivity());
+                enaviarArecycler();
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText( getActivity(),"No se puede trabajar con la cadena guardada conectece al servidor " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        }else{
+            Log.d(Constantes.TAG_ONLINE,"Conectando con el servidor para descargar la imagen de los productos principales");
+            consultarImagenPrincipal();
+            //si tenemos conexion al servidor nos conectamos para descargar la informacion actualizada
+        }
 
     }
 
