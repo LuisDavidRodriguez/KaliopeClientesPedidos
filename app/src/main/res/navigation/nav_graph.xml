@@ -6,14 +6,19 @@
     app:startDestination="@id/blankFragment">
     <fragment
         android:id="@+id/blankFragment"
-        android:name="com.example.kaliopeclientespedidos.fragments.BlankFragment"
+        android:name="com.kaliopeDavid.kaliopeclientespedidos.fragments.BlankFragment"
         android:label="fragment_blank"
         tools:layout="@layout/fragment_blank" />
     <fragment
         android:id="@+id/informacionCuentaFragment"
-        android:name="com.example.kaliopeclientespedidos.fragments.InformacionCuentaFragment"
+        android:name="com.kaliopeDavid.kaliopeclientespedidos.fragments.InformacionCuentaFragment"
         android:label="fragment_informacion_cuenta"
         tools:layout="@layout/fragment_informacion_cuenta" />
+    <fragment
+        android:id="@+id/pedidosEntregadosFragment"
+        android:name="com.kaliopeDavid.kaliopeclientespedidos.PedidosEntregadosFragment"
+        android:label="fragment_pedidos_entregados"
+        tools:layout="@layout/fragment_pedidos_entregados" />
 
 
 </navigation>

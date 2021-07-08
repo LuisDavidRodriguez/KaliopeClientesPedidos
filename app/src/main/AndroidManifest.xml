@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.kaliopeclientespedidos">
+    package="com.kaliopeDavid.kaliopeclientespedidos">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -9,12 +9,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.FLASHLIGHT" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
@@ -27,14 +21,14 @@
         android:theme="@style/AppTheme">
 
 
-        <activity android:name=".CarritoActivity"></activity>
+        <activity android:name="com.kaliopeDavid.kaliopeclientespedidos.CarritoActivity"></activity>
 
 
         <activity
-            android:name=".MainActivity"
+            android:name="com.kaliopeDavid.kaliopeclientespedidos.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
 
-        <activity android:name=".Presentacion">
+        <activity android:name="com.kaliopeDavid.kaliopeclientespedidos.Presentacion">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,12 +38,12 @@
 
 
         <activity
-            android:name=".Ingreso"
+            android:name="com.kaliopeDavid.kaliopeclientespedidos.Ingreso"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-        <activity android:name=".DetallesActivity" />
+        <activity android:name="com.kaliopeDavid.kaliopeclientespedidos.DetallesActivity" />
 
-        <service android:name=".ConexionService" />
+        <service android:name="com.kaliopeDavid.kaliopeclientespedidos.ConexionService" />
 
         <meta-data
             android:name="preloaded_fonts"
