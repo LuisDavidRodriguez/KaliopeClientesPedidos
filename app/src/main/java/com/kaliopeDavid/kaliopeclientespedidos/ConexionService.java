@@ -25,7 +25,7 @@ public class ConexionService extends Service {
 
     private Handler threadPrimarioHandler;
 
-    public static final String URL_PING = "app_movil/ping_servidor.php";
+    public static final String URL_PING = KaliopeServerClient.CARPETAS_URL + "ping_servidor.php";
 
 
     @Nullable

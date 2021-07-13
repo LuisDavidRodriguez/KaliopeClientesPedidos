@@ -56,7 +56,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
 
 
 
-    public static final String URL_EDICION_CARRITO = "app_movil/editar_pedido.php";
+    public static final String URL_EDICION_CARRITO = KaliopeServerClient.CARPETAS_URL + "editar_pedido.php";
 
 
 
@@ -92,9 +92,8 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolderCarrito holder, final int position) {
 
         /*
- {"carritoCliente":[{"id":"39","no_pedido":"1","fecha_entrega_pedido":"2021-02-23","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","id_producto":"SM5898","descripcion":"Sudadera dama","talla":"UNT","cantidad":"2","color":"Gris","no_color":"rgb(142, 142, 142)","precio_etiqueta":"339","precio_vendedora":"298","precio_socia":"295","precio_empresaria":"291","precio_inversionista":"280","imagen_permanente":"fotos\/SM5898-VERDE-1.jpg","producto_confirmado":"true","estado_producto":"CREDITO","seguimiento_producto":"Producto confirmado","ganancia":41,"ganancia_inversion":59,"existencias_restantes":0,"apurate_confirmar":"Ya no hay piezas disponibles para surir tu pedido, otros clientes confirmaron su pedido antes que tu y agotaron las existencias"},
-                {"id":"40","no_pedido":"1","fecha_entrega_pedido":"2021-02-23","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","id_producto":"ST5898","descripcion":"Sueter dama","talla":"UNT","cantidad":"1","color":"GRIS","no_color":"rgb(122, 125, 130)","precio_etiqueta":"359","precio_vendedora":"310","precio_socia":"305","precio_empresaria":"301","precio_inversionista":"280","imagen_permanente":"fotos\/ST5898-GRIS-1.jpg","producto_confirmado":"true","estado_producto":"CREDITO","seguimiento_producto":"Producto confirmado","ganancia":49,"ganancia_inversion":79,"existencias_restantes":8,"apurate_confirmar":""},
-                {"id":"41","no_pedido":"1","fecha_entrega_pedido":"2021-02-23","no_cuenta":"4926","nombre_cliente":"MONICA HERNANDEZ GARCIA","credito_cliente":"1400","grado_cliente":"VENDEDORA","id_producto":"SM5898","descripcion":"Sudadera dama","talla":"UNT","cantidad":"1","color":"Gris","no_color":"rgb(142, 142, 142)","precio_etiqueta":"339","precio_vendedora":"298","precio_socia":"295","precio_empresaria":"291","precio_inversionista":"280","imagen_permanente":"fotos\/SM5898-VERDE-1.jpg","producto_confirmado":"true","estado_producto":"CREDITO","seguimiento_producto":"Producto confirmado","ganancia":41,"ganancia_inversion":59,"existencias_restantes":0,"apurate_confirmar":"Ya no hay piezas disponibles para surir tu pedido, otros clientes confirmaron su pedido antes que tu y agotaron las existencias"},
+        D/detalles1: {"info":{"estatus":"EXITO","MENSAJE":"Carrito encotrado"},
+        "carritoCliente":[{"id":"754","no_pedido":"1","fecha_entrega_pedido":"2021-07-15","no_cuenta":"1265","nombre_cliente":"NORMA CABRERA RODRIGUEZ ","credito_cliente":"2200","grado_cliente":"EMPRESARIA","ruta":"SAN PABLO TOLIMAN","id_producto":"BXH069-RE","descripcion":"BOXER HOMBRE","talla":"UNT","cantidad":"1","color":"REY","no_color":"rgb(9, 37, 106)","precio_etiqueta":"69","precio_vendedora":"50","precio_socia":"47","precio_empresaria":"45","precio_inversionista":"42","imagen_permanente":"fotos\/BXH069-REY-1.jpg","producto_confirmado":"true","estado_producto":"CREDITO","seguimiento_producto":"Listo este producto ya se encuentra apartado lo recibiras en los proximos dias","almacen":"surtido","ganancia":24,"ganancia_inversion":27,"existencias_restantes":0,"apurate_confirmar":"Ya no hay piezas disponibles para surtir tu pedido, otros clientes confirmaron su pedido antes que tu y agotaron las existencias"},{"id":"755","no_pedido":"1","fecha_entrega_pedido":"2021-07-15","no_cuenta":"1265","nombre_cliente":"NORMA CABRERA RODRIGUEZ ","credito_cliente":"2200","grado_cliente":"EMPRESARIA","ruta":"SAN PABLO TOLIMAN","id_producto":"BXH069-VI","descripcion":"BOXER HOMBRE","talla":"UNT","cantidad":"1","color":"VINO","no_color":"rgb(124, 41, 54)","precio_etiqueta":"69","precio_vendedora":"50","precio_socia":"47","precio_empresaria":"45","precio_inversionista":"42","imagen_permanente":"fotos\/BXH069-VINO-1.jpg","producto_confirmado":"true","estado_producto":"CREDITO","seguimiento_producto":"Listo este producto ya se encuentra apartado lo recibiras en los proximos dias","almacen":"surtido","ganancia":24,"ganancia_inversion":27,"existencias_restantes":2,"apurate_confirmar":"Quedan solo 2 piezas disponibles, apresurate a confirmar tu pedido."},{"id":"756","no_pedido":"1","fecha_entrega_pedido":"2021-07-15","no_cuenta":"1265","nombre_cliente":"NORMA CABRERA RODRIGUEZ ","credito_cliente":"2200","grado_cliente":"EMPRESARIA","ruta":"SAN PABLO TOLIMAN","id_producto":"BXH069-VG","descripcion":"BOXER HOMBRE","talla":"UNT","cantidad":"1","color":"VERDE GRIS","no_color":"rgb(25, 63, 57)","precio_etiqueta":"69","precio_vendedora":"50","precio_socia":"47","precio_empresaria":"45","precio_inversionista":"42","imagen_permanente":"fotos\/BXH069-VERDEGRIS-1.jpg","producto_confirmado":"true","estado_producto":"CREDITO","seguimiento_producto":"Listo este producto ya se encuentra apartado lo recibiras en los proximos dias","almacen":"surtido","ganancia":24,"ganancia_inversion":27,"existencias_restantes":3,"apurate_confirmar":"Quedan solo 3 piezas disponibles, apresurate a confirmar tu pedido."},{"id":"757","no_pedido":"1","fecha_entrega_pedido":"2021-07-15","no_cuenta":"1265","nombre_cliente":"NORMA CABRERA RODRIGUEZ ","credito_cliente":"2200","grado_cliente":"EMPRESARIA","ruta":"SAN PABLO TOLIMAN","id_producto":"BXH069-RF","descripcion":"BOXER HOMBRE","talla":"UNT","cantidad":"1","color":"ROJO FUEGO","no_color":"rgb(212, 57, 39)","precio_etiqueta":"69","precio_vendedora":"50","precio_socia":"47","precio_empresaria":"45","precio_inversionista":"42","imagen_permanente":"fotos\/BXH069-ROJOFUEGO-1.jpg","producto_confirmado":"true","estado_producto":"CREDITO","seguimiento_producto":"Listo este producto ya se encuentra apartado lo recibiras en los proximos dias","almacen":"surtido","ganancia":24,"ganancia_inversion":27,"existencias_restantes":2,"apurate_confirmar":"Quedan solo 2 piezas disponibles, apresurate a confirmar tu pedido."},{"id":"758","no_pedido":"1","fecha_entrega_pedido":"2021-07-15","no_cuenta":"1265","nombre_cliente":"NORMA CABRERA RODRIGUEZ ","credito_cliente":"2200","grado_cliente":"EMPRESARIA","ruta":"SAN PABLO TOLIMAN","id_producto":"BXH069-RA","descripcion":"BOXER HOMBRE","talla":"UNT","cantidad":"2","color":"ROJO AZUL","no_color":"rgb(83, 30, 47)","precio_etiqueta":"69","precio_vendedora":"50","precio_socia":"47","precio_empresaria":"45","precio_inversionista":"42","imagen_permanente":"fotos\/BXH069-ROJOAZUL-1.jpg","producto_confirmado":"true",
 
          */
 
@@ -126,7 +125,6 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
             final String formaDePago = jsonObject.getString("estado_producto");                     //aqui recibimos CREDITO INVERSION AGOTADO jaja yo se el agotado rompe las normas pero hay que hacerlo
             final String limiteDeCretido = jsonObject.getString("credito_cliente");
             final String idDataBase = jsonObject.getString("id");
-            final String productoConfirmado = jsonObject.getString("producto_confirmado");          //obtenemos en texto true or false dependiendo de si el producto fue confirmado
 
 
 
@@ -162,13 +160,6 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
             }
 
 
-            if(productoConfirmado.equals("true")){
-                //si el producto ya esta confirmado ocultamos los botones y datos inecesarios
-                holder.marcarComoConfirmado(formaDePago);
-            }
-
-
-
 
 
             String comentarioCredito = holder.itemView.getResources().getString(R.string.aPrecioDe) + gradoCliente;
@@ -178,7 +169,6 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
             holder.tvComentarioInversion.setText(comentarioInversion);
 
 
-            holder.tvApurateConfirmar.setText(jsonObject.getString("apurate_confirmar"));
             holder.tvEstatusDelProducto.setText(jsonObject.getString("seguimiento_producto"));
 
 
@@ -446,7 +436,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
     private void conectarServerEliminarProducto(String idBaseDeDatos, final int position){
         RequestParams params = new RequestParams();
         params.put("OPERACION",2);      //para eliminar un producto sera el el codigo 2
-        params.put("CUENTA_CLIENTE", ConfiguracionesApp.getCuentaCliente(activity));      //para actualizar el metodo de pago el codigo de operacion sera 1
+        params.put("CUENTA_CLIENTE", ConfiguracionesApp.getCuentaCliente(activity));
         params.put("ID_PRODUCTO", idBaseDeDatos);
 
         showProgresDialog(activity);

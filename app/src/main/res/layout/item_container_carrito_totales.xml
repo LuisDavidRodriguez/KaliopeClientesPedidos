@@ -139,12 +139,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
                 android:layout_marginStart="5dp"
-                android:layout_marginTop="4dp"
                 android:layout_marginEnd="5dp"
                 android:background="@color/colorAccent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/item_container_carrito_totales_numeroPedidoTV" />
+                app:layout_constraintTop_toBottomOf="@+id/item_container_carrito_totales_fechaEntregaTV" />
 
 
             <View
@@ -174,35 +173,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/include3" />
 
             <TextView
-                android:id="@+id/textView8"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/pedido_numero"
-                app:layout_constraintEnd_toStartOf="@+id/linearLayout8"
-                app:layout_constraintHorizontal_bias="0.65"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout8" />
-
-            <TextView
                 android:id="@+id/textView9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:text="@string/fecha_entrega"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.35"
-                app:layout_constraintStart_toEndOf="@+id/linearLayout8"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/linearLayout8" />
-
-            <TextView
-                android:id="@+id/item_container_carrito_totales_numeroPedidoTV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:text="1"
-                android:textColor="@color/colorBlack"
-                app:layout_constraintEnd_toEndOf="@+id/textView8"
-                app:layout_constraintStart_toStartOf="@+id/textView8"
-                app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
             <TextView
                 android:id="@+id/item_container_carrito_totales_fechaEntregaTV"
@@ -213,7 +191,9 @@
                 android:textColor="@color/colorBlack"
                 app:layout_constraintEnd_toEndOf="@+id/textView9"
                 app:layout_constraintStart_toStartOf="@+id/textView9"
-                app:layout_constraintTop_toBottomOf="@+id/textView9" />
+                app:layout_constraintTop_toBottomOf="@+id/textView9"
+                android:textSize="25sp"
+                />
 
 
             <TextView
@@ -414,28 +394,7 @@
                 app:layout_constraintBottom_toBottomOf="@+id/item_container_carrito_totales_gananciaTotalTV"
                 app:layout_constraintEnd_toStartOf="@+id/item_container_carrito_totales_gananciaTotalTV" />
 
-            <TextView
-                android:id="@+id/item_container_carrito_totales_mensajePuntosCortos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:text="+100 puntos Kaliope"
-                android:textColor="@color/colorBlack"
-                app:layout_constraintBottom_toBottomOf="@+id/item_container_carrito_totales_gananciaTotalTV"
-                app:layout_constraintStart_toEndOf="@+id/item_container_carrito_totales_gananciaTotalTV" />
 
-
-            <Button
-                android:id="@+id/item_container_carrito_totales_confirmarEnviarPedidoButton"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:background="@drawable/boton_redondo_regalo"
-                android:padding="5dp"
-                android:text="@string/confirmar_enviar_pedido"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.516"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/item_container_carrito_totales_palomitaIV" />
 
             <TextView
                 android:id="@+id/item_container_carrito_totales_mensajeLimiteCreditoTV"
@@ -446,18 +405,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/item_container_carrito_totales_confirmarEnviarPedidoButton" />
+                app:layout_constraintTop_toBottomOf="@+id/include3" />
 
             <!--Le incluimos la vista que diseñamos para mostrar los totales en el dialogo-->
-            <ImageView
-                android:id="@+id/item_container_carrito_totales_palomitaIV"
-                android:layout_width="29dp"
-                android:layout_height="33dp"
-                android:layout_marginTop="32dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/include3"
-                app:srcCompat="@drawable/palomita" />
+
 
             <include
                 android:id="@+id/include3"
@@ -469,23 +420,18 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/item_container_carrito_totales_gananciaTotalTV" />
 
+            <include
+                android:id="@+id/item_container_carrito_totales_layout_vacio"
+                layout="@layout/item_carrito_totales_vacio"
+                android:visibility="invisible"
+                tools:layout_editor_absoluteX="-2dp"
+                tools:layout_editor_absoluteY="0dp" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 <!--Este item se mostrara cuando el carrito este vacio, lo colocamos en un frame layout para que uno este sobre el otro-->
-    <include
-        android:id="@+id/item_container_carrito_totales_layout_vacio"
-        layout="@layout/item_carrito_totales_vacio"
-        android:visibility="invisible"
-        />
-
-
-
-
-
-
-
 
 
 </androidx.cardview.widget.CardView>

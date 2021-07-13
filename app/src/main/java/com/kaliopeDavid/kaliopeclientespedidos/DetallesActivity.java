@@ -59,6 +59,7 @@ public class DetallesActivity extends AppCompatActivity {
 
     TextView numeroImagenTV,
             nombreProductoTV,
+            detallesProductoTV,
             modeloTV,
             precioTV,
             fechaEntregaTV,
@@ -97,9 +98,9 @@ public class DetallesActivity extends AppCompatActivity {
     MediaPlayer mediaPlayer;
 
 
-    public final String URL_DETALLES_PRODUCTO = "app_movil/consultar_detalles_producto.php";
-    public final String URL_DETALLES_POR_COLOR = "app_movil/consultar_detalles_por_color.php";
-    public final String URL_RECIBIR_PEDIDO = "app_movil/recibir_pedido.php";
+    public final String URL_DETALLES_PRODUCTO = KaliopeServerClient.CARPETAS_URL + "consultar_detalles_producto.php";
+    public final String URL_DETALLES_POR_COLOR = KaliopeServerClient.CARPETAS_URL + "consultar_detalles_por_color.php";
+    public final String URL_RECIBIR_PEDIDO = KaliopeServerClient.CARPETAS_URL + "recibir_pedido.php";
 
     Animation animationSacudida;
     Animation animationLlegada;
@@ -214,7 +215,8 @@ public class DetallesActivity extends AppCompatActivity {
                 progressDialog.dismiss();
 
                 Log.d ("detalles1",String.valueOf(response));
-                //{"id_producto":"SM5898","descripcion":"Sudadera dama","estado":"ACTIVO","precio_etiqueta":"339","precio_vendedora":"298","precio_empresaria":"291","imagen1":"fotos\/SM5898-VERDE-1.jpg","imagen2":"fotos\/SM5898-VERDE-2.jpg","imagen3":"fotos\/SM5898-VERDE-3.jpg","categoria":"sudadera","existencias":120,
+                //D/detalles1: {"id_producto":"BD1013R","descripcion":"BLUSA DAMA","detalles":"Blusa de encaje con cuello alto","estado":"ACTIVO","precio_etiqueta":"319","precio_vendedora":"248","precio_empresaria":"234","imagen1":"fotos\/BL1013-ROSA-1.jpg","imagen2":"fotos\/BL1013-ROSA-2.jpg","imagen3":"fotos\/BL1013-ROSA-1.jpg","categoria":"","existencias":14,"tallas":[{"talla":"CH","existencias":4},{"talla":"M","existencias":4},{"talla":"G","existencias":6}],"colores":[{"color":"ROSA","noColor":"rgb(217, 159, 156)","imagen1":"fotos\/BL1013-ROSA-1.jpg","existencias":14,"tallas":[{"talla":"CH","existencias":4},{"talla":"M","existencias":4},{"talla":"G","existencias":6}]}]}
+
                 // "tallas":[{"talla":"UNT","existencias":55},{"talla":"G","existencias":50},{"talla":"M","existencias":15}],
                 // "colores":[{"color":"Gris","noColor":"rgb(142, 142, 142)","imagen1":"fotos\/SM5898-VERDE-1.jpg","existencias":45,"tallas":[{"talla":"UNT","existencias":5},{"talla":"G","existencias":40}]}
                 // ,{"color":"Rosa","noColor":"rgb(240, 74, 141)","imagen1":"fotos\/SM5898-ROSA-1.jpg","existencias":55,"tallas":[{"talla":"UNT","existencias":40},{"talla":"M","existencias":15}]}
@@ -565,6 +567,7 @@ public class DetallesActivity extends AppCompatActivity {
 
     private void llenarVistas(){
         nombreProductoTV = (TextView) findViewById(R.id.detalles_nombreProducto);
+        detallesProductoTV = (TextView) findViewById(R.id.detalles_detallesProducto);
         modeloTV = (TextView) findViewById(R.id.detalles_modelo);
         precioTV = (TextView) findViewById(R.id.detalles_TV_precio);
         fechaEntregaTV = (TextView) findViewById(R.id.detalles_TV_instruccionesFechaEntrega);
@@ -572,6 +575,7 @@ public class DetallesActivity extends AppCompatActivity {
 
 
         String nombrePro = "";
+        String detallesPro = "";
         String modelo = "";
         String precio = "";
         String mensajeFechaEntrega = "";
@@ -593,19 +597,22 @@ public class DetallesActivity extends AppCompatActivity {
 
         try {
             /*
-                {"id_producto":"SM5898","descripcion":"Sudadera dama","estado":"ACTIVO","precio_etiqueta":"339","precio_vendedora":"298","precio_empresaria":"291","imagen1":"fotos\/SM5898-VERDE-1.jpg","imagen2":"fotos\/SM5898-VERDE-2.jpg","imagen3":"fotos\/SM5898-VERDE-3.jpg","categoria":"sudadera","existencias":120,
+                {"id_producto":"SM5898","descripcion":"Sudadera dama","detalles":"sueter de cuello alto","estado":"ACTIVO","precio_etiqueta":"339","precio_vendedora":"298","precio_empresaria":"291","imagen1":"fotos\/SM5898-VERDE-1.jpg","imagen2":"fotos\/SM5898-VERDE-2.jpg","imagen3":"fotos\/SM5898-VERDE-3.jpg","categoria":"sudadera","existencias":120,
                 "tallas":[{"talla":"UNT","existencias":55},{"talla":"G","existencias":50},{"talla":"M","existencias":15}],
                 "colores":[{"color":"Gris","noColor":"rgb(142, 142, 142)","imagen1":"fotos\/SM5898-VERDE-1.jpg","existencias":45,"tallas":[{"talla":"UNT","existencias":5},{"talla":"G","existencias":40}]}
                 ,{"color":"Rosa","noColor":"rgb(240, 74, 141)","imagen1":"fotos\/SM5898-ROSA-1.jpg","existencias":55,"tallas":[{"talla":"UNT","existencias":40},{"talla":"M","existencias":15}]}
                 ,{"color":"Negro","noColor":"rgb(13, 13, 13)","imagen1":"fotos\/SM5898-NEGRO-1.jpg","existencias":10,"tallas":[{"talla":"UNT","existencias":10}]}
                 ,{"color":"Azul","noColor":"rgb(135, 182, 205)","imagen1":"fotos\/SM5898-AZUL-1.jpg","existencias":10,"tallas":[{"talla":"G","existencias":10}]}]}
              */
+
             nombrePro = informacionProductoInicial.getString("descripcion");
+            detallesPro = informacionProductoInicial.getString("detalles");
             modelo = informacionProductoInicial.getString("id_producto");
             precio = informacionProductoInicial.getString("precio_etiqueta");
 
 
             nombreProductoTV.setText(nombrePro);
+            detallesProductoTV.setText(detallesPro);
             modeloTV.setText(modelo);
             precioTV.setText(precio);
 

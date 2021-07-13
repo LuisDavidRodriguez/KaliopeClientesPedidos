@@ -80,15 +80,15 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
 
 
 
-/*
+
                 Glide.with(holder.itemView)
                         .load(url_image_producto)
                         .transition(DrawableTransitionOptions.withCrossFade())
                         .error(R.drawable.error_image)
                         .thumbnail(0.5f)
-                        .into(holder.imageProducto);*/
+                        .into(holder.imageProducto);
 
-
+/*
         //https://heartbeat.fritz.ai/using-glide-to-efficiently-load-images-in-android-aec0ba9639ea
         //.skipMemoryCache(true)            para que no guarde las nuevas imagenes en la cache pero las que ya esten guardadas las v a aseguir cargando de ahi
         // .diskCacheStrategy(DiskCacheStrategy.NONE)   para no recuperar nada de la cache

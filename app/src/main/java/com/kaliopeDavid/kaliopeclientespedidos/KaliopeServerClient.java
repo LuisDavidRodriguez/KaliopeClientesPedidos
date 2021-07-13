@@ -3,8 +3,11 @@ package com.kaliopeDavid.kaliopeclientespedidos;
 import com.loopj.android.http.*;
 
 public class KaliopeServerClient {
-    public static final String BASE_URL = "https://www.kaliope.com.mx/";
+    //public static final String BASE_URL = "https://www.kaliope.com.mx/";
+    public static final String BASE_URL = "http://192.168.0.105/PhpProject_clientes_pedidos/";
     //public static final String BASE_URL = "http://192.168.1.80:8080/";
+
+    public static final String CARPETAS_URL = "app_movil/2.0/"; //añadimos esta constante para no tener que poner en los archivos a donde nos queramos dirigir a lo largo del programa toda la ruta. asi por ejemplo cuando actualicemos la version y hagamos una nueva carpeta a 3.0 solo cambiamos aqui la ruta, y no hay que buscar a lo largo del programa para editar
 
     private static AsyncHttpClient client = new AsyncHttpClient(true,80,443);
 

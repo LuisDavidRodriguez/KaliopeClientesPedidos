@@ -64,8 +64,8 @@ public class Ingreso extends AppCompatActivity {
 
 
     //public static final String URL_PING = "PhpProject_clientes_pedidos/ping_servidor.php";
-    public static final String URL_PING = "app_movil/ping_servidor.php";
-    public static final String URL_INICIO_SESION = "app_movil/iniciar_sesion.php";
+    public static final String URL_PING = KaliopeServerClient.CARPETAS_URL + "ping_servidor.php";
+    public static final String URL_INICIO_SESION = KaliopeServerClient.CARPETAS_URL + "iniciar_sesion.php";
     //public static final String URL_INICIO_SESION = "PhpProject_clientes_pedidos/iniciar_sesion.php";
 
 

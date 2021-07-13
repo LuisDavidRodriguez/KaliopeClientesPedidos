@@ -43,13 +43,25 @@
             android:textColor="@color/colorGris"
             />
 
+        <TextView
+            android:id="@+id/detalles_detallesProducto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text=""
+            android:layout_below="@+id/detalles_nombreProducto"
+            android:layout_centerHorizontal="true"
+            android:textSize="20sp"
+            android:textColor="@color/colorBlack"
+            />
+
 
 
         <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/detalles_nombreProducto"
+            android:layout_below="@+id/detalles_detallesProducto"
             android:layout_centerHorizontal="true"
             android:layout_margin="2dp"
             >

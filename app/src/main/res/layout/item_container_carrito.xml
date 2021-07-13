@@ -53,12 +53,15 @@
             </LinearLayout>
 
 
+
+
             <ImageView
                 android:id="@+id/item_container_carrito_imagen"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:layout_below="@+id/linearLayout1"
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="5dp"
                 app:srcCompat="@mipmap/ic_launcher" />
 
 
@@ -327,7 +330,9 @@
                 android:layout_below="@+id/linearLayout6"
                 android:gravity="center_horizontal"
                 android:textSize="16sp"
-                android:layout_marginTop="20dp"/>
+                android:layout_marginTop="20dp"
+                android:visibility="gone"
+                />
 
 
             <ImageButton

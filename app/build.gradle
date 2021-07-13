@@ -18,6 +18,17 @@ android {
     }
 }
 
+
+/**
+ * Version 2.0
+ * la nueva actualizacion cancelara la confirmacion de los productos,
+ * el pedido ahora se confirmara en automatico, cuando el cliente agrege productos a su carrito
+ * de inmediato se descontara de las existencias del sistema. el boton confirmacion por lo tanto desaparecera.
+ * Tambien añadiremos la gestion de los pedidos es decir el cliente podra añadir,
+ * otro pedido aunque aun tenga el otro en espera.
+ *
+ */
+
 dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     def nav_version = "2.3.0"

@@ -70,8 +70,8 @@ public class BlankFragment extends Fragment implements ProductoAdapter.OnProduct
     private AdapterViewFlipper adapterViewFlipperPublicidad;
     private AdapterPublicidad adapterPublicidad;
 
-    private final String URL_CATEGORIAS ="app_movil/consultar_categorias.php";
-    private final String URL_IMAGEN_PRINCIPAL = "app_movil/consultar_principal.php";
+    private final String URL_CATEGORIAS = KaliopeServerClient.CARPETAS_URL + "consultar_categorias.php";
+    private final String URL_IMAGEN_PRINCIPAL = KaliopeServerClient.CARPETAS_URL + "consultar_principal.php";
 
 
 
