@@ -46,6 +46,7 @@ public class ConfiguracionesApp {
 
 
     private static final String JSON_DATOS_CLIENTE_OFFLINE = "datosCliente";
+    private static final String OFFLINE_STRING_ENTREGA_PRODUCTOS = "entregaProductos";
 
 
 
@@ -539,9 +540,42 @@ public class ConfiguracionesApp {
     }
 
 
+    /**
+     * Aqui guardaremos el dato que entrega el servidor con los mensajes
+     * si ordenas ahora tu producto sera entregado en 5 dias en el pedido de 23-07-2021 bla bla bla
+     *
+     * esto se mostrara en detalles del producto, y quiero que se muestre auqnue este offline por eso
+     * lo tengo que guardar aqui
+     * @param activity
+     * @param valor
+     */
+    public static void setOfflineStringEntregaProductos(Activity activity, String valor){
+
+        SharedPreferences preferences =
+                activity.getSharedPreferences(NOMBRE_ARCHIVO_CONFIGURACIONES, Context.MODE_PRIVATE);//para que solo la app kaliope pueda leer o escribir sobre el archivo
 
 
+        SharedPreferences.Editor editor = preferences.edit(); // Declaramos una variable (objeto) de tipo SharedPreferences.Editor, necesario para guardar cambios en el fichero de preferencias.
+        editor.putString(OFFLINE_STRING_ENTREGA_PRODUCTOS,valor);
+        //editor.commit();//guardamos nuestro fichero
+        editor.apply();
 
+    }
+    public static String getOfflineStringEntregaProductos(Activity activity){
+        SharedPreferences sharedPreferences =
+                activity.getSharedPreferences(NOMBRE_ARCHIVO_CONFIGURACIONES, Context.MODE_PRIVATE);
+
+
+        //(Por último llamamos al método "getString" para leer el valor de la preferencia "numeroRutaAsignada"
+        // , si no encuentra este valor devolverá el valor por defecto noAsignado. para saber que no se encontro
+
+        return sharedPreferences.getString(OFFLINE_STRING_ENTREGA_PRODUCTOS,"SinValor");
+    }
+    private static void deleteOfflineStringEntregaProductos(Activity activity){
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(NOMBRE_ARCHIVO_CONFIGURACIONES,Context.MODE_PRIVATE);
+        sharedPreferences.edit().remove(OFFLINE_STRING_ENTREGA_PRODUCTOS).apply();
+
+    }
 
 
 
@@ -584,6 +618,7 @@ public class ConfiguracionesApp {
         //deleteCodigoDispositivoUnico(activity);       //no borramos el codigo de dispositivo unico porque se supone que es el que se usara siempre hasta que se reinstale la app
         deleteEntradaComoInvitado(activity);
         deleteMantenerSesionIniciada(activity);
+        deleteOfflineStringEntregaProductos(activity);
 
     }
 

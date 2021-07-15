@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -76,6 +77,7 @@ public class DetallesActivity extends AppCompatActivity {
     String id_producto;
 
     JSONObject informacionProductoInicial;
+
 
 
 
@@ -206,6 +208,7 @@ public class DetallesActivity extends AppCompatActivity {
 
         RequestParams params = new RequestParams();
         params.put("ID_PRODUCTO",id_producto);
+        params.put("CUENTA_CLIENTE", ConfiguracionesApp.getCuentaCliente(this));
 
         showProgresDialog(this);
         KaliopeServerClient.post(URL_DETALLES_PRODUCTO, params, new JsonHttpResponseHandler() {
@@ -215,8 +218,11 @@ public class DetallesActivity extends AppCompatActivity {
                 progressDialog.dismiss();
 
                 Log.d ("detalles1",String.valueOf(response));
-                //D/detalles1: {"id_producto":"BD1013R","descripcion":"BLUSA DAMA","detalles":"Blusa de encaje con cuello alto","estado":"ACTIVO","precio_etiqueta":"319","precio_vendedora":"248","precio_empresaria":"234","imagen1":"fotos\/BL1013-ROSA-1.jpg","imagen2":"fotos\/BL1013-ROSA-2.jpg","imagen3":"fotos\/BL1013-ROSA-1.jpg","categoria":"","existencias":14,"tallas":[{"talla":"CH","existencias":4},{"talla":"M","existencias":4},{"talla":"G","existencias":6}],"colores":[{"color":"ROSA","noColor":"rgb(217, 159, 156)","imagen1":"fotos\/BL1013-ROSA-1.jpg","existencias":14,"tallas":[{"talla":"CH","existencias":4},{"talla":"M","existencias":4},{"talla":"G","existencias":6}]}]}
+                //D/detalles1:
+                // {"mensajeEntregaProducto":"Si ordenas ahora tu producto llegara en 9 dias, se entregara en el pedido del dia 23-07-2021",
 
+                // "detalle_principal":
+                // {"id_producto":"BD1013R","descripcion":"BLUSA DAMA","detalles":"Blusa de encaje con cuello alto","estado":"ACTIVO","precio_etiqueta":"319","precio_vendedora":"248","precio_empresaria":"234","imagen1":"fotos\/BL1013-ROSA-1.jpg","imagen2":"fotos\/BL1013-ROSA-2.jpg","imagen3":"fotos\/BL1013-ROSA-1.jpg","categoria":"","existencias":53,
                 // "tallas":[{"talla":"UNT","existencias":55},{"talla":"G","existencias":50},{"talla":"M","existencias":15}],
                 // "colores":[{"color":"Gris","noColor":"rgb(142, 142, 142)","imagen1":"fotos\/SM5898-VERDE-1.jpg","existencias":45,"tallas":[{"talla":"UNT","existencias":5},{"talla":"G","existencias":40}]}
                 // ,{"color":"Rosa","noColor":"rgb(240, 74, 141)","imagen1":"fotos\/SM5898-ROSA-1.jpg","existencias":55,"tallas":[{"talla":"UNT","existencias":40},{"talla":"M","existencias":15}]}
@@ -224,20 +230,19 @@ public class DetallesActivity extends AppCompatActivity {
                 // ,{"color":"Azul","noColor":"rgb(135, 182, 205)","imagen1":"fotos\/SM5898-AZUL-1.jpg","existencias":10,"tallas":[{"talla":"G","existencias":10}]}]}
 
 
+                try {
+                    String mensajeFechaEntregaProducto = response.getString("mensajeEntregaProducto");
+                    informacionProductoInicial = response.getJSONObject("detalle_principal");
 
-                informacionProductoInicial = response;
+                    ConfiguracionesApp.setOfflineStringEntregaProductos(activity,mensajeFechaEntregaProducto); //aprovechando que tenemos internet actualizamos el valor del mensaje de fecha de entrega, para que cuando el cliente este offline muestre el mensaje actauliazdo
 
-
-
-
-                llenarListaParaRecycler(informacionProductoInicial);
-                llenarRecycler();
-                llenarVistas();
-                llenarSpinnerColor();
-
-
-
-
+                    llenarListaParaRecycler(informacionProductoInicial);
+                    llenarRecycler();
+                    llenarVistas();
+                    llenarSpinnerColor();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
 
             }
@@ -582,17 +587,16 @@ public class DetallesActivity extends AppCompatActivity {
         String recursoFechaCierrePedido = "";
         String mensajeFechaCierrePedido = "";
 
-        Date auxiliar = new Date();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH); //EL FORMATO QUE VA A RECIBIR PARA CONVERTIRLO
-        SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("EEE, d-MMM",Locale.ENGLISH); //EL FORMATO QUE VA A ENTREGAR LUN, 16-DIC
+        //Date auxiliar = new Date();
+        //SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.ENGLISH); //EL FORMATO QUE VA A RECIBIR PARA CONVERTIRLO
+        //SimpleDateFormat simpleDateFormat1 = new SimpleDateFormat("EEE, d-MMM",Locale.ENGLISH); //EL FORMATO QUE VA A ENTREGAR LUN, 16-DIC
         //auxiliar = simpleDateFormat.parse(ConfiguracionesApp.getDatoClienteOffline(this,ConfiguracionesApp.CLAVE_FECHA_FUTURA));
         //mensajeFechaEntrega = getResources().getString(R.string.si_ordenas_ahora ) + simpleDateFormat1.format(auxiliar);
-        mensajeFechaEntrega = getResources().getString(R.string.si_ordenas_ahora ) + ConfiguracionesApp.getDatoClienteOffline(this,ConfiguracionesApp.CLAVE_FECHA_FUTURA);
+        //mensajeFechaEntrega = getResources().getString(R.string.si_ordenas_ahora ) + ConfiguracionesApp.getDatoClienteOffline(this,ConfiguracionesApp.CLAVE_FECHA_FUTURA);
 
 
-        mensajeFechaCierrePedido = ConfiguracionesApp.getDatoClienteOffline(this, ConfiguracionesApp.CLAVE_MENSAJE_CIERRE_PEDIDO);
 
-        fechaEntregaTV.setText(mensajeFechaEntrega);
+        fechaEntregaTV.setText(ConfiguracionesApp.getOfflineStringEntregaProductos(activity));
         fechaCierreTV.setText(mensajeFechaCierrePedido);
 
         try {
@@ -1090,15 +1094,15 @@ public class DetallesActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 progressDialog.dismiss();
                 Log.d("detalles1", String.valueOf(response));
-                //D/detalles1: {"mensaje":"Tu producto se ha agregado correctamente a tu carrito"}
+                //D/detalles1: {"estatus":"EXITO","mensaje":"Tu producto se ha agregado correctamente a tu carrito"}
 
 
                 try {
+                    String estatus = response.getString("estatus");
                     String responseString = response.getString("mensaje");
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-
-                    builder.setTitle("Exito")
+                    builder.setTitle(estatus)
                             .setMessage(responseString + "\n\n Status Code" + statusCode)
                             .setIcon(R.drawable.logo_kaliope_burbuja)
                             .setPositiveButton(R.string.continuar_eligiendo, new DialogInterface.OnClickListener() {
@@ -1107,6 +1111,8 @@ public class DetallesActivity extends AppCompatActivity {
                                     dialogInterface.dismiss();
                                 }
                             });
+
+
 
                     if(!ConfiguracionesApp.getEntradaComoInvitado(activity)){
                         //si no se entro como invitado mostramos la opcion de ver carrito
