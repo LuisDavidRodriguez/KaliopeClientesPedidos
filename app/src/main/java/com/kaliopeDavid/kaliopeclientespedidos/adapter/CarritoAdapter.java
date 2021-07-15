@@ -53,7 +53,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
 
     Animation animationLatido;
 
-
+    private boolean bloqueo = false;
 
 
     public static final String URL_EDICION_CARRITO = KaliopeServerClient.CARPETAS_URL + "editar_pedido.php";
@@ -157,6 +157,11 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
             }else{
                 //si el producto esta como agotado
                 holder.marcarComoAgotado();
+            }
+
+            if(bloqueo){
+                //si este carrito ya no se puede editar bloque=1
+                holder.marcarComoConfirmado(formaDePago);
             }
 
 
@@ -285,6 +290,14 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
     @Override
     public int getItemCount() {
         return listaCarrito.length();
+    }
+
+    /**
+     * Si quieres que el boton de eliminar y cambio de metodo de pago ya no se puedan editar
+     * @param b true si quieres que se bloquee la edicion <p> false si quieres permitir la edicion</p>
+     */
+    public void setBloqueo(boolean b){
+        bloqueo=b;
     }
 
 

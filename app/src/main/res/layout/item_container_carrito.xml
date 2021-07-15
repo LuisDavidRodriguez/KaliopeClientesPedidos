@@ -339,6 +339,7 @@
                 android:id="@+id/item_container_carrito_botonEliminar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:layout_below="@+id/item_container_carrito_textApurateConfirmar"
                 android:layout_centerHorizontal="true"
                 android:src="@android:drawable/ic_menu_delete" />
@@ -357,6 +358,7 @@
                 android:id="@+id/item_container_carrito_textSeguimientoDelProducto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="22dp"
                 android:text="Producto confirmado surtiendoce en almacen Kaliope"
                 android:layout_below="@+id/item_container_carrito_textEliminalo"
                 android:layout_centerHorizontal="true"

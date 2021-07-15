@@ -139,11 +139,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
                 android:layout_marginStart="5dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginEnd="5dp"
                 android:background="@color/colorAccent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/item_container_carrito_totales_fechaEntregaTV" />
+                app:layout_constraintTop_toBottomOf="@+id/item_container_carrito_totales_mensajeBloqueoTV" />
 
 
             <View
@@ -151,7 +152,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="1dp"
                 android:layout_marginStart="5dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginEnd="5dp"
                 android:background="@color/colorAccent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -194,6 +195,32 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView9"
                 android:textSize="25sp"
                 />
+
+
+            <TextView
+                android:id="@+id/item_container_carrito_totales_alertaBloqueoTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:text="Importante"
+                android:textColor="@color/colorBlack"
+                android:textSize="22sp"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="@+id/textView9"
+                app:layout_constraintStart_toStartOf="@+id/textView9"
+                app:layout_constraintTop_toBottomOf="@+id/item_container_carrito_totales_fechaEntregaTV" />
+
+            <TextView
+                android:id="@+id/item_container_carrito_totales_mensajeBloqueoTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="¡Tienes solo hoy para editar!"
+                android:textColor="@color/colorBlack"
+                android:textSize="18sp"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="@+id/textView9"
+                app:layout_constraintStart_toStartOf="@+id/textView9"
+                app:layout_constraintTop_toBottomOf="@+id/item_container_carrito_totales_alertaBloqueoTV" />
 
 
             <TextView
@@ -420,21 +447,22 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/item_container_carrito_totales_gananciaTotalTV" />
 
-            <include
-                android:id="@+id/item_container_carrito_totales_layout_vacio"
-                layout="@layout/item_carrito_totales_vacio"
-                android:visibility="invisible"
-                tools:layout_editor_absoluteX="-2dp"
-                tools:layout_editor_absoluteY="0dp" />
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 <!--Este item se mostrara cuando el carrito este vacio, lo colocamos en un frame layout para que uno este sobre el otro-->
-
+    <include
+        android:id="@+id/item_container_carrito_totales_layout_vacio"
+        layout="@layout/item_carrito_totales_vacio"
+        android:visibility="visible"
+        tools:layout_editor_absoluteX="-2dp"
+        tools:layout_editor_absoluteY="0dp" />
 
 </androidx.cardview.widget.CardView>
+
 
 
 </FrameLayout>
