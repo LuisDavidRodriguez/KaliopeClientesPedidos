@@ -54,6 +54,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
     Animation animationLatido;
 
     private boolean bloqueo = false;
+    private boolean ocultar = false;        //para no desplegar los items, en caso de que adapter totales no quiera desplegarlos
 
 
     public static final String URL_EDICION_CARRITO = KaliopeServerClient.CARPETAS_URL + "editar_pedido.php";
@@ -97,8 +98,12 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
 
          */
 
+        if(ocultar) holder.cardView.setVisibility(View.GONE);
 
         try {
+
+
+
             Log.d("carritoAdapter", listaCarrito.getJSONObject(position).toString());
             //es donde actualizamos la vista de cada item
             final JSONObject jsonObject = listaCarrito.getJSONObject(position);           //nuestro map lo creamos aqui asi podremos tener una instancia para cada producto en la memoria que podremos modificar, si lo creamos como campo, esa posibilidad no es ya que solo abra una instancia que se reciclara en cada producto, esto nos sirve para poder cambiar la info en nuestro adapter
@@ -280,7 +285,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
 
                 }
             });
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -298,6 +303,10 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
      */
     public void setBloqueo(boolean b){
         bloqueo=b;
+    }
+
+    public void setOcultar(boolean b){
+        ocultar=b;
     }
 
 
@@ -357,7 +366,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
                         //notifyDataSetChanged();                                                 //notificamos al adaptador que se cambiaron elementos de la lista, para que los actualice y los muestre al usuario
                         notifyItemChanged(position);                                            //notificamos al adaptadro que cambiamos solo un elementod de la lista para que solo actualice ese
 
-                        totalAdapter.cambiarJsonObject(totalesJsonObject, mensajesTotales);                      //actualizara nuestro adapter totales
+                        totalAdapter.cambiarJsonObject(totalesJsonObject, mensajesTotales, null);                      //actualizara nuestro adapter totales
 
 
                     }
@@ -461,12 +470,15 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
                 progressDialog.dismiss();
                 Log.d("responseCode1", String.valueOf(response));
                 //D/responseCode1: {"resultado":"Exito","mensaje":"Hemos eliminado el producto de tu carrito",  totales: {"nombre":"MONICA HERNANDEZ GARCIA","cuenta":"4926","limite_credito":"1400","grado":"VENDEDORA","dias":"14","ruta":"EL PALMITO","numero_pedido":"1","fecha_entrega":"2021-02-09","suma_cantidad":5,"suma_credito":4,"suma_inversion":1,"cantidad_sin_confirmar":3,"suma_productos_etiqueta":2015,"suma_productos_inversion":360,"suma_productos_credito":1288,"suma_ganancia_cliente":367,"diferencia_credito":-112,"mensaje_diferencia_credito":"Aun dispones de $112 en tu credito Kaliope","mensaje_todo_inversion":"Si pagaras tu pedido en Inversion ganarias $367","mensaje_resumido_puntos":" + 300 puntos Kaliope","mensaje_completo_puntos":"Tambien has ganado 300 puntos Kaliope, recueda que estos puntos se validaran con tu agente Kaliope y seran solo si realizas los pagos completos de este pedido.","mensaje_cantidad_sin_confirmar": "Tienes 1 producto sin confirmar"}}
-                //"mensajesFinalTotales":{"18":"Al recibir tu pedido deberás liquidar al agente Kaliope:","19":"Exceso de credito","20":"0% credito","21":"Inversion","22":"por liquidar al recibir el pedido","23":"En crédito Kaliope fecha de pago "}}
+                //"mensajesFinalTotales":{"18":"Al recibir tu pedido deberás liquidar al agente Kaliope:","19":"Exceso de credito","20":"0% credito","21":"Inversion","22":"por liquidar al recibir el pedido","23":"En crédito Kaliope fecha de pago "},
+                //"info":{"estatus":"EXITO","MENSAJE":{"bloqueado":true,"alerta":4,"mensaje":"Pedido Finalizado.\nAgrega producto para crear un nuevo pedido."}}}
                 try {
                     String resultado = response.getString("resultado");
                     String mensaje = response.getString("mensaje");
                     JSONObject totalesJsonObjet = response.getJSONObject("totales");
                     JSONObject mensajesTotales = response.getJSONObject("mensajesFinalTotales");
+                    JSONObject informacionBloqueos = response.getJSONObject("info"); //puede que al eliminar todos los itemps del carrito, la consulta nos devuelva un pedido anterior, porque aun no hemos agregado a la tabla algo que indique que el pedido ya se finalizo, para ello le enviaremos este mensaje a totales que llevara pedidoFinalizado y decidira y mostrar los totales o no
+                    listaCarrito = response.getJSONArray("carritoCliente");
                     utilidadesApp.dialogoResultadoConexion(activity, resultado, mensaje);
 
 
@@ -476,10 +488,11 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
                         Log.d("lista antes", String.valueOf(listaCarrito.length()));
                         Log.d("Posicion", String.valueOf(position));
 
-                        listaCarrito.remove(position);                                         // Eliminamos de la lista ese item
-                        notifyItemRemoved(position);                                           //notificamos al adaptador que eliminamos ese elemento para que lo deje de mostrar al usuario
+                        //listaCarrito.remove(position);                                         // Eliminamos de la lista ese item
+                        //notifyItemRemoved(position);                                           //notificamos al adaptador que eliminamos ese elemento para que lo deje de mostrar al usuario
+                        notifyDataSetChanged();
 
-                        totalAdapter.cambiarJsonObject(totalesJsonObjet,mensajesTotales);                       //notificamos a nuestro adaptador totales que le enviamos un nuevo jsonobhjet con los totales acutalizados por el servidor y que actualice las vistas
+                        totalAdapter.cambiarJsonObject(totalesJsonObjet,mensajesTotales,informacionBloqueos);                       //notificamos a nuestro adaptador totales que le enviamos un nuevo jsonobhjet con los totales acutalizados por el servidor y que actualice las vistas
 
                         Log.d("lista Despues", String.valueOf(listaCarrito.length()));
                     }

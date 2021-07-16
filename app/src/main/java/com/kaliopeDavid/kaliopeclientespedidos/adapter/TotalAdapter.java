@@ -9,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -61,9 +63,14 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
         return new ViewHolderCarrito(view);
     }
 
-    public void cambiarJsonObject(JSONObject totales, JSONObject mensajesFinalTotales){
+    public void cambiarJsonObject(JSONObject totales, JSONObject mensajesFinalTotales, JSONObject jsonObjectInformacion){
         jsonObjectTotales = totales;
         this.mensajesFinalTotalesBreves = mensajesFinalTotales;
+
+        if(jsonObjectInformacion!= null){
+            this.jsonObjectInformacion = jsonObjectInformacion;
+        }
+
         notifyDataSetChanged();
     }
 
@@ -99,20 +106,37 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
             Log.d("TotalOnview","control1");
             //Dependiendo de si info es FAIL entonces mostramos la imagen de la bolsita triste y mandamos el mensaje que nos muestra el server si no mostramos los totales
             if (jsonObjectInformacion.getString("estatus").equals("FAIL")) {
-                holder.constraintLayoutCarritoVacio.setVisibility(View.VISIBLE);
                 holder.mensajeBolsaVacia.setText(jsonObjectInformacion.getJSONObject("MENSAJE").getString("mensaje"));           //ponemos el mensaje que el servidor nos envia
                 holder.constraintLayoutTotales.setVisibility(View.GONE);
+                holder.constraintLayoutCarritoVacio.setVisibility(View.VISIBLE);
                 Log.d("TotalOnview","MostrandoBOlsita");
+
             } else {
-                //sino viene FAIL entonces viene exito, mostramos los totales y recuperamos las variables de info para bloquear la edicion
-                holder.constraintLayoutCarritoVacio.setVisibility(View.GONE);
-                holder.constraintLayoutTotales.setVisibility(View.VISIBLE);
-                Log.d("TotalOnview","exito");
+                //sino viene FAIL entonces viene exito
 
                 boolean bloqueado = jsonObjectInformacion.getJSONObject("MENSAJE").getBoolean("bloqueado");
                 String alerta = jsonObjectInformacion.getJSONObject("MENSAJE").getString("alerta");
                 String mensajeBloqueo = jsonObjectInformacion.getJSONObject("MENSAJE").getString("mensaje");
                 carritoAdapter.setBloqueo(bloqueado);
+
+                //Si el mensaje del pedido llega como Pedido finalizado, quiero igual no mostrarlo
+                //porque confunde mucho al cliente por ejemplo cuando tiene productos agregados
+                //y cuando elimina productos, todos, la pantalla de totales recarga los totales del pedido anterior
+                //y eso confunde. el servidor nos retornara Pedido finalizado y volveremos a mostrar la bolsita triste
+                if(mensajeBloqueo.contains("Pedido Finalizado")){
+                    holder.mensajeBolsaVacia.setText("Tu carrito esta vacio. Tienes otros pedidos anteriores puedes verlos aqui");           //ponemos el mensaje que el servidor nos envia
+                    holder.constraintLayoutTotales.setVisibility(View.GONE);
+                    holder.constraintLayoutCarritoVacio.setVisibility(View.VISIBLE);
+                    holder.setOnClickListener();
+                    holder.buttonHistorialPedidos.setVisibility(View.VISIBLE);
+                    carritoAdapter.setOcultar(true);
+
+                }else{
+                    //mostramos los totales y recuperamos las variables de info para bloquear la edicion
+                    holder.constraintLayoutCarritoVacio.setVisibility(View.GONE);
+                    holder.constraintLayoutTotales.setVisibility(View.VISIBLE);
+                    Log.d("TotalOnview","exito");
+                }
 
                 holder.cuentaCliente.setText(jsonObjectTotales.getString("cuenta"));
                 holder.nombreCliente.setText(jsonObjectTotales.getString("nombre"));
@@ -248,6 +272,7 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
 
 
         TextView mensajeBolsaVacia;
+        Button buttonHistorialPedidos;
 
 
 
@@ -308,6 +333,7 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
            aviso = (TextView) itemView.findViewById(R.id.item_container_carrito_totales_alertaBloqueoTV);
            constraintLayoutTotales = (ConstraintLayout) itemView.findViewById(R.id.item_container_carrito_totales_constrainLayoutTotales);
            constraintLayoutCarritoVacio = (ConstraintLayout) itemView.findViewById(R.id.item_container_carrito_totales_layout_vacio);
+           buttonHistorialPedidos = (Button) itemView.findViewById(R.id.botonHistorialPedidos);
            mensajeBolsaVacia = (TextView) itemView.findViewById(R.id.textView11);
 
 
@@ -378,6 +404,18 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
             aviso.setVisibility(View.INVISIBLE);
             aviso.setTextColor(Color.BLACK);
             mensajeBloqueo.setTextColor(Color.GRAY);
+        }
+
+
+        void setOnClickListener(){
+            buttonHistorialPedidos.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(activity, "Historial", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
         }
     }
 
