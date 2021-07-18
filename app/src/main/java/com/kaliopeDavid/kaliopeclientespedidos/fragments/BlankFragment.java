@@ -330,12 +330,12 @@ public class BlankFragment extends Fragment implements ProductoAdapter.OnProduct
                     }
 
 
-
+/*
                     for (int i=0; i<imagenDeInicio.length() ; i++){
 
-                        Log.d("datosProcesImagen",String.valueOf(imagenDeInicio.getJSONObject(i).getString("imagen1")));
+                        Log.d("datosProcesImagen",imagenDeInicio.getJSONObject(i).getString("imagen1"));
                     }
-
+*/
 
 
 

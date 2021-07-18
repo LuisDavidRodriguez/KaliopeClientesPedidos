@@ -1,6 +1,7 @@
 package com.kaliopeDavid.kaliopeclientespedidos.adapter;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +55,9 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
 
         final String url_image_producto = producto.getUrl_image();
 
-        holder.nombre.setText(producto.getNombre());
+
+        String nombre = producto.getNombre().replace("\u00C3" + "\u2018","Ñ"); //para remplasar los dos caracteres raros que nos mandan en lugar de la Ñ. nos mandan una NIÃ‘O si buscamos la talba ascii corresponde al simbolo Decimal 195 hexa C3 y el otro comilla izq citacion dec 8216 hex 2018
+        holder.nombre.setText(nombre);
         String precio = "$" + producto.getPrecio();
         holder.precio.setText(precio);
         holder.modelo.setText(producto.getId());

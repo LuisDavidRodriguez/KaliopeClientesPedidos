@@ -117,7 +117,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
 
             holder.tvId.setText(jsonObject.getString("id"));
             holder.tvIdProducto.setText(jsonObject.getString("id_producto"));
-            holder.tvDescripcion.setText(jsonObject.getString("descripcion"));
+            holder.tvDescripcion.setText(jsonObject.getString("descripcion").replace("\u00C3" + "\u2018","Ñ"));
             holder.tvCantidad.setText(jsonObject.getString("cantidad"));
             holder.tvTalla.setText(jsonObject.getString("talla"));
             holder.tvColor.setText(jsonObject.getString("color"));
@@ -305,24 +305,20 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
         bloqueo=b;
     }
 
+    /**
+     * Si quieres que estos items se oculten, esto solo ocurrira cuando
+     * por ejemplo totales adapter reciba un carrito finalizado, totales se ocultara
+     * y tambien deberian ocultarse los productos del carrito, para mostrar una
+     * bolsita vacia que diga que este carrito esta vacio. esto solo pasa cuando el cliente
+     * tiene otros carritos antes que este en la tabla, esos carritos llegan como finalizados
+     * por tanto ya no queremos mostrarlos en el carrito.
+     *
+     * @param b
+     */
     public void setOcultar(boolean b){
         ocultar=b;
     }
 
-
-    private int calgularGananciaDesdeString(String precioPublico, String precioDis){
-        //calculamos la ganancia
-        try {
-            int precioEtiqueta = Integer.parseInt(precioPublico);
-            int precioDistribucion = Integer.parseInt(precioDis);
-            return precioEtiqueta - precioDistribucion;
-
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-
-        return 0;
-    }
 
     /**
      *
@@ -478,7 +474,6 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
                     JSONObject totalesJsonObjet = response.getJSONObject("totales");
                     JSONObject mensajesTotales = response.getJSONObject("mensajesFinalTotales");
                     JSONObject informacionBloqueos = response.getJSONObject("info"); //puede que al eliminar todos los itemps del carrito, la consulta nos devuelva un pedido anterior, porque aun no hemos agregado a la tabla algo que indique que el pedido ya se finalizo, para ello le enviaremos este mensaje a totales que llevara pedidoFinalizado y decidira y mostrar los totales o no
-                    listaCarrito = response.getJSONArray("carritoCliente");
                     utilidadesApp.dialogoResultadoConexion(activity, resultado, mensaje);
 
 
@@ -488,9 +483,8 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
                         Log.d("lista antes", String.valueOf(listaCarrito.length()));
                         Log.d("Posicion", String.valueOf(position));
 
-                        //listaCarrito.remove(position);                                         // Eliminamos de la lista ese item
-                        //notifyItemRemoved(position);                                           //notificamos al adaptador que eliminamos ese elemento para que lo deje de mostrar al usuario
-                        notifyDataSetChanged();
+                        listaCarrito.remove(position);                                         // Eliminamos de la lista ese item
+                        notifyItemRemoved(position);                                           //notificamos al adaptador que eliminamos ese elemento para que lo deje de mostrar al usuario
 
                         totalAdapter.cambiarJsonObject(totalesJsonObjet,mensajesTotales,informacionBloqueos);                       //notificamos a nuestro adaptador totales que le enviamos un nuevo jsonobhjet con los totales acutalizados por el servidor y que actualice las vistas
 

@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DetallesActivity"
+    android:padding="5dp"
     >
 
 
@@ -70,7 +71,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/detalles_recyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="320dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:clipToPadding="false"
                 android:overScrollMode="never"
