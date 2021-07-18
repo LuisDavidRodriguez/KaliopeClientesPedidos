@@ -109,6 +109,7 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
                 holder.mensajeBolsaVacia.setText(jsonObjectInformacion.getJSONObject("MENSAJE").getString("mensaje"));           //ponemos el mensaje que el servidor nos envia
                 holder.constraintLayoutTotales.setVisibility(View.GONE);
                 holder.constraintLayoutCarritoVacio.setVisibility(View.VISIBLE);
+                holder.buttonHistorialPedidos.setVisibility(View.INVISIBLE);
                 Log.d("TotalOnview","MostrandoBOlsita");
 
             } else {
@@ -124,11 +125,11 @@ public class TotalAdapter extends RecyclerView.Adapter<TotalAdapter.ViewHolderCa
                 //y cuando elimina productos, todos, la pantalla de totales recarga los totales del pedido anterior
                 //y eso confunde. el servidor nos retornara Pedido finalizado y volveremos a mostrar la bolsita triste
                 if(mensajeBloqueo.contains("Pedido Finalizado")){
-                    holder.mensajeBolsaVacia.setText("Tu carrito esta vacio. Tienes otros pedidos anteriores puedes verlos aqui");           //ponemos el mensaje que el servidor nos envia
+                    holder.mensajeBolsaVacia.setText("Tu carrito esta vacio. Tienes otros pedidos anteriores ya finalizados.Pronto podras verlos");           //ponemos el mensaje que el servidor nos envia
                     holder.constraintLayoutTotales.setVisibility(View.GONE);
                     holder.constraintLayoutCarritoVacio.setVisibility(View.VISIBLE);
                     holder.setOnClickListener();
-                    holder.buttonHistorialPedidos.setVisibility(View.VISIBLE);
+                    holder.buttonHistorialPedidos.setVisibility(View.INVISIBLE);
                     carritoAdapter.setOcultar(true);
 
                 }else{

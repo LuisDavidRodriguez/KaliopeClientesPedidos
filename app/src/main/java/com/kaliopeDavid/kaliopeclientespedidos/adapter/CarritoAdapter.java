@@ -117,7 +117,7 @@ public class CarritoAdapter extends RecyclerView.Adapter<CarritoAdapter.ViewHold
 
             holder.tvId.setText(jsonObject.getString("id"));
             holder.tvIdProducto.setText(jsonObject.getString("id_producto"));
-            holder.tvDescripcion.setText(jsonObject.getString("descripcion").replace("\u00C3" + "\u2018","Ñ"));
+            holder.tvDescripcion.setText(jsonObject.getString("descripcion").replace("\u00C3" + "\u2018","Ñ"));//ñremplace
             holder.tvCantidad.setText(jsonObject.getString("cantidad"));
             holder.tvTalla.setText(jsonObject.getString("talla"));
             holder.tvColor.setText(jsonObject.getString("color"));

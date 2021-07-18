@@ -56,7 +56,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
         final String url_image_producto = producto.getUrl_image();
 
 
-        String nombre = producto.getNombre().replace("\u00C3" + "\u2018","Ñ"); //para remplasar los dos caracteres raros que nos mandan en lugar de la Ñ. nos mandan una NIÃ‘O si buscamos la talba ascii corresponde al simbolo Decimal 195 hexa C3 y el otro comilla izq citacion dec 8216 hex 2018
+        String nombre = producto.getNombre().replace("\u00C3" + "\u2018","Ñ"); //ñremplace para remplasar los dos caracteres raros que nos mandan en lugar de la Ñ. nos mandan una NIÃ‘O si buscamos la talba ascii corresponde al simbolo Decimal 195 hexa C3 y el otro comilla izq citacion dec 8216 hex 2018
         holder.nombre.setText(nombre);
         String precio = "$" + producto.getPrecio();
         holder.precio.setText(precio);

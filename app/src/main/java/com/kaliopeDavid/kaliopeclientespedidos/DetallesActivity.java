@@ -153,7 +153,7 @@ public class DetallesActivity extends AppCompatActivity {
             throw new IllegalArgumentException("Detalles no puede encontrar extras");
         }
 
-        Toast.makeText(this, id_producto, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, id_producto, Toast.LENGTH_SHORT).show();
         mediaPlayer = MediaPlayer.create(this,R.raw.click);
 
 
@@ -561,11 +561,15 @@ public class DetallesActivity extends AppCompatActivity {
             @Override
             public void run() {
                 //buscamos el layout que contiene un item para animar ese layout pero ahora como no sabemos la posicion la pondemos en la inicial que es la 0
-                RecyclerView.ViewHolder viewHolder = recyclerViewDetalles.findViewHolderForAdapterPosition(0);
-                LinearLayout linearLayout = viewHolder.itemView.findViewById(R.id.item_imagen_ropa_detalles_LinearLayoutParent);
-                linearLayout.animate().setDuration(350).scaleX(1).scaleY(1).setInterpolator(new AccelerateInterpolator()).start();
+                try {//protejemos con un try en lo que encontramos cual es el error del nullPointerException
+                    RecyclerView.ViewHolder viewHolder = recyclerViewDetalles.findViewHolderForAdapterPosition(0);
+                    LinearLayout linearLayout = viewHolder.itemView.findViewById(R.id.item_imagen_ropa_detalles_LinearLayoutParent);
+                    linearLayout.animate().setDuration(350).scaleX(1).scaleY(1).setInterpolator(new AccelerateInterpolator()).start();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        },500);
+        },1500);
 
     }
 
@@ -609,8 +613,8 @@ public class DetallesActivity extends AppCompatActivity {
                 ,{"color":"Azul","noColor":"rgb(135, 182, 205)","imagen1":"fotos\/SM5898-AZUL-1.jpg","existencias":10,"tallas":[{"talla":"G","existencias":10}]}]}
              */
 
-            nombrePro = informacionProductoInicial.getString("descripcion").replace("\u00C3" + "\u2018","Ñ");//para remplasar los dos caracteres raros que nos mandan en lugar de la Ñ. nos mandan una NIÃ‘O si buscamos la talba ascii corresponde al simbolo Decimal 195 hexa C3 y el otro comilla izq citacion dec 8216 hex 2018
-            detallesPro = informacionProductoInicial.getString("detalles").replace("\u00C3" + "\u00B1","ñ");//para remplasar los dos caracteres raros que nos mandan en lugar de la ñ. nos mandan una niÃ±o si buscamos la talba ascii corresponde al simbolo Decimal 195 hexa C3 y el mas menos es dec 177 hex B1
+            nombrePro = informacionProductoInicial.getString("descripcion").replace("\u00C3" + "\u2018","Ñ");//ñremplace para remplasar los dos caracteres raros que nos mandan en lugar de la Ñ. nos mandan una NIÃ‘O si buscamos la talba ascii corresponde al simbolo Decimal 195 hexa C3 y el otro comilla izq citacion dec 8216 hex 2018
+            detallesPro = informacionProductoInicial.getString("detalles").replace("\u00C3" + "\u00B1","ñ");//ñremplace para remplasar los dos caracteres raros que nos mandan en lugar de la ñ. nos mandan una niÃ±o si buscamos la talba ascii corresponde al simbolo Decimal 195 hexa C3 y el mas menos es dec 177 hex B1
             modelo = informacionProductoInicial.getString("id_producto");
             precio = informacionProductoInicial.getString("precio_etiqueta");
 
