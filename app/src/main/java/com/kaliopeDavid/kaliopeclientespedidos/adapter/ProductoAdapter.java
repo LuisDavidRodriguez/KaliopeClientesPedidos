@@ -12,7 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.bumptech.glide.request.RequestOptions;
 import com.kaliopeDavid.kaliopeclientespedidos.R;
 import com.kaliopeDavid.kaliopeclientespedidos.models.Producto;
 
@@ -23,7 +25,11 @@ import java.util.List;
 Para crear un On >CLick listener al aprecer de la mejor practica y manera mas eficiente
 https://www.youtube.com/watch?v=69C1ljfDvl0
  */
-public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHolderProducto> {
+public class ProductoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    final int VIEW_TYPE_LOADING = 0;
+    final int VIEW_TYPE_ITEM = 1;
+
+
 
     private List<Producto> list;
     //====9=====
@@ -37,86 +43,43 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
 
     @NonNull
     @Override
-    public ViewHolderProducto onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(
-                R.layout.item_container_producto,
-                parent,
-                false
-        );
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if(viewType== VIEW_TYPE_ITEM){
+            View view = LayoutInflater.from(parent.getContext()).inflate(
+                    R.layout.item_container_producto,
+                    parent,
+                    false
+            );
 
-        //====11====
-        return new ViewHolderProducto(view,myOnproductListener);
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull ViewHolderProducto holder, int position) {
-
-        Producto producto = list.get(position);
-
-        final String url_image_producto = producto.getUrl_image();
-
-
-        String nombre = producto.getNombre().replace("\u00C3" + "\u2018","Ñ"); //ñremplace para remplasar los dos caracteres raros que nos mandan en lugar de la Ñ. nos mandan una NIÃ‘O si buscamos la talba ascii corresponde al simbolo Decimal 195 hexa C3 y el otro comilla izq citacion dec 8216 hex 2018
-        holder.nombre.setText(nombre);
-        String precio = "$" + producto.getPrecio();
-        holder.precio.setText(precio);
-        holder.modelo.setText(producto.getId());
-        if(producto.getExistencias()>0){
-            int existencias = producto.getExistencias();
-            String mensaje = (existencias>1? String.valueOf(existencias) + " disponibles": "Ultimo disponible!");
-
-            holder.existencias.setTextColor(Color.GRAY);
-            holder.existencias.setTextSize(14);
-            holder.existencias.setText(mensaje);
-
-            holder.nombre.setTextColor(Color.BLACK);
-            holder.precio.setTextColor(Color.BLACK);
+            //====11====
+            return new ViewHolderProducto(view,myOnproductListener);
         }else{
-            holder.existencias.setTextColor(Color.RED);
-            holder.existencias.setTextSize(18);
-            holder.existencias.setText("Producto agotado");
-
-            holder.nombre.setTextColor(Color.LTGRAY);
-            holder.precio.setTextColor(Color.LTGRAY);
+            View view = LayoutInflater.from(parent.getContext()).inflate(
+                    R.layout.item_loading,
+                    parent,
+                    false
+            );
+            return new LoadingHolder(view);
         }
 
 
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+
+       if(holder instanceof ViewHolderProducto){
+           manageOnBindProducto((ViewHolderProducto) holder,position);
+       }
 
 
 
-                Glide.with(holder.itemView)
-                        .load(url_image_producto)
-                        .transition(DrawableTransitionOptions.withCrossFade())
-                        .error(R.drawable.error_image)
-                        .thumbnail(0.5f)
-                        .into(holder.imageProducto);
+    }
 
-/*
-        //https://heartbeat.fritz.ai/using-glide-to-efficiently-load-images-in-android-aec0ba9639ea
-        //.skipMemoryCache(true)            para que no guarde las nuevas imagenes en la cache pero las que ya esten guardadas las v a aseguir cargando de ahi
-        // .diskCacheStrategy(DiskCacheStrategy.NONE)   para no recuperar nada de la cache
-        //// invalidate the disk cache.
-        ////This method should always be called on a background thread
-        //Glide.get(this).clearDiskCache()
-        //
-        //// invalidate the memory cache.
-        //Glide.get(this).clearMemory()
-        /*
-        RequestOptions options = new RequestOptions()
-                .signature(currentItem.getSignature())
-                .format(DecodeFormat.PREFER_RGB_565)
-                .centerCrop()
-                .placeholder(placeholder)
-                .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
-
-            Glide.with(imageView.getContext())
-                .load(currentItem.getUri())
-                .apply(options)
-                .thumbnail(0.5f)
-                .into(imageView);
-         */
-
-
+    //Implementamos el view type para el loading
+    @Override
+    public int getItemViewType(int position) {
+        return list.get(position) == null? VIEW_TYPE_LOADING: VIEW_TYPE_ITEM;
     }
 
     @Override
@@ -157,6 +120,11 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
         }
 
 
+
+
+
+
+
         //====3=====
         //este metodo fue el que implementamos y sobreescribiremos para que escuche nuestros clics
         //ahora enlasaremos nuestro recycler view completo al click listener para que este escuchando en todos los item el evento
@@ -169,6 +137,82 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
         }
     }
 
+    private class LoadingHolder extends RecyclerView.ViewHolder{
+
+        public LoadingHolder(@NonNull View itemView) {
+            super(itemView);
+        }
+    }
+
+
+    private void manageOnBindProducto(ViewHolderProducto holder, int position){
+
+        Producto producto = list.get(position);
+
+        final String url_image_producto = producto.getUrl_image();
+
+        String nombre = producto.getNombre().replace("\u00C3" + "\u2018","Ñ"); //ñremplace para remplasar los dos caracteres raros que nos mandan en lugar de la Ñ. nos mandan una NIÃ‘O si buscamos la talba ascii corresponde al simbolo Decimal 195 hexa C3 y el otro comilla izq citacion dec 8216 hex 2018
+        holder.nombre.setText(nombre);
+        String precio = "$" + producto.getPrecio();
+        holder.precio.setText(precio);
+        holder.modelo.setText(producto.getId());
+        if(producto.getExistencias()>0){
+            int existencias = producto.getExistencias();
+            String mensaje = (existencias>1? String.valueOf(existencias) + " disponibles": "Ultimo disponible!");
+
+            holder.existencias.setTextColor(Color.GRAY);
+            holder.existencias.setTextSize(14);
+            holder.existencias.setText(mensaje);
+
+            holder.nombre.setTextColor(Color.BLACK);
+            holder.precio.setTextColor(Color.BLACK);
+        }else{
+            holder.existencias.setTextColor(Color.RED);
+            holder.existencias.setTextSize(18);
+            holder.existencias.setText("Producto agotado");
+
+            holder.nombre.setTextColor(Color.LTGRAY);
+            holder.precio.setTextColor(Color.LTGRAY);
+        }
+
+        Glide.with(holder.itemView)
+                .load(url_image_producto)
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .error(R.drawable.error_image)
+                .thumbnail(0.5f)
+                //.centerInside()
+                .apply(new RequestOptions().format(DecodeFormat.PREFER_RGB_565))
+                .into(holder.imageProducto);
+
+/*
+        //https://heartbeat.fritz.ai/using-glide-to-efficiently-load-images-in-android-aec0ba9639ea
+        //.skipMemoryCache(true)            para que no guarde las nuevas imagenes en la cache pero las que ya esten guardadas las v a aseguir cargando de ahi
+        // .diskCacheStrategy(DiskCacheStrategy.NONE)   para no recuperar nada de la cache
+        //// invalidate the disk cache.
+        ////This method should always be called on a background thread
+        //Glide.get(this).clearDiskCache()
+        //
+        //// invalidate the memory cache.
+        //Glide.get(this).clearMemory()
+        /*
+        RequestOptions options = new RequestOptions()
+                .signature(currentItem.getSignature())
+                .format(DecodeFormat.PREFER_RGB_565)
+                .centerCrop()
+                .placeholder(placeholder)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE);
+
+            Glide.with(imageView.getContext())
+                .load(currentItem.getUri())
+                .apply(options)
+                .thumbnail(0.5f)
+                .into(imageView);
+         */
+    }
+
+
+
+
     //====1====
     //para crear el onclick listener
     //ya declaramos esta interfas con el metodo abstracto ahora debemos hacer que este escuchando los clic en neustro recycler
@@ -177,4 +221,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ViewHo
     public interface OnProductListener{
         void onProductClick(int position);
     }
+
+
+
 }
