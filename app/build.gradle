@@ -6,7 +6,7 @@ android {
         applicationId "com.kaliopeDavid.kaliopeclientespedidos"
         minSdkVersion 22
         targetSdkVersion 29
-        versionCode 4
+        versionCode 5
         versionName "1.2.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -27,6 +27,9 @@ android {
  * Tambien añadiremos la gestion de los pedidos es decir el cliente podra añadir,
  * otro pedido aunque aun tenga el otro en espera.
  *
+ * Version 1.2.1
+ * Error no se porque puse esa etiqueta, deberia ser 2.0.1
+ * soluciona el bug del recyclerView
  */
 
 dependencies {
