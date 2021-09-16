@@ -148,23 +148,13 @@ public class BlankFragment extends Fragment implements ProductoAdapter.OnProduct
 
 
 
-
-
-
-
         Log.d("fragment","OnViewCreated");
 
 
 
 
 
-
-
         controlarModoOfflineOnline();           //este metodo maneja si se conecta al servidor o si mejor muestra los datos del shared preferences de la memoria previamente guardados
-
-
-
-
 
 
 
@@ -283,15 +273,7 @@ public class BlankFragment extends Fragment implements ProductoAdapter.OnProduct
     private void populateListRecycler(){
         listProducto = new ArrayList<>();
 
-        //we'll load only the first 50 items
-        int firstLoad;
-        if(imagenDeInicio.length()>50){
-            firstLoad=50;
-        }else{
-            firstLoad=imagenDeInicio.length();
-        }
-
-        Log.d("TotalItems",String.valueOf(imagenDeInicio.length()));
+         Log.d("TotalItems",String.valueOf(imagenDeInicio.length()));
 
 
         for (int i=0; i< imagenDeInicio.length(); i++){
@@ -320,45 +302,6 @@ public class BlankFragment extends Fragment implements ProductoAdapter.OnProduct
 
     }
 
-
-
-
-    private void getMoreData() {
-        int endPosition = nexItem + 50;
-        if(imagenDeInicio.length() < endPosition){
-            endPosition = imagenDeInicio.length();
-        }
-
-        Log.d("nextItem",String.valueOf(nexItem));
-        Log.d("endPosition",String.valueOf(endPosition));
-
-        for (int i=nexItem; i< endPosition; i++){
-            try {
-
-                String URL_Imagen = KaliopeServerClient.BASE_URL + imagenDeInicio.getJSONObject(i).getString("imagen1");
-
-                producto = new Producto(
-                        imagenDeInicio.getJSONObject(i).getString("descripcion"),
-                        URL_Imagen,
-                        imagenDeInicio.getJSONObject(i).getString("precio_etiqueta"),
-                        imagenDeInicio.getJSONObject(i).getString("existencias"),
-                        0,
-                        imagenDeInicio.getJSONObject(i).getString("id_producto"));
-
-                listProducto.add(producto);
-                nexItem = i;
-
-                Log.d("UrlImagenes",URL_Imagen);
-                Log.d("nextItem",String.valueOf(nexItem));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            isLoading=false;
-        }
-
-
-    }
 
 
     private void consultarImagenPrincipal(){
