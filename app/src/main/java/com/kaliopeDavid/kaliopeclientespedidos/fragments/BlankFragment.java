@@ -61,6 +61,7 @@ public class BlankFragment extends Fragment implements ProductoAdapter.OnProduct
 
     Producto producto;
     List<Producto> listProducto;
+    int nexItem = 0;
 
 
     ProgressDialog progressDialog;
@@ -73,6 +74,7 @@ public class BlankFragment extends Fragment implements ProductoAdapter.OnProduct
     private final String URL_CATEGORIAS = KaliopeServerClient.CARPETAS_URL + "consultar_categorias.php";
     private final String URL_IMAGEN_PRINCIPAL = KaliopeServerClient.CARPETAS_URL + "consultar_principal.php";
 
+    boolean isLoading = false;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -132,13 +134,23 @@ public class BlankFragment extends Fragment implements ProductoAdapter.OnProduct
 
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //cuando ya tenemos la vista inflada este se llama inmediatamente, es mejor hacerlo aqui porque depronto
         //El onCreateView falla, en este casos abemos que ya se creo completamente la interfas
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerId);
         //recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        //recyclerView.setHasFixedSize(true);
+        recyclerView.setItemViewCacheSize(20);
+        recyclerView.setDrawingCacheEnabled(true);
+        recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+
+
+
+
+
+
 
         Log.d("fragment","OnViewCreated");
 
@@ -158,7 +170,7 @@ public class BlankFragment extends Fragment implements ProductoAdapter.OnProduct
 
 
 
-
+/*
         adapterViewFlipperPublicidad = (AdapterViewFlipper) view.findViewById(R.id.main_AVF_publicidad);
         int[]imagenes = {R.drawable.cortador1, R.drawable.cortador2};
 
@@ -198,6 +210,7 @@ public class BlankFragment extends Fragment implements ProductoAdapter.OnProduct
         adapterViewFlipperPublicidad.setFlipInterval(5000);
         adapterViewFlipperPublicidad.setAutoStart(true);
         adapterViewFlipperPublicidad.startFlipping();
+        */
 
 
     }
@@ -209,37 +222,14 @@ public class BlankFragment extends Fragment implements ProductoAdapter.OnProduct
 
     private void enaviarArecycler(){
 
-        listProducto = new ArrayList<>();
-
-        for (int i=0; i<imagenDeInicio.length() ; i++){
-
-
-            try {
-
-                String URL_Imagen = KaliopeServerClient.BASE_URL + imagenDeInicio.getJSONObject(i).getString("imagen1");
-
-                producto = new Producto(
-                        imagenDeInicio.getJSONObject(i).getString("descripcion"),
-                        URL_Imagen,
-                        imagenDeInicio.getJSONObject(i).getString("precio_etiqueta"),
-                        imagenDeInicio.getJSONObject(i).getString("existencias"),
-                        0,
-                        imagenDeInicio.getJSONObject(i).getString("id_producto"));
-
-                listProducto.add(producto);
-
-                Log.d("UrlImagenes",String.valueOf(URL_Imagen));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+     populateListRecycler();
 
 
 
 
         //configuramos nuestro layoutmanager la manera en que queremos que se vea el recycler view
         final int spans = getResources().getInteger(R.integer.number_of_columns);       //dependiendo de la pantalla del dispositivo mostraremos mas o menos columnas
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),spans,GridLayoutManager.VERTICAL,false);
+        final GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),spans,GridLayoutManager.VERTICAL,false);
         gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -281,10 +271,91 @@ public class BlankFragment extends Fragment implements ProductoAdapter.OnProduct
 
 
 
-
         recyclerView.setLayoutManager(gridLayoutManager);
         ProductoAdapter productoAdapter = new ProductoAdapter(listProducto,this);
         recyclerView.setAdapter(productoAdapter);
+
+
+
+
+    }
+
+    private void populateListRecycler(){
+        listProducto = new ArrayList<>();
+
+        //we'll load only the first 50 items
+        int firstLoad;
+        if(imagenDeInicio.length()>50){
+            firstLoad=50;
+        }else{
+            firstLoad=imagenDeInicio.length();
+        }
+
+        Log.d("TotalItems",String.valueOf(imagenDeInicio.length()));
+
+
+        for (int i=0; i< imagenDeInicio.length(); i++){
+            try {
+
+                String URL_Imagen = KaliopeServerClient.BASE_URL + imagenDeInicio.getJSONObject(i).getString("imagen1");
+
+                producto = new Producto(
+                        imagenDeInicio.getJSONObject(i).getString("descripcion"),
+                        URL_Imagen,
+                        imagenDeInicio.getJSONObject(i).getString("precio_etiqueta"),
+                        imagenDeInicio.getJSONObject(i).getString("existencias"),
+                        0,
+                        imagenDeInicio.getJSONObject(i).getString("id_producto"));
+
+                listProducto.add(producto);
+                //nexItem = i;
+
+                Log.d("UrlImagenes",URL_Imagen);
+                //Log.d("nextItem",String.valueOf(nexItem));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }
+
+
+
+
+    private void getMoreData() {
+        int endPosition = nexItem + 50;
+        if(imagenDeInicio.length() < endPosition){
+            endPosition = imagenDeInicio.length();
+        }
+
+        Log.d("nextItem",String.valueOf(nexItem));
+        Log.d("endPosition",String.valueOf(endPosition));
+
+        for (int i=nexItem; i< endPosition; i++){
+            try {
+
+                String URL_Imagen = KaliopeServerClient.BASE_URL + imagenDeInicio.getJSONObject(i).getString("imagen1");
+
+                producto = new Producto(
+                        imagenDeInicio.getJSONObject(i).getString("descripcion"),
+                        URL_Imagen,
+                        imagenDeInicio.getJSONObject(i).getString("precio_etiqueta"),
+                        imagenDeInicio.getJSONObject(i).getString("existencias"),
+                        0,
+                        imagenDeInicio.getJSONObject(i).getString("id_producto"));
+
+                listProducto.add(producto);
+                nexItem = i;
+
+                Log.d("UrlImagenes",URL_Imagen);
+                Log.d("nextItem",String.valueOf(nexItem));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            isLoading=false;
+        }
 
 
     }
