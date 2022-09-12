@@ -2,7 +2,9 @@
 This is the virtual Store available in the playStore, moved from BitBucket
 
 
-## I just moved this repository. I am still creating this readme file.
+## Android App Kaliope Clientes pedidos.
+This app is available in Play Store Mexico under my developer account. This app was released the previous year, it is a Store where the clients of the company can sign to see all the products with pictures displayed on a recycler view, using the library "Glide", add items to their car, look when their product will arrive, delete and submit their order sending the information to the company server, modifying the stock quantity of each product, another important feature is that this app also is allowed to work in offline mode, when there is no internet connection, it changes automatically to Offline mode and now all the images are shown from the Glide Cache with the URL stored on an xml file created by a Shared Preferences instance.
+
 ![CLIENTES 5](https://user-images.githubusercontent.com/105079888/189554497-d9383b80-5a31-40e0-90a0-4aeaeade24c3.PNG)
 
 ![CLIENTES 6](https://user-images.githubusercontent.com/105079888/189554499-b2f4c94e-2fc7-40a3-9f46-e496c79fda44.PNG)
